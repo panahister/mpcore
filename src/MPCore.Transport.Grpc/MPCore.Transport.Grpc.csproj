@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Transport.Grpc</PackageId>
+    <Description>Native gRPC failure mapping and interception for MP Core logical failures.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MPCore.Application/MPCore.Application.csproj" />
+    <ProjectReference Include="../MPCore.Domain/MPCore.Domain.csproj" />
+    <PackageReference Include="Google.Api.CommonProtos" />
+    <PackageReference Include="Grpc.AspNetCore.Server" />
+    <PackageReference Include="Grpc.StatusProto" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+  </ItemGroup>
+</Project>

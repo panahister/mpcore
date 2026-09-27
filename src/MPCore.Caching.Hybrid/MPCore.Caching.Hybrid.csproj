@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Caching.Hybrid</PackageId>
+    <Description>Two-level implementation of the MP Core cache port over HybridCache: in-process first, Redis second, with stampede protection on read-through.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MPCore.Caching.Abstractions/MPCore.Caching.Abstractions.csproj" />
+    <ProjectReference Include="../MPCore.Caching.Redis/MPCore.Caching.Redis.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+  </ItemGroup>
+</Project>

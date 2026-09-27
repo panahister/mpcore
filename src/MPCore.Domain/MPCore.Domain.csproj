@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Domain</PackageId>
+    <Description>DDD domain primitives without infrastructure dependencies.</Description>
+  </PropertyGroup>
+</Project>

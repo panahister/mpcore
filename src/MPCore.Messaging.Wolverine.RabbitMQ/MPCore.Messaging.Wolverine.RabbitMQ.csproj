@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Messaging.Wolverine.RabbitMQ</PackageId>
+    <Description>Optional explicit RabbitMQ transport adapter for MP Core Wolverine messaging.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MPCore.Messaging.Wolverine/MPCore.Messaging.Wolverine.csproj" />
+    <PackageReference Include="WolverineFx.RabbitMQ" />
+  </ItemGroup>
+</Project>

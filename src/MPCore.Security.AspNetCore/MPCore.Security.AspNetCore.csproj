@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Security.AspNetCore</PackageId>
+    <RootNamespace>MPCore.Security.AspNetCore</RootNamespace>
+    <Description>Bearer-only OIDC resource-server wiring, current-actor mapping and default-deny authorization for MP Core hosts.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../MPCore.Security.Abstractions/MPCore.Security.Abstractions.csproj" />
+    <ProjectReference Include="../MPCore.Tenancy.Abstractions/MPCore.Tenancy.Abstractions.csproj" />
+    <!-- Microsoft.Extensions.Options and Microsoft.Extensions.Logging.Abstractions arrive with the
+         Microsoft.AspNetCore.App framework reference and must not be referenced explicitly. -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+  </ItemGroup>
+</Project>

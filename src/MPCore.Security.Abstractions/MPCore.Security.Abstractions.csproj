@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Security.Abstractions</PackageId>
+    <RootNamespace>MPCore.Security</RootNamespace>
+    <Description>Transport-neutral current-actor abstractions for MP Core products. BCL only.</Description>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Hosting</PackageId>
+    <Description>Composition helpers for MP Core hosting, time, and observability.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MPCore.Application/MPCore.Application.csproj" />
+    <ProjectReference Include="../MPCore.Observability/MPCore.Observability.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+</Project>

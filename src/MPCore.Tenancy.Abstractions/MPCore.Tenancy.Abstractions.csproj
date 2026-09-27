@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Tenancy.Abstractions</PackageId>
+    <Description>Tenant context port and ambient tenant scope for MP Core: who the current operation is for, resolved by the host, consumed by audit, messaging and business code. BCL-only.</Description>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,70 @@
+# Builds and tests every push and pull request. It never publishes: packing for publication and the push
+# to nuget.org are a maintainer's act (docs/decisions/ADR-004, ADR-010).
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_USER: mpcore
+          POSTGRES_PASSWORD: mpcore
+          POSTGRES_DB: mpcore_it
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mpcore -d mpcore_it" --health-interval 5s --health-timeout 3s --health-retries 20
+      timescale:
+        image: timescale/timescaledb:2.17.2-pg17
+        env:
+          POSTGRES_USER: mpcore
+          POSTGRES_PASSWORD: mpcore
+          POSTGRES_DB: mpcore_it
+        ports: ["5433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mpcore -d mpcore_it" --health-interval 5s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:8.0-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      DOTNET_NOLOGO: "true"
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      # Throwaway service containers of this job; not a secret.
+      MPCORE_TEST_POSTGRESQL: Host=localhost;Port=5432;Database=mpcore_it;Username=mpcore;Password=mpcore
+      MPCORE_TEST_TIMESCALE: Host=localhost;Port=5433;Database=mpcore_it;Username=mpcore;Password=mpcore
+      MPCORE_TEST_REDIS: localhost:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Restore (locked)
+        run: dotnet restore MPCore.sln --locked-mode
+      - name: Build (warnings are errors)
+        run: dotnet build MPCore.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test MPCore.sln --configuration Release --no-build --logger "trx;LogFileName=results.trx"
+      - name: Pack (a verification candidate, never published from here)
+        run: dotnet pack MPCore.sln --configuration Release --no-build --output artifacts/candidate -p:VersionSuffix=ci.${{ github.run_number }}
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: "**/results.trx"

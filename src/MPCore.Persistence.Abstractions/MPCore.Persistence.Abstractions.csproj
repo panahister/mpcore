@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Persistence.Abstractions</PackageId>
+    <Description>Persistence ports for DDD aggregates and units of work.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MPCore.Domain/MPCore.Domain.csproj" />
+  </ItemGroup>
+</Project>

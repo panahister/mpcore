@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Messaging.Wolverine</PackageId>
+    <Description>Durable Wolverine messaging foundation with PostgreSQL persistence.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The failure model a handler returns; this adapter has to recognise it to decide whether a
+         transaction may commit. Provider-neutral, no dependencies of its own. -->
+    <ProjectReference Include="../MPCore.Application/MPCore.Application.csproj" />
+    <ProjectReference Include="../MPCore.Messaging.Abstractions/MPCore.Messaging.Abstractions.csproj" />
+    <!-- A broken business rule is never retried; this adapter has to recognise the exception. -->
+    <ProjectReference Include="../MPCore.Domain/MPCore.Domain.csproj" />
+    <!-- The transaction the outbox commits with belongs to the unit of work an application handler
+         declares, so this adapter has to know that port. Abstractions only; no provider. -->
+    <ProjectReference Include="../MPCore.Persistence.Abstractions/MPCore.Persistence.Abstractions.csproj" />
+    <!-- A queued handler has no request and so no user; this adapter names it as a system actor for the
+         whole of its execution, save included. Abstractions only. -->
+    <ProjectReference Include="../MPCore.Security.Abstractions/MPCore.Security.Abstractions.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <!-- Pinned with EF Core. Left transitive, Relational resolves through Npgsql or Wolverine to an
+         older patch (10.0.4) while EF Core is 10.0.11, and a consumer compiled against both fails with
+         MSB3277. Every package that references EF Core pins Relational to the same version. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="WolverineFx" />
+    <PackageReference Include="WolverineFx.EntityFrameworkCore" />
+    <PackageReference Include="WolverineFx.Postgresql" />
+    <PackageReference Include="WolverineFx.RuntimeCompilation" />
+  </ItemGroup>
+</Project>

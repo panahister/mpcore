@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Persistence.Timescale</PackageId>
+    <Description>TimescaleDB migration helpers for MP Core: hypertables, retention and compression policies as EF Core migration operations, with validated identifiers.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+  </ItemGroup>
+</Project>

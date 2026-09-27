@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Messaging.Abstractions</PackageId>
+    <Description>Messaging ports and delivery metadata independent of Wolverine and brokers.</Description>
+  </PropertyGroup>
+</Project>

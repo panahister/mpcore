@@ -1,0 +1,20 @@
+name: Capability or convention
+description: Something MP Core should do, or do differently
+labels: [proposal]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What are you building, and what is in the way?
+      description: The situation, not the solution. Business logic does not belong in MP Core.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you change?
+  - type: textarea
+    id: sources
+    attributes:
+      label: Where does the idea come from?
+      description: A pattern, a book, another framework. Every convention in MP Core names its source.

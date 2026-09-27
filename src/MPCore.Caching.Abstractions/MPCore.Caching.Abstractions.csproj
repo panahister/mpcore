@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Caching.Abstractions</PackageId>
+    <Description>Cache port owned by applications, independent of a cache provider.</Description>
+  </PropertyGroup>
+</Project>

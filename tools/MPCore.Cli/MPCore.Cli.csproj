@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>mpcore</ToolCommandName>
+    <PackageId>MPCore.Cli</PackageId>
+    <VersionPrefix>0.9.0</VersionPrefix>
+    <Authors>Mehdi Panahi</Authors>
+    <Copyright>Copyright (c) The MP Core contributors</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <Description>Guarded CLI for scaffolding MP Core backend repositories.</Description>
+    <PackageTags>dotnet-tool;scaffolding;ddd;grpc;mpcore</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/panahister/mpcore</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/panahister/mpcore</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

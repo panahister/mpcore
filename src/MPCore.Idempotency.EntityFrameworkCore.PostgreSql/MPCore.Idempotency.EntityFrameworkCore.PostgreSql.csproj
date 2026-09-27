@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Idempotency.EntityFrameworkCore.PostgreSql</PackageId>
+    <Description>EF Core and PostgreSQL store for request idempotency keys and the consumer inbox: the key and the result commit in the transaction of the business change, a processed message commits with the consumer's changes, and expired entries are purged.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MPCore.Application/MPCore.Application.csproj" />
+    <ProjectReference Include="../MPCore.Messaging.Abstractions/MPCore.Messaging.Abstractions.csproj" />
+    <ProjectReference Include="../MPCore.Security.Abstractions/MPCore.Security.Abstractions.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <!-- Pinned with EF Core, like every MP Core package that references it (see the audit package). -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>
+</Project>

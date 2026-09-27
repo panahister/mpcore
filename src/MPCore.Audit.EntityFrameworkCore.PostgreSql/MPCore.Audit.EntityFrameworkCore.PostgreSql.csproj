@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Audit.EntityFrameworkCore.PostgreSql</PackageId>
+    <Description>EF Core and PostgreSQL implementation of MP Core business audit: same-transaction entity-change capture through a SaveChanges interceptor, detached recording of rejected attempts, and paged querying.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MPCore.Audit.Abstractions/MPCore.Audit.Abstractions.csproj" />
+    <ProjectReference Include="../MPCore.Security.Abstractions/MPCore.Security.Abstractions.csproj" />
+    <ProjectReference Include="../MPCore.Tenancy.Abstractions/MPCore.Tenancy.Abstractions.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <!-- Pinned with EF Core. Left transitive, Relational resolves through Npgsql or Wolverine to an
+         older patch (10.0.4) while EF Core is 10.0.11, and a consumer compiled against both fails with
+         MSB3277. Every package that references EF Core pins Relational to the same version. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>
+</Project>
