@@ -5,8 +5,10 @@ description: Prepare an MP Core release for nuget.org and verify the packed arti
 
 # mpcore-release
 
-Use to cut a framework release. Publication itself always needs explicit owner authority, and is a
-maintainer's manual act: the continuous-integration workflow builds and tests, and never publishes.
+Use to cut a framework release. Publication itself always needs explicit owner authority. It is done by
+the workflow `release.yml`, which a maintainer starts by hand and approves in the environment `nuget`,
+and which holds no key (ADR-004, addendum on publication). The continuous-integration workflow builds and
+tests, and never publishes.
 
 ## Version discipline
 
@@ -27,9 +29,9 @@ move, in `docs/releases/<version>.md`.
    set (`eng/compose.test.yaml`). Report real numbers.
 3. Generate both shapes from the template and build them.
 4. Build the sample against the packed packages and run its scenarios.
-5. Pack into `artifacts/release/<version>` **from a committed revision**, so that `RepositoryCommit`
-   identifies source that exists. Artifacts packed before that commit are verification candidates, not
-   publication artifacts.
+5. Run `release.yml` as a **rehearsal** (without "publish") on the commit that is to be released. It
+   restores, builds, tests, packs, freezes and verifies on GitHub's runner. Artifacts packed anywhere else,
+   a maintainer's machine included, are verification candidates, not publication artifacts.
 6. Freeze with SHA-256 once, then verify the frozen bytes:
 
    ```bash
@@ -40,5 +42,6 @@ move, in `docs/releases/<version>.md`.
    Never regenerate an existing manifest; refreezing over substituted bytes defeats the gate.
 7. Seed the next API baseline by copying the cohort into `artifacts/packages`, and name it in
    `MPCoreBaselineVersion`.
-8. Stop. Publication (`dotnet nuget push` to nuget.org), commit, tag and push each require explicit
-   authority. Never handle the owner's API key.
+8. Stop. Publication, commit, tag and push each require explicit authority. To publish, the owner asks
+   for `release.yml` to be run with "publish", and approves the waiting job himself. Never approve it for
+   him, never ask for an API key, and never handle one.
