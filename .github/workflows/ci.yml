@@ -51,7 +51,7 @@ jobs:
       MPCORE_TEST_REDIS: localhost:6379
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
       - name: Restore (locked)
