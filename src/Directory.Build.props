@@ -52,7 +52,7 @@
              Text="MP Core: API compatibility validation is SKIPPED for $(MSBuildProjectName); baseline $(MPCoreBaselineVersion) was not found at $(MPCoreBaselinePackagePath)." />
   </Target>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)../README.md"
+    <None Include="$(MSBuildThisFileDirectory)../docs/nuget/README.md"
           Pack="true"
           PackagePath="README.md" />
   </ItemGroup>

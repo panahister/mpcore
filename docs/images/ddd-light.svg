@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 584" width="960" height="584" role="img" aria-label="The building blocks of Domain-Driven Design and the MP Core type that carries each">
+<title>The building blocks of Domain-Driven Design and the MP Core type that carries each</title>
+<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1f2328" flood-opacity="0.06"/></filter></defs>
+<rect x="0.75" y="0.75" width="958.5" height="582.5" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+<text x="32" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1f2328" text-anchor="start">Domain-Driven Design, and the type that carries each idea</text>
+<text x="32" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#57606a" text-anchor="start">MP Core does not model your business. It gives every building block a place and a guarantee.</text>
+<rect x="32" y="96" width="896" height="128" rx="14" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-dasharray="5 5"/>
+<rect x="50" y="85" width="121.6" height="22" rx="6" fill="#ffffff" stroke="none" stroke-width="1.25"/>
+<rect x="50" y="85" width="121.6" height="22" rx="11" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1.1"/>
+<text x="110.8" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#6d28d9" text-anchor="middle">STRATEGIC DESIGN</text>
+<text x="54" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#6d28d9" text-anchor="start">Bounded context</text>
+<text x="54" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">A module of a modular</text>
+<text x="54" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">monolith, or a service</text>
+<rect x="54" y="190" width="62.835" height="21.5" rx="10.75" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1"/>
+<text x="85.4175" y="203.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="10.5" font-weight="600" fill="#6d28d9" text-anchor="middle">--shape</text>
+<text x="272" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#6d28d9" text-anchor="start">Context boundary</text>
+<text x="272" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">One project per module:</text>
+<text x="272" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">the compiler guards it</text>
+<rect x="272" y="190" width="126.885" height="21.5" rx="10.75" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1"/>
+<text x="335.4425" y="203.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="10.5" font-weight="600" fill="#6d28d9" text-anchor="middle">Contracts project</text>
+<text x="490" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#6d28d9" text-anchor="start">Integration</text>
+<text x="490" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">A message that commits</text>
+<text x="490" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">with the change</text>
+<rect x="490" y="190" width="107.67" height="21.5" rx="10.75" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1"/>
+<text x="543.835" y="203.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="10.5" font-weight="600" fill="#6d28d9" text-anchor="middle">outbox · inbox</text>
+<text x="708" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#6d28d9" text-anchor="start">Ubiquitous language</text>
+<text x="708" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Rules and failures carry</text>
+<text x="708" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">the business&#x27;s own names</text>
+<rect x="708" y="190" width="139.695" height="21.5" rx="10.75" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1"/>
+<text x="777.8475" y="203.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="10.5" font-weight="600" fill="#6d28d9" text-anchor="middle">error domain · code</text>
+<rect x="32" y="254" width="896" height="300" rx="14" fill="none" stroke="#4ade80" stroke-width="1.4" stroke-dasharray="5 5"/>
+<rect x="50" y="243" width="115.0" height="22" rx="6" fill="#ffffff" stroke="none" stroke-width="1.25"/>
+<rect x="50" y="243" width="115.0" height="22" rx="11" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.1"/>
+<text x="107.5" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#15803d" text-anchor="middle">TACTICAL DESIGN</text>
+<rect x="48" y="280" width="280" height="74" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="62" y="304" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#15803d" text-anchor="start">Aggregate</text>
+<text x="62" y="324" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">AggregateRoot&lt;TId&gt;</text>
+<text x="62" y="342" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">One per transaction; raises events</text>
+<rect x="340" y="280" width="280" height="74" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="354" y="304" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#15803d" text-anchor="start">Entity</text>
+<text x="354" y="324" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">Entity&lt;TId&gt;</text>
+<text x="354" y="342" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">Identity, and CheckRule</text>
+<rect x="632" y="280" width="280" height="74" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="646" y="304" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#15803d" text-anchor="start">Value object</text>
+<text x="646" y="324" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">ValueObject</text>
+<text x="646" y="342" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">Equal by value; always valid</text>
+<rect x="48" y="368" width="280" height="74" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="62" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#15803d" text-anchor="start">Business rule</text>
+<text x="62" y="412" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">BusinessRule</text>
+<text x="62" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">A named class, reported by its code</text>
+<rect x="340" y="368" width="280" height="74" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="354" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#15803d" text-anchor="start">Domain event</text>
+<text x="354" y="412" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">IDomainEvent</text>
+<text x="354" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">Handled after the commit</text>
+<rect x="632" y="368" width="280" height="74" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="646" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#15803d" text-anchor="start">Integration event</text>
+<text x="646" y="412" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">IntegrationEvent</text>
+<text x="646" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">Leaves through the outbox</text>
+<rect x="48" y="456" width="280" height="74" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="62" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#15803d" text-anchor="start">Repository</text>
+<text x="62" y="500" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">IRepository&lt;T, TId&gt;</text>
+<text x="62" y="518" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">A port; the adapter is yours</text>
+<rect x="340" y="456" width="280" height="74" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="354" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#15803d" text-anchor="start">Unit of work</text>
+<text x="354" y="500" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">IUnitOfWork</text>
+<text x="354" y="518" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">Declared by a handler, never called</text>
+<rect x="632" y="456" width="280" height="74" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="646" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#15803d" text-anchor="start">Application service</text>
+<text x="646" y="500" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">ICommand&lt;T&gt; · IQuery&lt;T&gt;</text>
+<text x="646" y="518" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">A handler: a static method</text>
+</svg>
