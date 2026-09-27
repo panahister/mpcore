@@ -229,21 +229,73 @@ public sealed class TemplateContractTests
     [Fact]
     public void Continuous_integration_builds_and_tests_and_never_publishes_or_deploys()
     {
-        // ADR-004, addendum of 2026-09-27: integration is automated, publication is a maintainer's act.
+        // ADR-004, addenda of 2026-09-27: integration is automated, publication is a maintainer's act.
         var workflows = Directory.GetFiles(Path.Combine(RepositoryRoot, ".github/workflows"), "*.yml");
         Assert.NotEmpty(workflows);
         foreach (var workflow in workflows)
         {
             var text = File.ReadAllText(workflow);
+
+            // No workflow holds a credential, and none may write to the repository.
+            Assert.DoesNotContain("secrets.", text, StringComparison.Ordinal);
+            Assert.Contains("permissions:\n  contents: read", text, StringComparison.Ordinal);
+            Assert.DoesNotContain("contents: write", text, StringComparison.Ordinal);
+
+            if (Path.GetFileName(workflow) == "release.yml")
+            {
+                continue;
+            }
+
             Assert.DoesNotContain("nuget push", text, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("NUGET_API_KEY", text, StringComparison.OrdinalIgnoreCase);
-            Assert.DoesNotContain("secrets.", text, StringComparison.Ordinal);
-            Assert.Contains("contents: read", text, StringComparison.Ordinal);
+            Assert.DoesNotContain("id-token", text, StringComparison.Ordinal);
         }
 
         Assert.False(File.Exists(Path.Combine(RepositoryRoot, ".gitlab-ci.yml")));
         Assert.False(Directory.Exists(Path.Combine(RepositoryRoot, "deploy")));
         Assert.False(Directory.Exists(Path.Combine(RepositoryRoot, "charts")));
+    }
+
+    [Fact]
+    public void Publication_is_started_and_approved_by_a_person_and_holds_no_key()
+    {
+        // ADR-004, addendum of 2026-09-27 on publication. One workflow may publish, and these are the
+        // conditions under which it may. Each assertion is a way the workflow could be made to publish
+        // without a person, or with a key that can leak.
+        var text = File.ReadAllText(Path.Combine(RepositoryRoot, ".github/workflows/release.yml"));
+
+        // Started by hand and by nothing else: a push, a tag or a timer must never publish.
+        var triggers = text[text.IndexOf("\non:\n", StringComparison.Ordinal)..text.IndexOf("\npermissions:", StringComparison.Ordinal)];
+        Assert.Contains("workflow_dispatch:", triggers, StringComparison.Ordinal);
+        foreach (var trigger in new[] { "push:", "pull_request", "schedule:", "release:", "workflow_run:", "workflow_call:" })
+        {
+            Assert.DoesNotContain(trigger, triggers, StringComparison.Ordinal);
+        }
+
+        // Without the choice to publish, a run is a rehearsal.
+        Assert.Contains("      publish:\n", triggers, StringComparison.Ordinal);
+        Assert.Contains("        default: false", triggers, StringComparison.Ordinal);
+
+        var publish = text[text.IndexOf("\n  publish:\n", StringComparison.Ordinal)..];
+        var before = text[..text.IndexOf("\n  publish:\n", StringComparison.Ordinal)];
+
+        // The job that publishes waits for a maintainer, and runs only after the files were verified.
+        Assert.Contains("    if: inputs.publish\n", publish, StringComparison.Ordinal);
+        Assert.Contains("    needs: pack-and-verify\n", publish, StringComparison.Ordinal);
+        Assert.Contains("    environment: nuget\n", publish, StringComparison.Ordinal);
+        Assert.Contains("shasum -a 256 -c SHA256SUMS.txt", publish, StringComparison.Ordinal);
+        Assert.Contains("./eng/verify-release-artifacts.sh \"$VERSION\"", before, StringComparison.Ordinal);
+        Assert.Contains("dotnet test MPCore.sln", before, StringComparison.Ordinal);
+
+        // The key is issued to the run and lives an hour. Only the job that publishes can ask for it,
+        // and the job that builds and runs the tests cannot.
+        Assert.Contains("uses: NuGet/login@", publish, StringComparison.Ordinal);
+        Assert.Contains("id-token: write", publish, StringComparison.Ordinal);
+        Assert.DoesNotContain("id-token", before, StringComparison.Ordinal);
+        Assert.DoesNotContain("nuget push", before, StringComparison.OrdinalIgnoreCase);
+
+        // It publishes what it built, and nothing it fetched from somewhere else.
+        Assert.DoesNotContain("checkout", publish, StringComparison.Ordinal);
     }
 
     [Fact]

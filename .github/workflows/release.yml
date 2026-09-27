@@ -1,0 +1,139 @@
+# Publishes MP Core to nuget.org (docs/decisions/ADR-004, addendum of 2026-09-27 on publication).
+#
+# A maintainer starts it by hand, and a maintainer approves the job that publishes, in the environment
+# "nuget", after the packages were built, tested, packed and verified. Nothing else starts it: no push,
+# no tag, no schedule.
+#
+# No key is stored, here or anywhere. nuget.org is told once that it may trust this workflow in this
+# repository and this environment (Trusted Publishing); it then gives each run a key of its own that
+# lives one hour.
+#
+# A published version is never built again (ADR-010). Run a rehearsal first: it does everything except
+# publish.
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "The version to publish. It must be the version the source declares."
+        required: true
+        type: string
+      publish:
+        description: "Publish to nuget.org. Without it this is a rehearsal: build, test, pack and verify."
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+
+jobs:
+  pack-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_USER: mpcore
+          POSTGRES_PASSWORD: mpcore
+          POSTGRES_DB: mpcore_it
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mpcore -d mpcore_it" --health-interval 5s --health-timeout 3s --health-retries 20
+      timescale:
+        image: timescale/timescaledb:2.17.2-pg17
+        env:
+          POSTGRES_USER: mpcore
+          POSTGRES_PASSWORD: mpcore
+          POSTGRES_DB: mpcore_it
+        ports: ["5433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mpcore -d mpcore_it" --health-interval 5s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:8.0-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      # Throwaway service containers of this job; not a secret.
+      MPCORE_TEST_POSTGRESQL: Host=localhost;Port=5432;Database=mpcore_it;Username=mpcore;Password=mpcore
+      MPCORE_TEST_TIMESCALE: Host=localhost;Port=5433;Database=mpcore_it;Username=mpcore;Password=mpcore
+      MPCORE_TEST_REDIS: localhost:6379
+      VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: The version asked for is the version the source declares
+        run: |
+          declared="$(sed -n 's/.*<VersionPrefix>\(.*\)<\/VersionPrefix>.*/\1/p' src/Directory.Build.props | head -1)"
+          echo "declared: $declared, asked for: $VERSION"
+          [ "$declared" = "$VERSION" ]
+      - name: The version is not on nuget.org yet
+        run: |
+          status="$(curl -s -o /dev/null -w '%{http_code}' "https://api.nuget.org/v3-flatcontainer/mpcore.domain/$VERSION/mpcore.domain.nuspec")"
+          echo "nuget.org answers $status for MPCore.Domain $VERSION"
+          [ "$status" = "404" ]
+      - name: Restore (locked)
+        run: dotnet restore MPCore.sln --locked-mode
+      - name: Build (warnings are errors)
+        run: dotnet build MPCore.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test MPCore.sln --configuration Release --no-build
+      - name: Pack
+        run: dotnet pack MPCore.sln --configuration Release --no-build --output "artifacts/release/$VERSION"
+      - name: Freeze the hashes
+        working-directory: artifacts/release/${{ inputs.version }}
+        run: for f in *.nupkg *.snupkg; do shasum -a 256 "$f"; done | sort -k2 > SHA256SUMS.txt
+      - name: Verify the packed files
+        run: ./eng/verify-release-artifacts.sh "$VERSION"
+      - name: Prove the gate rejects bad files
+        run: ./eng/verify-release-artifacts.sh --self-test "$VERSION"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-${{ inputs.version }}
+          path: artifacts/release/${{ inputs.version }}
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    if: inputs.publish
+    needs: pack-and-verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # A maintainer approves here. Until then nothing below runs.
+    environment: nuget
+    permissions:
+      contents: read
+      id-token: write # lets this job, and only this job, prove to nuget.org which workflow it is
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-${{ inputs.version }}
+          path: release
+      - name: The files are the files that were verified
+        working-directory: release
+        run: shasum -a 256 -c SHA256SUMS.txt
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Ask nuget.org for a key that lives one hour
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish
+        working-directory: release
+        env:
+          NUGET_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_KEY" --skip-duplicate

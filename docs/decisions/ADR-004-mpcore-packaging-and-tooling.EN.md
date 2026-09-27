@@ -33,3 +33,34 @@ nuget.org from version `0.9.0`, and the licence is Apache-2.0.
 - **The version left prerelease.** `0.9.0` is a stable version under Semantic Versioning whose major
   version is `0`: the public API may still change in a minor version, and release notes say how to move.
 - Everything else in this decision stands.
+
+## Addendum 2026-09-27 — publication without a stored key
+
+Status: proposed. It changes the first point of the addendum above.
+
+Publication by hand meant a long-lived API key on a maintainer's machine, typed into a command. Such a key
+can be copied, leaks with a shell history, and publishes whatever bytes happen to be in a folder.
+
+**Decision.** MP Core is published by one workflow, `.github/workflows/release.yml`, under these
+conditions:
+
+1. **A person starts it, and a person approves it.** Its only trigger is a manual one. The job that
+   publishes belongs to the environment `nuget`, which requires the approval of a maintainer, given
+   after the packages were built, tested, packed and verified. No push, tag or timer publishes.
+2. **No key is stored.** nuget.org is told once that it trusts this workflow in this repository and this
+   environment. Each run then receives a key of its own that lives one hour. The mechanism is *Trusted
+   Publishing*: the repository proves its identity with a token signed by GitHub (OpenID Connect), as
+   the OpenSSF describes in *Trusted Publishers for All Package Repositories*.
+3. **Only the job that publishes can ask for a key.** The job that builds and runs the tests cannot, so
+   code that runs in a test cannot publish.
+4. **It publishes what it verified.** The packed files are frozen with their hashes, checked by
+   `eng/verify-release-artifacts.sh`, handed to the publishing job, and checked against the hashes again.
+5. **Continuous integration still never publishes.** `ci.yml` is unchanged, and `TemplateContractTests`
+   holds both workflows to these conditions.
+
+**What it costs.** The published bytes are built on GitHub's runner, not on a maintainer's machine: the
+record of a release is the workflow run. A maintainer who loses access to the GitHub account loses the
+ability to publish, and so does an attacker who does not have it.
+
+**What stays.** A published version is never built again (ADR-010). Without the choice to publish, a run
+of the workflow is a rehearsal, and consumes nothing.

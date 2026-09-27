@@ -40,7 +40,8 @@ Rosetta: the one that ships with .NET's gRPC tools is built for Intel.
 ## What maintainers do, and nobody else
 
 Versioning, packing and publication to nuget.org. The continuous-integration workflow builds and tests;
-it never publishes. See the `mpcore-release` skill in `.mpcore/skills`.
+it never publishes. Publication is a workflow of its own, started by hand and approved by a maintainer,
+with no stored key. See the `mpcore-release` skill in `.mpcore/skills`.
 
 ## Licence
 
