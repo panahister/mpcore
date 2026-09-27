@@ -4,6 +4,7 @@
     <Description>FluentValidation for MP Core commands: validators run as Wolverine middleware before the handler, and their failures become MP Core validation failures with field paths, rule codes and localizable message keys.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" VersionOverride="10.0.12" />
     <ProjectReference Include="../MPCore.Application/MPCore.Application.csproj" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
