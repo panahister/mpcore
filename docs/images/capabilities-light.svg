@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 668" width="960" height="668" role="img" aria-label="The twelve areas of MP Core&#x27;s capabilities">
+<title>The twelve areas of MP Core&#x27;s capabilities</title>
+<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1f2328" flood-opacity="0.06"/></filter></defs>
+<rect x="0.75" y="0.75" width="958.5" height="666.5" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+<text x="32" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1f2328" text-anchor="start">Everything MP Core does, in one picture</text>
+<text x="32" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#57606a" text-anchor="start">Twelve areas, twenty-eight packages. The catalogue names, for each line, the package that carries it and how it was proved.</text>
+<rect x="32" y="90" width="293" height="132" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap0"><rect x="32" y="90" width="293" height="132" rx="10"/></clipPath>
+<rect x="32" y="90" width="293" height="6" fill="#16a34a" clip-path="url(#cap0)"/>
+<text x="46" y="121" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#15803d" text-anchor="start">Domain model</text>
+<circle cx="50" cy="142.0" r="2.4" fill="#16a34a"/>
+<text x="60" y="146.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Aggregates, entities, value objects</text>
+<circle cx="50" cy="161.5" r="2.4" fill="#16a34a"/>
+<text x="60" y="165.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Business rules with a name and a code</text>
+<circle cx="50" cy="181.0" r="2.4" fill="#16a34a"/>
+<text x="60" y="185.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Domain and integration events</text>
+<circle cx="50" cy="200.5" r="2.4" fill="#16a34a"/>
+<text x="60" y="204.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">No framework in the domain</text>
+<rect x="333" y="90" width="293" height="132" rx="10" fill="#f0fdfa" stroke="#2dd4bf" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap1"><rect x="333" y="90" width="293" height="132" rx="10"/></clipPath>
+<rect x="333" y="90" width="293" height="6" fill="#0d9488" clip-path="url(#cap1)"/>
+<text x="347" y="121" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#0f766e" text-anchor="start">Use cases</text>
+<circle cx="351" cy="142.0" r="2.4" fill="#0d9488"/>
+<text x="361" y="146.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Commands and queries, apart</text>
+<circle cx="351" cy="161.5" r="2.4" fill="#0d9488"/>
+<text x="361" y="165.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">A handler is a static method</text>
+<circle cx="351" cy="181.0" r="2.4" fill="#0d9488"/>
+<text x="361" y="185.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Validation before the handler</text>
+<circle cx="351" cy="200.5" r="2.4" fill="#0d9488"/>
+<text x="361" y="204.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">A failure is a value, not an exception</text>
+<rect x="634" y="90" width="293" height="132" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap2"><rect x="634" y="90" width="293" height="132" rx="10"/></clipPath>
+<rect x="634" y="90" width="293" height="6" fill="#2563eb" clip-path="url(#cap2)"/>
+<text x="648" y="121" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#1d4ed8" text-anchor="start">One commit</text>
+<circle cx="652" cy="142.0" r="2.4" fill="#2563eb"/>
+<text x="662" y="146.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">The transaction is the framework&#x27;s</text>
+<circle cx="652" cy="161.5" r="2.4" fill="#2563eb"/>
+<text x="662" y="165.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Outbox: a message leaves if committed</text>
+<circle cx="652" cy="181.0" r="2.4" fill="#2563eb"/>
+<text x="662" y="185.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">A failure after a change rolls it back</text>
+<circle cx="652" cy="200.5" r="2.4" fill="#2563eb"/>
+<text x="662" y="204.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">A failed attempt takes its messages</text>
+<rect x="32" y="232" width="293" height="132" rx="10" fill="#fffbeb" stroke="#fbbf24" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap3"><rect x="32" y="232" width="293" height="132" rx="10"/></clipPath>
+<rect x="32" y="232" width="293" height="6" fill="#d97706" clip-path="url(#cap3)"/>
+<text x="46" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#b45309" text-anchor="start">Messaging</text>
+<circle cx="50" cy="284.0" r="2.4" fill="#d97706"/>
+<text x="60" y="288.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Apache Kafka and RabbitMQ</text>
+<circle cx="50" cy="303.5" r="2.4" fill="#d97706"/>
+<text x="60" y="307.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Durable local queues, no broker</text>
+<circle cx="50" cy="323.0" r="2.4" fill="#d97706"/>
+<text x="60" y="327.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Inbox: handled once</text>
+<circle cx="50" cy="342.5" r="2.4" fill="#d97706"/>
+<text x="60" y="346.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Retry, dead letters, giving up</text>
+<rect x="333" y="232" width="293" height="132" rx="10" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap4"><rect x="333" y="232" width="293" height="132" rx="10"/></clipPath>
+<rect x="333" y="232" width="293" height="6" fill="#7c3aed" clip-path="url(#cap4)"/>
+<text x="347" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#6d28d9" text-anchor="start">Twice is once</text>
+<circle cx="351" cy="284.0" r="2.4" fill="#7c3aed"/>
+<text x="361" y="288.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Idempotency-Key on a request</text>
+<circle cx="351" cy="303.5" r="2.4" fill="#7c3aed"/>
+<text x="361" y="307.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">The key commits with the change</text>
+<circle cx="351" cy="323.0" r="2.4" fill="#7c3aed"/>
+<text x="361" y="327.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">A repeat receives the first answer</text>
+<circle cx="351" cy="342.5" r="2.4" fill="#7c3aed"/>
+<text x="361" y="346.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Business keys, where a key is not enough</text>
+<rect x="634" y="232" width="293" height="132" rx="10" fill="#fff1f2" stroke="#fb7185" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap5"><rect x="634" y="232" width="293" height="132" rx="10"/></clipPath>
+<rect x="634" y="232" width="293" height="6" fill="#e11d48" clip-path="url(#cap5)"/>
+<text x="648" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#be123c" text-anchor="start">Security</text>
+<circle cx="652" cy="284.0" r="2.4" fill="#e11d48"/>
+<text x="662" y="288.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">A bearer-only resource server</text>
+<circle cx="652" cy="303.5" r="2.4" fill="#e11d48"/>
+<text x="662" y="307.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Deny by default</text>
+<circle cx="652" cy="323.0" r="2.4" fill="#e11d48"/>
+<text x="662" y="327.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Keycloak, or any OpenID Connect</text>
+<circle cx="652" cy="342.5" r="2.4" fill="#e11d48"/>
+<text x="662" y="346.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Behind a gateway, trusting little</text>
+<rect x="32" y="374" width="293" height="132" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap6"><rect x="32" y="374" width="293" height="132" rx="10"/></clipPath>
+<rect x="32" y="374" width="293" height="6" fill="#2563eb" clip-path="url(#cap6)"/>
+<text x="46" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#1d4ed8" text-anchor="start">Transport</text>
+<circle cx="50" cy="426.0" r="2.4" fill="#2563eb"/>
+<text x="60" y="430.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">REST, with Problem Details</text>
+<circle cx="50" cy="445.5" r="2.4" fill="#2563eb"/>
+<text x="60" y="449.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">gRPC, with a rich status</text>
+<circle cx="50" cy="465.0" r="2.4" fill="#2563eb"/>
+<text x="60" y="469.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Both, each on its own port</text>
+<circle cx="50" cy="484.5" r="2.4" fill="#2563eb"/>
+<text x="60" y="488.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">OpenAPI; versions by route</text>
+<rect x="333" y="374" width="293" height="132" rx="10" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap7"><rect x="333" y="374" width="293" height="132" rx="10"/></clipPath>
+<rect x="333" y="374" width="293" height="6" fill="#7c3aed" clip-path="url(#cap7)"/>
+<text x="347" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#6d28d9" text-anchor="start">Business audit</text>
+<circle cx="351" cy="426.0" r="2.4" fill="#7c3aed"/>
+<text x="361" y="430.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Who did what, from what to what</text>
+<circle cx="351" cy="445.5" r="2.4" fill="#7c3aed"/>
+<text x="361" y="449.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">In the commit of the change</text>
+<circle cx="351" cy="465.0" r="2.4" fill="#7c3aed"/>
+<text x="361" y="469.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">A refused attempt is kept</text>
+<circle cx="351" cy="484.5" r="2.4" fill="#7c3aed"/>
+<text x="361" y="488.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Secrets refused, identifiers masked</text>
+<rect x="634" y="374" width="293" height="132" rx="10" fill="#f0fdfa" stroke="#2dd4bf" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap8"><rect x="634" y="374" width="293" height="132" rx="10"/></clipPath>
+<rect x="634" y="374" width="293" height="6" fill="#0d9488" clip-path="url(#cap8)"/>
+<text x="648" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#0f766e" text-anchor="start">Language</text>
+<circle cx="652" cy="426.0" r="2.4" fill="#0d9488"/>
+<text x="662" y="430.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">No sentence is written in code</text>
+<circle cx="652" cy="445.5" r="2.4" fill="#0d9488"/>
+<text x="662" y="449.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">The caller&#x27;s language, both transports</text>
+<circle cx="652" cy="465.0" r="2.4" fill="#0d9488"/>
+<text x="662" y="469.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Fallback from fa-IR to fa to default</text>
+<circle cx="652" cy="484.5" r="2.4" fill="#0d9488"/>
+<text x="662" y="488.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Texts edited while it runs</text>
+<rect x="32" y="516" width="293" height="132" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap9"><rect x="32" y="516" width="293" height="132" rx="10"/></clipPath>
+<rect x="32" y="516" width="293" height="6" fill="#16a34a" clip-path="url(#cap9)"/>
+<text x="46" y="547" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#15803d" text-anchor="start">Data and cache</text>
+<circle cx="50" cy="568.0" r="2.4" fill="#16a34a"/>
+<text x="60" y="572.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">PostgreSQL with EF Core</text>
+<circle cx="50" cy="587.5" r="2.4" fill="#16a34a"/>
+<text x="60" y="591.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">TimescaleDB hypertables</text>
+<circle cx="50" cy="607.0" r="2.4" fill="#16a34a"/>
+<text x="60" y="611.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Memory, Redis, or both in two levels</text>
+<circle cx="50" cy="626.5" r="2.4" fill="#16a34a"/>
+<text x="60" y="630.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Paging and sorting, with limits</text>
+<rect x="333" y="516" width="293" height="132" rx="10" fill="#f6f8fa" stroke="#afb8c1" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap10"><rect x="333" y="516" width="293" height="132" rx="10"/></clipPath>
+<rect x="333" y="516" width="293" height="6" fill="#6e7781" clip-path="url(#cap10)"/>
+<text x="347" y="547" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#424a53" text-anchor="start">Operations</text>
+<circle cx="351" cy="568.0" r="2.4" fill="#6e7781"/>
+<text x="361" y="572.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Logs, traces, metrics: OpenTelemetry</text>
+<circle cx="351" cy="587.5" r="2.4" fill="#6e7781"/>
+<text x="361" y="591.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Secrets masked before they leave</text>
+<circle cx="351" cy="607.0" r="2.4" fill="#6e7781"/>
+<text x="361" y="611.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Alive and ready, REST and gRPC</text>
+<circle cx="351" cy="626.5" r="2.4" fill="#6e7781"/>
+<text x="361" y="630.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Resilient calls to other systems</text>
+<rect x="634" y="516" width="293" height="132" rx="10" fill="#fffbeb" stroke="#fbbf24" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="cap11"><rect x="634" y="516" width="293" height="132" rx="10"/></clipPath>
+<rect x="634" y="516" width="293" height="6" fill="#d97706" clip-path="url(#cap11)"/>
+<text x="648" y="547" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14.5" font-weight="700" fill="#b45309" text-anchor="start">Tooling</text>
+<circle cx="652" cy="568.0" r="2.4" fill="#d97706"/>
+<text x="662" y="572.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">One command generates a backend</text>
+<circle cx="652" cy="587.5" r="2.4" fill="#d97706"/>
+<text x="662" y="591.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Shape, transport and broker: 18 combinations</text>
+<circle cx="652" cy="607.0" r="2.4" fill="#d97706"/>
+<text x="662" y="611.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Ten skills for AI coding agents</text>
+<circle cx="652" cy="626.5" r="2.4" fill="#d97706"/>
+<text x="662" y="630.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#1f2328" text-anchor="start">Multi-tenancy from a token&#x27;s claim</text>
+</svg>
