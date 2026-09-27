@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="960" height="580" role="img" aria-label="The four layers of a backend, what you write and what MP Core provides">
+<title>The four layers of a backend, what you write and what MP Core provides</title>
+<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1f2328" flood-opacity="0.06"/></filter></defs>
+<rect x="0.75" y="0.75" width="958.5" height="578.5" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+<text x="32" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1f2328" text-anchor="start">Where your code lives, and what surrounds it</text>
+<text x="32" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#57606a" text-anchor="start">Dependencies point inward. The domain knows nothing of a database, a broker or HTTP.</text>
+<text x="232" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#16a34a" text-anchor="start" letter-spacing="1">YOU WRITE</text>
+<text x="580" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#2563eb" text-anchor="start" letter-spacing="1">MP CORE PROVIDES</text>
+<rect x="32" y="96" width="896" height="104" rx="12" fill="#f6f8fa" stroke="#afb8c1" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="row0"><rect x="32" y="96" width="896" height="104" rx="12"/></clipPath>
+<rect x="32" y="96" width="7" height="104" fill="#6e7781" clip-path="url(#row0)"/>
+<text x="58" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#424a53" text-anchor="start">API host</text>
+<text x="58" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">composition and transport</text>
+<text x="232" y="124" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Endpoints, gRPC services</text>
+<text x="232" y="144" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Policies: who may</text>
+<text x="232" y="164" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Routes and listeners</text>
+<line x1="560" y1="112" x2="560" y2="184" stroke="#afb8c1" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<text x="580" y="123.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Hosting</text>
+<text x="580" y="142.5" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Transport.Http  .Grpc</text>
+<text x="580" y="162.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Security.AspNetCore</text>
+<text x="580" y="181.5" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Observability</text>
+<rect x="32" y="212" width="896" height="104" rx="12" fill="#f0fdfa" stroke="#2dd4bf" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="row1"><rect x="32" y="212" width="896" height="104" rx="12"/></clipPath>
+<rect x="32" y="212" width="7" height="104" fill="#0d9488" clip-path="url(#row1)"/>
+<text x="58" y="256" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#0f766e" text-anchor="start">Application</text>
+<text x="58" y="276" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">use cases</text>
+<text x="232" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Commands and queries, one per file</text>
+<text x="232" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Validators, ports, process managers</text>
+<text x="232" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Reactions to events</text>
+<line x1="560" y1="228" x2="560" y2="300" stroke="#2dd4bf" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<text x="580" y="239.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Application</text>
+<text x="580" y="258.5" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Validation.FluentValidation</text>
+<text x="580" y="278.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Messaging.Abstractions</text>
+<text x="580" y="297.5" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Persistence.Abstractions</text>
+<rect x="32" y="328" width="896" height="104" rx="12" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="row2"><rect x="32" y="328" width="896" height="104" rx="12"/></clipPath>
+<rect x="32" y="328" width="7" height="104" fill="#16a34a" clip-path="url(#row2)"/>
+<text x="58" y="372" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#15803d" text-anchor="start">Domain</text>
+<text x="58" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">the business</text>
+<text x="232" y="356" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Aggregates and entities</text>
+<text x="232" y="376" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Value objects</text>
+<text x="232" y="396" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Business rules with a name</text>
+<text x="232" y="416" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Domain and integration events</text>
+<line x1="560" y1="344" x2="560" y2="416" stroke="#4ade80" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<text x="580" y="355.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Domain</text>
+<text x="580" y="374.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start"></text>
+<text x="580" y="394.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Nothing else. No provider,</text>
+<text x="580" y="413.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">no framework, no attribute.</text>
+<rect x="32" y="444" width="896" height="104" rx="12" fill="#fffbeb" stroke="#fbbf24" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="row3"><rect x="32" y="444" width="896" height="104" rx="12"/></clipPath>
+<rect x="32" y="444" width="7" height="104" fill="#d97706" clip-path="url(#row3)"/>
+<text x="58" y="488" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#b45309" text-anchor="start">Infrastructure</text>
+<text x="58" y="508" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">adapters</text>
+<text x="232" y="472" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Mappings and migrations</text>
+<text x="232" y="492" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Repositories, read models</text>
+<text x="232" y="512" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1f2328" text-anchor="start">Gateways to other systems</text>
+<line x1="560" y1="460" x2="560" y2="532" stroke="#fbbf24" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<text x="580" y="471.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Persistence.EntityFrameworkCore</text>
+<text x="580" y="490.5" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Messaging.Wolverine  .Kafka  .RabbitMQ</text>
+<text x="580" y="510.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Caching.*   MPCore.Audit.*</text>
+<text x="580" y="529.5" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#1d4ed8" text-anchor="start">MPCore.Idempotency   MPCore.Resilience.Http</text>
+<path d="M 92 186 L 92 226" fill="none" stroke="#8c959f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 89.0 219.7 L 92 226 L 95.0 219.7" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 92 302 L 92 342" fill="none" stroke="#8c959f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 89.0 335.7 L 92 342 L 95.0 335.7" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 92 458 L 92 418" fill="none" stroke="#8c959f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 95.0 424.3 L 92 418 L 89.0 424.3" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
