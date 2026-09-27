@@ -37,6 +37,10 @@ TFM=net10.0
 TEMPLATE_CONTENT="content/content/MPCore.Backend"
 
 FAILURES=0
+
+# sed in place, the same on macOS and on Linux. BSD sed wants a suffix after -i and GNU sed wants none
+# unless it is attached, so the one form both accept is an attached suffix; the copy it leaves is removed.
+sedi() { local file="${!#}"; sed -i.sedi "$@" && rm -f "$file.sedi"; }
 ok()   { printf '  PASS  %s\n' "$*"; }
 bad()  { printf '  FAIL  %s\n' "$*"; FAILURES=$((FAILURES + 1)); }
 info() { printf '  INFO  %s\n' "$*"; }
@@ -399,7 +403,7 @@ self_test() {
   # Case 2 refreezes the hashes, so it passes the hash gate and can only be caught by content.
   cp -R "$D" "$S/case2"; local W="$S/work"; mkdir -p "$W"
   ( cd "$W" && unzip -qo "$S/case2/MPCore.Templates.$V.nupkg" )
-  sed -i '' \
+  sedi \
     -e 's|builder.Services.AddMPCoreAuthorization();|builder.Services.AddMPCoreAuthorization(options =>\n    options.AllowAnonymousHealthEndpoints = allowAnonymousHealthEndpoints);|' \
     -e 's|RequireListenerPort(grpcPort)|RequireHost(grpcHost)|g' \
     "$W/$TEMPLATE_CONTENT/src/MPCore.Backend.Api/Program.cs"
@@ -425,7 +429,7 @@ self_test() {
   # Case 5: a dependency left pinned to a superseded cohort.
   cp -R "$D" "$S/case5"; local W5="$S/work5"; mkdir -p "$W5"
   ( cd "$W5" && unzip -qo "$S/case5/MPCore.Hosting.$V.nupkg" )
-  sed -i '' "s|<dependency id=\"MPCore.Application\" version=\"$V\"|<dependency id=\"MPCore.Application\" version=\"0.2.0-alpha.2\"|" "$W5/MPCore.Hosting.nuspec"
+  sedi "s|<dependency id=\"MPCore.Application\" version=\"$V\"|<dependency id=\"MPCore.Application\" version=\"0.2.0-alpha.2\"|" "$W5/MPCore.Hosting.nuspec"
   rm -f "$S/case5/MPCore.Hosting.$V.nupkg"
   ( cd "$W5" && zip -qr "$S/case5/MPCore.Hosting.$V.nupkg" . )
   ( cd "$S/case5" && rm -f SHA256SUMS.txt && for f in *.nupkg *.snupkg; do shasum -a 256 "$f"; done | sort -k2 > SHA256SUMS.txt )
@@ -446,7 +450,7 @@ self_test() {
   # 7: an extra anonymous endpoint hidden by putting a second call on an existing line.
   cp -R "$D" "$S/case7"; local W7="$S/work7"; mkdir -p "$W7"
   ( cd "$W7" && unzip -qo "$S/case7/MPCore.Templates.$V.nupkg" )
-  sed -i '' 's|    livenessEndpoint.AllowAnonymous();|    livenessEndpoint.AllowAnonymous(); backdoorEndpoint.AllowAnonymous();|' \
+  sedi 's|    livenessEndpoint.AllowAnonymous();|    livenessEndpoint.AllowAnonymous(); backdoorEndpoint.AllowAnonymous();|' \
     "$W7/$TEMPLATE_CONTENT/src/MPCore.Backend.Api/Program.cs"
   rm -f "$S/case7/MPCore.Templates.$V.nupkg"
   ( cd "$W7" && zip -qr "$S/case7/MPCore.Templates.$V.nupkg" . )
@@ -456,7 +460,7 @@ self_test() {
   # 8: security registrations commented out - satisfies a naive grep, does nothing at runtime.
   cp -R "$D" "$S/case8"; local W8="$S/work8"; mkdir -p "$W8"
   ( cd "$W8" && unzip -qo "$S/case8/MPCore.Templates.$V.nupkg" )
-  sed -i '' -e 's|^app.UseAuthorization();|// app.UseAuthorization();|' \
+  sedi -e 's|^app.UseAuthorization();|// app.UseAuthorization();|' \
             -e 's|^app.UseTransportPortSeparation();|// app.UseTransportPortSeparation();|' \
     "$W8/$TEMPLATE_CONTENT/src/MPCore.Backend.Api/Program.cs"
   rm -f "$S/case8/MPCore.Templates.$V.nupkg"
@@ -467,7 +471,7 @@ self_test() {
   # 9: manifest keeps its line count via a duplicate while an artifact goes unlisted and is swapped.
   cp -R "$D" "$S/case9"
   ( cd "$S/case9" && eval "$refreeze" \
-      && sed -i '' "s|^.*  MPCore.Observability.$V.snupkg$|$(head -1 SHA256SUMS.txt)|" SHA256SUMS.txt \
+      && sedi "s|^.*  MPCore.Observability.$V.snupkg$|$(head -1 SHA256SUMS.txt)|" SHA256SUMS.txt \
       && echo "garbage" > "MPCore.Observability.$V.snupkg" )
   assert_case "case 9 (manifest does not cover the directory)" "$S/case9" "$V" "does not match the directory" || failed=1
 
@@ -478,7 +482,7 @@ self_test() {
   # 10: an adapter stripped of its frontmatter is invisible to both runtimes.
   cp -R "$D" "$S/case10"; local W10="$S/work10"; mkdir -p "$W10"
   ( cd "$W10" && unzip -qo "$S/case10/MPCore.Templates.$V.nupkg" )
-  sed -i '' '1,/^---$/d' "$W10/$TC/.claude/skills/mpcore-apply-security/SKILL.md"
+  sedi '1,/^---$/d' "$W10/$TC/.claude/skills/mpcore-apply-security/SKILL.md"
   rm -f "$S/case10/MPCore.Templates.$V.nupkg"
   ( cd "$W10" && zip -qr "$S/case10/MPCore.Templates.$V.nupkg" . )
   ( cd "$S/case10" && eval "$refreeze" )
@@ -487,7 +491,7 @@ self_test() {
   # 11: a link that resolves, but to another skill's body.
   cp -R "$D" "$S/case11"; local W11="$S/work11"; mkdir -p "$W11"
   ( cd "$W11" && unzip -qo "$S/case11/MPCore.Templates.$V.nupkg" )
-  sed -i '' 's|mpcore-apply-security/SKILL.md|mpcore-apply-observability/SKILL.md|g' \
+  sedi 's|mpcore-apply-security/SKILL.md|mpcore-apply-observability/SKILL.md|g' \
     "$W11/$TC/.agents/skills/mpcore-apply-security/SKILL.md"
   rm -f "$S/case11/MPCore.Templates.$V.nupkg"
   ( cd "$W11" && zip -qr "$S/case11/MPCore.Templates.$V.nupkg" . )
