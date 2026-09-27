@@ -8,3 +8,10 @@ Wolverine and JasperFx (MIT), Entity Framework Core and ASP.NET Core (MIT), Npgs
 FluentValidation (Apache-2.0), OpenTelemetry .NET (Apache-2.0), Polly (BSD-3-Clause), gRPC for .NET
 (Apache-2.0), StackExchange.Redis (MIT), Confluent.Kafka (Apache-2.0), RabbitMQ .NET client
 (Apache-2.0 / MPL-2.0).
+
+The pictures in this repository name products by their marks: Apache APISIX, Apache Kafka, RabbitMQ,
+PostgreSQL, TimescaleDB, Redis, Keycloak, OpenID, OpenTelemetry, Jaeger, Prometheus, Grafana, .NET, NuGet,
+Docker, GitHub Actions, WSO2, Claude and Codex. Each name and mark belongs to its owner. They are used only
+to say which product is meant; no owner endorses MP Core or is affiliated with it. The icons are from
+Simple Icons (https://simpleicons.org), whose files are dedicated to the public domain under CC0 1.0; the
+marks they depict are not.

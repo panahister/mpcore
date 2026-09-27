@@ -10,3 +10,6 @@ artifacts/
 *.nupkg
 *.snupkg
 .DS_Store
+
+# ---- python, for the scripts that draw the diagrams ----
+__pycache__/
