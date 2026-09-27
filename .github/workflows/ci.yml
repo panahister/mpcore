@@ -50,8 +50,8 @@ jobs:
       MPCORE_TEST_TIMESCALE: Host=localhost;Port=5433;Database=mpcore_it;Username=mpcore;Password=mpcore
       MPCORE_TEST_REDIS: localhost:6379
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
       - name: Restore (locked)
@@ -64,7 +64,7 @@ jobs:
         run: dotnet pack MPCore.sln --configuration Release --no-build --output artifacts/candidate -p:VersionSuffix=ci.${{ github.run_number }}
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: "**/results.trx"

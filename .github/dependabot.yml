@@ -1,18 +1,10 @@
-# Proposes updates once a month. A proposal is a pull request: CI runs on it, and a person merges it.
+# Proposes updates of the workflow's actions once a month. A proposal is a pull request: CI runs on it,
+# and a person merges it.
+#
+# Package versions are not proposed here. They are chosen together, tested together and, in MP Core,
+# asserted by tests and frozen in lock files: moving one is a maintainer's decision.
 version: 2
 updates:
-  - package-ecosystem: nuget
-    directory: "/"
-    schedule:
-      interval: monthly
-    open-pull-requests-limit: 5
-    groups:
-      microsoft:
-        patterns: ["Microsoft.*", "System.*"]
-      opentelemetry:
-        patterns: ["OpenTelemetry*"]
-      wolverine:
-        patterns: ["WolverineFx*", "JasperFx*"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
