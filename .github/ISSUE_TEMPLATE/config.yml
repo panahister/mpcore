@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: A question about using MP Core
+    url: https://github.com/panahister/mpcore/discussions
+    about: Ask here. An issue is for a defect or a proposal.
+  - name: A complete example
+    url: https://github.com/panahister/mpcore-storefront-sample
+    about: The Storefront sample shows every capability in running code.

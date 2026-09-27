@@ -1,0 +1,10 @@
+MP Core
+Copyright (c) The MP Core contributors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It builds on, and is distributed separately from, these open-source projects, each under its own licence:
+Wolverine and JasperFx (MIT), Entity Framework Core and ASP.NET Core (MIT), Npgsql (PostgreSQL Licence),
+FluentValidation (Apache-2.0), OpenTelemetry .NET (Apache-2.0), Polly (BSD-3-Clause), gRPC for .NET
+(Apache-2.0), StackExchange.Redis (MIT), Confluent.Kafka (Apache-2.0), RabbitMQ .NET client
+(Apache-2.0 / MPL-2.0).

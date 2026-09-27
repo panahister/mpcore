@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="mpcore.failure" xml:space="preserve">
+    <value>The request could not be completed.</value>
+  </data>
+  <data name="mpcore.legacy_failure" xml:space="preserve">
+    <value>The request could not be completed.</value>
+  </data>
+  <data name="mpcore.unexpected_failure" xml:space="preserve">
+    <value>An unexpected error occurred. Please try again later.</value>
+  </data>
+  <data name="mpcore.malformed_request" xml:space="preserve">
+    <value>The request is malformed.</value>
+  </data>
+  <data name="mpcore.request_cancelled" xml:space="preserve">
+    <value>The request was cancelled.</value>
+  </data>
+  <data name="mpcore.deadline_exceeded" xml:space="preserve">
+    <value>The request took too long and was stopped.</value>
+  </data>
+  <data name="mpcore.authentication_required" xml:space="preserve">
+    <value>Sign in to continue.</value>
+  </data>
+  <data name="mpcore.permission_denied" xml:space="preserve">
+    <value>You do not have permission to do this.</value>
+  </data>
+  <data name="mpcore.grpc_failure" xml:space="preserve">
+    <value>A call to another service failed.</value>
+  </data>
+  <data name="mpcore.business_rule_violation" xml:space="preserve">
+    <value>The request breaks a business rule.</value>
+  </data>
+  <data name="mpcore.querying.sort_field_not_allowed" xml:space="preserve">
+    <value>The results cannot be sorted by this field.</value>
+  </data>
+  <data name="mpcore.validation_failed" xml:space="preserve">
+    <value>Some values are invalid.</value>
+  </data>
+  <data name="validation.not_null" xml:space="preserve">
+    <value>This value is required.</value>
+  </data>
+  <data name="validation.not_empty" xml:space="preserve">
+    <value>This value is required.</value>
+  </data>
+  <data name="validation.null" xml:space="preserve">
+    <value>This value must be empty.</value>
+  </data>
+  <data name="validation.empty" xml:space="preserve">
+    <value>This value must be empty.</value>
+  </data>
+  <data name="validation.length" xml:space="preserve">
+    <value>Must be between {min_length} and {max_length} characters.</value>
+  </data>
+  <data name="validation.minimum_length" xml:space="preserve">
+    <value>Must be at least {min_length} characters.</value>
+  </data>
+  <data name="validation.maximum_length" xml:space="preserve">
+    <value>Must be at most {max_length} characters.</value>
+  </data>
+  <data name="validation.exact_length" xml:space="preserve">
+    <value>Must be exactly {max_length} characters.</value>
+  </data>
+  <data name="validation.less_than" xml:space="preserve">
+    <value>Must be less than {comparison_value}.</value>
+  </data>
+  <data name="validation.less_than_or_equal" xml:space="preserve">
+    <value>Must be at most {comparison_value}.</value>
+  </data>
+  <data name="validation.greater_than" xml:space="preserve">
+    <value>Must be greater than {comparison_value}.</value>
+  </data>
+  <data name="validation.greater_than_or_equal" xml:space="preserve">
+    <value>Must be at least {comparison_value}.</value>
+  </data>
+  <data name="validation.equal" xml:space="preserve">
+    <value>This value is not the expected one.</value>
+  </data>
+  <data name="validation.not_equal" xml:space="preserve">
+    <value>This value is not allowed.</value>
+  </data>
+  <data name="validation.inclusive_between" xml:space="preserve">
+    <value>Must be between {from} and {to}.</value>
+  </data>
+  <data name="validation.exclusive_between" xml:space="preserve">
+    <value>Must be between {from} and {to}, exclusive.</value>
+  </data>
+  <data name="validation.regular_expression" xml:space="preserve">
+    <value>This value has an invalid format.</value>
+  </data>
+  <data name="validation.email" xml:space="preserve">
+    <value>This is not a valid email address.</value>
+  </data>
+  <data name="validation.credit_card" xml:space="preserve">
+    <value>This is not a valid card number.</value>
+  </data>
+  <data name="validation.enum" xml:space="preserve">
+    <value>This value is not one of the allowed options.</value>
+  </data>
+  <data name="validation.string_enum" xml:space="preserve">
+    <value>This value is not one of the allowed options.</value>
+  </data>
+  <data name="validation.scale_precision" xml:space="preserve">
+    <value>Must have at most {precision} digits, {scale} of them after the decimal point.</value>
+  </data>
+  <data name="validation.predicate" xml:space="preserve">
+    <value>This value is invalid.</value>
+  </data>
+  <data name="validation.async_predicate" xml:space="preserve">
+    <value>This value is invalid.</value>
+  </data>
+  <data name="mpcore.idempotency.key_required" xml:space="preserve">
+    <value>This request needs an Idempotency-Key header.</value>
+  </data>
+  <data name="mpcore.idempotency.key_invalid" xml:space="preserve">
+    <value>The idempotency key must be 1 to 255 visible ASCII characters.</value>
+  </data>
+  <data name="mpcore.idempotency.key_reused" xml:space="preserve">
+    <value>This idempotency key was already used for a different request.</value>
+  </data>
+</root>

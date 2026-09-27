@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../MPCore.Backend.Domain/MPCore.Backend.Domain.csproj" />
+    <PackageReference Include="MPCore.Application" Version="$(MPCoreVersion)" />
+    <!-- Abstraction packages only. A handler declares its ports here: repository and unit of work,
+         message publisher, current actor, tenant. Entity Framework, Npgsql, Wolverine, a broker SDK
+         or anything from Infrastructure must never reach the Application layer. -->
+    <PackageReference Include="MPCore.Persistence.Abstractions" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Messaging.Abstractions" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Security.Abstractions" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Tenancy.Abstractions" Version="$(MPCoreVersion)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.11" />
+  </ItemGroup>
+</Project>

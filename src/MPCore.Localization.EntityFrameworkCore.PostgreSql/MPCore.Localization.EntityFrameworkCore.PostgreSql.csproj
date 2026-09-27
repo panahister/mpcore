@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Localization.EntityFrameworkCore.PostgreSql</PackageId>
+    <Description>EF Core and PostgreSQL store for translations an administrator edits at run time: a table in the product's own context, a store port that joins the handler's transaction, and an override source that every instance refreshes.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MPCore.Application/MPCore.Application.csproj" />
+    <ProjectReference Include="../MPCore.Localization/MPCore.Localization.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <!-- Pinned with EF Core, like every MP Core package that references it (see the audit package). -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,59 @@
+<Project>
+  <Import Project="../Directory.Build.props" />
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <!-- Authored XML documentation must actually ship inside every package. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <VersionPrefix>0.9.0</VersionPrefix>
+    <Authors>Mehdi Panahi</Authors>
+    <Copyright>Copyright (c) The MP Core contributors</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <Description>Reusable backend foundation for DDD-oriented .NET services and modular monoliths.</Description>
+    <PackageTags>ddd;grpc;postgresql;wolverine;opentelemetry</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/panahister/mpcore</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/panahister/mpcore</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <!--
+    API compatibility is checked against a baseline cohort when one is present in artifacts/packages.
+    0.9.0 is the first version published to nuget.org, so until it is published there is no baseline and
+    validation is skipped, loudly. After it is published and the version here has moved on, copy the
+    published cohort into artifacts/packages: every later version is then compared with 0.9.0. What
+    changed between the last internal prerelease and 0.9.0 is in docs/releases/0.9.0.md.
+
+    The baseline packages live in the git-ignored artifacts/packages output folder,
+    so they are unavailable in a fresh clone. Requesting the baseline
+    unconditionally makes a cold-cache restore fail with NU1101. The condition therefore tests for
+    the specific baseline package of the project being built, not merely for the folder: a folder
+    that exists but has been cleaned would otherwise pass the guard and still fail restore. When the
+    baseline is genuinely absent the build logs a high-importance message, because a validation gate
+    that disables itself in silence is indistinguishable from one that passed. Once the cohort is
+    published to a real feed this condition should be removed so validation is always on.
+
+    The message is silent in one case only: while the version being built is the baseline itself. A
+    version has nothing to be compared with but its predecessors, so nothing is being skipped.
+  -->
+  <PropertyGroup>
+    <MPCoreBaselineVersion>0.9.0</MPCoreBaselineVersion>
+    <MPCoreBaselinePackagePath>$(MSBuildThisFileDirectory)../artifacts/packages/$(MSBuildProjectName).$(MPCoreBaselineVersion).nupkg</MPCoreBaselinePackagePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists('$(MPCoreBaselinePackagePath)')">
+    <PackageValidationBaselineVersion>$(MPCoreBaselineVersion)</PackageValidationBaselineVersion>
+  </PropertyGroup>
+  <Target Name="WarnWhenMPCoreApiBaselineIsMissing"
+          BeforeTargets="Build"
+          Condition="'$(IsPackable)' == 'true' AND '$(VersionPrefix)' != '$(MPCoreBaselineVersion)' AND !Exists('$(MPCoreBaselinePackagePath)')">
+    <Message Importance="high"
+             Text="MP Core: API compatibility validation is SKIPPED for $(MSBuildProjectName); baseline $(MPCoreBaselineVersion) was not found at $(MPCoreBaselinePackagePath)." />
+  </Target>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)../README.md"
+          Pack="true"
+          PackagePath="README.md" />
+  </ItemGroup>
+</Project>

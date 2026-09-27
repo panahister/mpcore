@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "MPCore.Transport.Grpc.Tests";
+
+package mpcore.failure_test.v1;
+
+service FailureProbe {
+  rpc Fail (FailureRequest) returns (FailureReply);
+  rpc StreamThenFail (FailureRequest) returns (stream FailureReply);
+}
+
+message FailureRequest {
+  string mode = 1;
+}
+
+message FailureReply {
+  string value = 1;
+}

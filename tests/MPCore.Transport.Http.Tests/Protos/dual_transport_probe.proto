@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option csharp_namespace = "MPCore.Transport.Http.Tests.Probes";
+
+package mpcore.transport.tests.v1;
+
+service DualTransportProbe {
+  rpc GetStatus (ProbeRequest) returns (ProbeReply);
+}
+
+message ProbeRequest {}
+
+message ProbeReply {
+  string transport = 1;
+}

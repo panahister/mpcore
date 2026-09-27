@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <!--#if (shape == "service") -->
+    <ProjectReference Include="../MPCore.Backend.Application/MPCore.Backend.Application.csproj" />
+    <!--#else -->
+    <!-- One reference per bounded-context module, so AppDbContext can apply its mappings:
+         <ProjectReference Include="../Modules/Billing/MPCore.Backend.Modules.Billing/MPCore.Backend.Modules.Billing.csproj" />
+         See src/Modules/README.md. -->
+    <!--#endif -->
+    <!--#if (includeMemoryCache) -->
+    <PackageReference Include="MPCore.Caching.Memory" Version="$(MPCoreVersion)" />
+    <!--#endif -->
+    <!--#if (includeRedisCache) -->
+    <PackageReference Include="MPCore.Caching.Redis" Version="$(MPCoreVersion)" />
+    <!--#endif -->
+    <!--#if (includeHybridCache) -->
+    <PackageReference Include="MPCore.Caching.Hybrid" Version="$(MPCoreVersion)" />
+    <!--#endif -->
+    <PackageReference Include="MPCore.Persistence.EntityFrameworkCore.PostgreSql" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Messaging.Wolverine" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Resilience.Http" Version="$(MPCoreVersion)" />
+    <!--#if (includeTimescale) -->
+    <PackageReference Include="MPCore.Persistence.Timescale" Version="$(MPCoreVersion)" />
+    <!--#endif -->
+    <!--#if (includeBusinessAudit) -->
+    <PackageReference Include="MPCore.Audit.EntityFrameworkCore.PostgreSql" Version="$(MPCoreVersion)" />
+    <!--#endif -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.11" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+  </ItemGroup>
+</Project>

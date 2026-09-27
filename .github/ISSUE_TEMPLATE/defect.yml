@@ -1,0 +1,33 @@
+name: Defect
+description: Something in MP Core does not do what its documentation says
+labels: [defect]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: The smallest code that shows it
+      description: A handler, a test, or the options you passed to `mpcore new backend`.
+      render: csharp
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: MP Core version
+      placeholder: 0.9.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: .NET SDK and operating system
+      placeholder: 10.0.400, macOS 15 on Apple Silicon
+  - type: markdown
+    attributes:
+      value: A vulnerability is reported privately. See SECURITY.md.

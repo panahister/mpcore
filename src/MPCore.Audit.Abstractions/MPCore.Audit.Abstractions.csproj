@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Audit.Abstractions</PackageId>
+    <Description>Business audit contracts: entity-change and business-action records, capture policy with allowlisting and masking, sink and query ports. BCL-only.</Description>
+  </PropertyGroup>
+</Project>

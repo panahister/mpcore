@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <ProjectReference Include="../../src/MPCore.Localization/MPCore.Localization.csproj" />
+    <ProjectReference Include="../../src/MPCore.Localization.EntityFrameworkCore.PostgreSql/MPCore.Localization.EntityFrameworkCore.PostgreSql.csproj" />
+    <ProjectReference Include="../../src/MPCore.Transport.Http/MPCore.Transport.Http.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

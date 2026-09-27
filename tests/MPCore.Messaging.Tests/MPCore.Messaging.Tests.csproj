@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- WebApplicationBuilder, exactly as a generated host builds itself. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <ProjectReference Include="../../src/MPCore.Messaging.Wolverine/MPCore.Messaging.Wolverine.csproj" />
+    <ProjectReference Include="../../src/MPCore.Validation.FluentValidation/MPCore.Validation.FluentValidation.csproj" />
+    <!-- Test-only: the port-based transaction tests need a real MPCoreDbContext and the IClock port. -->
+    <ProjectReference Include="../../src/MPCore.Application/MPCore.Application.csproj" />
+    <ProjectReference Include="../../src/MPCore.Persistence.EntityFrameworkCore.PostgreSql/MPCore.Persistence.EntityFrameworkCore.PostgreSql.csproj" />
+    <ProjectReference Include="../../src/MPCore.Messaging.Wolverine.Kafka/MPCore.Messaging.Wolverine.Kafka.csproj" />
+    <ProjectReference Include="../../src/MPCore.Messaging.Wolverine.RabbitMQ/MPCore.Messaging.Wolverine.RabbitMQ.csproj" />
+  </ItemGroup>
+</Project>

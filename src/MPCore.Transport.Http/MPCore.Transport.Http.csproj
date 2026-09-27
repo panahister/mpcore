@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Transport.Http</PackageId>
+    <RootNamespace>MPCore.Transport.Http</RootNamespace>
+    <Description>RFC 9457 problem-details rendering of MP Core transport-neutral failures over HTTP.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../MPCore.Application/MPCore.Application.csproj" />
+    <ProjectReference Include="../MPCore.Domain/MPCore.Domain.csproj" />
+    <!-- Microsoft.Extensions.Options and Microsoft.Extensions.Logging.Abstractions arrive with the
+         Microsoft.AspNetCore.App framework reference and must not be referenced explicitly. -->
+  </ItemGroup>
+</Project>

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" />
+    <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Grpc.Tools" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <ProjectReference Include="../../src/MPCore.Application/MPCore.Application.csproj" />
+    <ProjectReference Include="../../src/MPCore.Security.AspNetCore/MPCore.Security.AspNetCore.csproj" />
+    <ProjectReference Include="../../src/MPCore.Transport.Grpc/MPCore.Transport.Grpc.csproj" />
+    <ProjectReference Include="../../src/MPCore.Transport.Http/MPCore.Transport.Http.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos/dual_transport_probe.proto" GrpcServices="Both" />
+  </ItemGroup>
+  <!--
+    The generated host's transport guards are compiled from the shipped template source, so these
+    tests exercise the exact file a consumer receives rather than a copy that can drift from it.
+  -->
+  <ItemGroup>
+    <!-- Named one by one, not globbed: these are the shipped transport guards this suite exercises.
+         Other files under Hosting/ are host composition and reference the generated Application and
+         Infrastructure projects, which do not exist here. -->
+    <Compile Include="../../tools/MPCore.Templates/content/MPCore.Backend/src/MPCore.Backend.Api/Hosting/TransportEndpointGuard.cs"
+             LinkBase="TemplateHosting" />
+    <Compile Include="../../tools/MPCore.Templates/content/MPCore.Backend/src/MPCore.Backend.Api/Hosting/TransportPortSeparation.cs"
+             LinkBase="TemplateHosting" />
+    <Compile Include="../../tools/MPCore.Templates/content/MPCore.Backend/src/MPCore.Backend.Api/Hosting/DeveloperEndpoints.cs"
+             LinkBase="TemplateHosting" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,313 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Mehdi Panahi",
+  "classifications": [
+    "Web",
+    "API",
+    "DDD",
+    "MPCore"
+  ],
+  "identity": "MPCore.Templates.Backend",
+  "name": "MP Core DDD Backend",
+  "shortName": "mpcore-backend",
+  "sourceName": "MPCore.Backend",
+  "preferNameDirectory": false,
+  "symbols": {
+    "organization": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "MPCore",
+      "replaces": "MPCORE_ORGANIZATION"
+    },
+    "component": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "Backend",
+      "replaces": "MPCORE_COMPONENT"
+    },
+    "organizationLower": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "organization",
+        "toLower": true
+      },
+      "replaces": "MPCOREORGLOWER"
+    },
+    "componentLower": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "component",
+        "toLower": true
+      },
+      "replaces": "MPCORECOMPONENTLOWER"
+    },
+    "shape": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "service",
+      "choices": [
+        {
+          "choice": "service",
+          "description": "Independent service boundary"
+        },
+        {
+          "choice": "modular-monolith",
+          "description": "Modular-monolith host with bounded-context modules"
+        }
+      ],
+      "replaces": "MPCORE_SHAPE_LABEL"
+    },
+    "messaging": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "kafka",
+      "choices": [
+        {
+          "choice": "kafka",
+          "description": "Kafka integration-event transport"
+        },
+        {
+          "choice": "rabbitmq",
+          "description": "RabbitMQ command/work-queue transport"
+        },
+        {
+          "choice": "none",
+          "description": "No external broker adapter"
+        }
+      ],
+      "replaces": "MPCORE_MESSAGING_LABEL"
+    },
+    "businessAudit": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "none",
+      "choices": [
+        {
+          "choice": "none",
+          "description": "No business audit trail"
+        },
+        {
+          "choice": "postgresql",
+          "description": "Entity-change and business-action audit in PostgreSQL, same transaction as the change"
+        }
+      ],
+      "replaces": "MPCORE_BUSINESS_AUDIT_LABEL"
+    },
+    "includeBusinessAudit": {
+      "type": "computed",
+      "value": "(businessAudit == \"postgresql\")"
+    },
+    "cache": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "memory",
+      "choices": [
+        {
+          "choice": "none",
+          "description": "No cache adapter registered"
+        },
+        {
+          "choice": "memory",
+          "description": "In-process cache, not shared between instances"
+        },
+        {
+          "choice": "redis",
+          "description": "Redis cache shared by all instances"
+        },
+        {
+          "choice": "hybrid",
+          "description": "In-process first, Redis second, with stampede protection"
+        }
+      ],
+      "replaces": "MPCORE_CACHE_LABEL"
+    },
+    "includeMemoryCache": {
+      "type": "computed",
+      "value": "(cache == \"memory\")"
+    },
+    "includeRedisCache": {
+      "type": "computed",
+      "value": "(cache == \"redis\")"
+    },
+    "includeHybridCache": {
+      "type": "computed",
+      "value": "(cache == \"hybrid\")"
+    },
+    "includeCacheConnection": {
+      "type": "computed",
+      "value": "(cache == \"redis\" || cache == \"hybrid\")"
+    },
+    "timeseries": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "none",
+      "choices": [
+        {
+          "choice": "none",
+          "description": "No time-series helpers"
+        },
+        {
+          "choice": "timescale",
+          "description": "TimescaleDB migration helpers (hypertables, retention, compression)"
+        }
+      ],
+      "replaces": "MPCORE_TIMESERIES_LABEL"
+    },
+    "includeTimescale": {
+      "type": "computed",
+      "value": "(timeseries == \"timescale\")"
+    },
+    "transport": {
+      "type": "parameter",
+      "datatype": "choice",
+      "isRequired": true,
+      "choices": [
+        {
+          "choice": "grpc",
+          "description": "Native gRPC over HTTP/2 only"
+        },
+        {
+          "choice": "rest",
+          "description": "HTTP/JSON REST only"
+        },
+        {
+          "choice": "both",
+          "description": "gRPC and REST from one host"
+        }
+      ],
+      "replaces": "MPCORE_TRANSPORT_LABEL"
+    },
+    "includeGrpc": {
+      "type": "computed",
+      "value": "(transport == \"grpc\" || transport == \"both\")"
+    },
+    "includeRest": {
+      "type": "computed",
+      "value": "(transport == \"rest\" || transport == \"both\")"
+    },
+    "templateVersion": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "0.9.0",
+      "replaces": "MPCORE_TEMPLATE_VERSION"
+    },
+    "aiTooling": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "both",
+      "choices": [
+        {
+          "choice": "both",
+          "description": "Codex and Claude Code entry points and skills"
+        },
+        {
+          "choice": "codex",
+          "description": "Codex entry point and skills only"
+        },
+        {
+          "choice": "claude",
+          "description": "Claude Code entry point and skills only"
+        },
+        {
+          "choice": "none",
+          "description": "No AI tooling files"
+        }
+      ],
+      "replaces": "MPCORE_AI_TOOLING"
+    },
+    "includeCodex": {
+      "type": "computed",
+      "value": "(aiTooling == \"codex\" || aiTooling == \"both\")"
+    },
+    "includeClaude": {
+      "type": "computed",
+      "value": "(aiTooling == \"claude\" || aiTooling == \"both\")"
+    },
+    "includeAiSkills": {
+      "type": "computed",
+      "value": "(aiTooling != \"none\")"
+    },
+    "mpcoreVersion": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "0.9.0",
+      "replaces": "MPCORE_VERSION"
+    },
+    "securityAuthority": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "https://identity.invalid/realms/replace-me",
+      "replaces": "https://identity.invalid/realms/replace-me"
+    },
+    "securityAudience": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "replace-me",
+      "replaces": "MPCORE_SECURITY_AUDIENCE"
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "(shape == \"service\")",
+          "exclude": [
+            "src/Modules/**"
+          ]
+        },
+        {
+          "condition": "(shape == \"modular-monolith\")",
+          "exclude": ["src/MPCore.Backend.Domain/**", "src/MPCore.Backend.Application/**"]
+        },
+        {
+          "condition": "(!includeGrpc)",
+          "exclude": [
+            "src/MPCore.Backend.Api/Protos/**",
+            "src/MPCore.Backend.Api/Grpc/**"
+          ]
+        },
+        {
+          "condition": "(!includeRest)",
+          "exclude": [
+            "src/MPCore.Backend.Api/Rest/**"
+          ]
+        },
+        {
+          "condition": "(transport != \"both\")",
+          "exclude": [
+            "src/MPCore.Backend.Api/Hosting/TransportPortSeparation.cs"
+          ]
+        },
+        {
+          "condition": "(!includeCodex)",
+          "exclude": [
+            "AGENTS.md",
+            ".agents/**"
+          ]
+        },
+        {
+          "condition": "(!includeClaude)",
+          "exclude": [
+            "CLAUDE.md",
+            ".claude/**"
+          ]
+        },
+        {
+          "condition": "(!includeAiSkills)",
+          "exclude": [
+            ".mpcore/skills/**",
+            "docs/ai-skills.md"
+          ]
+        },
+        {
+          "condition": "(!includeBusinessAudit)",
+          "exclude": [
+            "src/MPCore.Backend.Infrastructure/Audit/**"
+          ]
+        }
+      ]
+    }
+  ]
+}

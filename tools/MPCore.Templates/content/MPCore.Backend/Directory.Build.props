@@ -1,0 +1,19 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <MPCoreVersion>MPCORE_VERSION</MPCoreVersion>
+  </PropertyGroup>
+  <!--
+    Grpc.Tools ships only an x64 protoc for macOS, which cannot run on Apple Silicon without Rosetta: every
+    project with a .proto file then fails with "Bad CPU type in executable". Native binaries from Homebrew
+    (brew install protobuf grpc) are used when present; an explicit Protobuf_ProtocFullPath always wins.
+  -->
+  <PropertyGroup Condition="'$(Protobuf_ProtocFullPath)' == '' AND $([MSBuild]::IsOSPlatform('OSX')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64' AND Exists('/opt/homebrew/bin/protoc') AND Exists('/opt/homebrew/bin/grpc_csharp_plugin')">
+    <Protobuf_ProtocFullPath>/opt/homebrew/bin/protoc</Protobuf_ProtocFullPath>
+    <gRPC_PluginFullPath>/opt/homebrew/bin/grpc_csharp_plugin</gRPC_PluginFullPath>
+  </PropertyGroup>
+</Project>

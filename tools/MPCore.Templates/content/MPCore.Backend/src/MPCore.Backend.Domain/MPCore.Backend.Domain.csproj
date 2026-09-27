@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="MPCore.Domain" Version="$(MPCoreVersion)" />
+  </ItemGroup>
+</Project>

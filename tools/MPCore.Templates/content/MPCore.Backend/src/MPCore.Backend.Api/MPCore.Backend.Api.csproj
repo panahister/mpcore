@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <!--#if (shape == "service") -->
+    <ProjectReference Include="../MPCore.Backend.Application/MPCore.Backend.Application.csproj" />
+    <!--#endif -->
+    <ProjectReference Include="../MPCore.Backend.Infrastructure/MPCore.Backend.Infrastructure.csproj" />
+    <PackageReference Include="MPCore.Hosting" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Localization" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Messaging.Wolverine" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Security.Abstractions" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Security.AspNetCore" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Tenancy.Abstractions" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Validation.FluentValidation" Version="$(MPCoreVersion)" />
+    <!-- Design-time only: `dotnet ef migrations` with this project as the startup project. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11" PrivateAssets="all" />
+    <!--#if (includeGrpc) -->
+    <PackageReference Include="Grpc.AspNetCore" Version="2.83.0" />
+    <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.83.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.83.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.83.0" PrivateAssets="all" />
+    <PackageReference Include="MPCore.Transport.Grpc" Version="$(MPCoreVersion)" />
+    <!--#endif -->
+    <!--#if (includeRest) -->
+    <PackageReference Include="MPCore.Transport.Http" Version="$(MPCoreVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
+    <PackageReference Include="MPCore.Observability.Prometheus" Version="$(MPCoreVersion)" />
+    <!--#endif -->
+    <!--#if (messaging == "kafka") -->
+    <PackageReference Include="MPCore.Messaging.Wolverine.Kafka" Version="$(MPCoreVersion)" />
+    <!--#endif -->
+    <!--#if (messaging == "rabbitmq") -->
+    <PackageReference Include="MPCore.Messaging.Wolverine.RabbitMQ" Version="$(MPCoreVersion)" />
+    <!--#endif -->
+  </ItemGroup>
+  <!--#if (includeGrpc) -->
+  <ItemGroup>
+    <Protobuf Include="Protos/platform_probe.proto" GrpcServices="Server" />
+  </ItemGroup>
+  <!--#endif -->
+</Project>

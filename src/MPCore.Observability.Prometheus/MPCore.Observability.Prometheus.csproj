@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>MPCore.Observability.Prometheus</PackageId>
+    <Description>Prometheus pull endpoint for MP Core hosts, on top of the OpenTelemetry metrics pipeline. Uses the OpenTelemetry Prometheus ASP.NET Core exporter, which is a prerelease package.</Description>
+    <!--
+      NU5104: a stable package with a prerelease dependency. OpenTelemetry has not yet published a stable
+      Prometheus exporter for ASP.NET Core, and one package cannot leave the cohort's version (ADR-010).
+      The description and the release notes say so. Remove this when the exporter is stable.
+    -->
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../MPCore.Observability/MPCore.Observability.csproj" />
+    <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <ProjectReference Include="../../src/MPCore.Caching.Memory/MPCore.Caching.Memory.csproj" />
+    <ProjectReference Include="../../src/MPCore.Caching.Redis/MPCore.Caching.Redis.csproj" />
+    <ProjectReference Include="../../src/MPCore.Caching.Hybrid/MPCore.Caching.Hybrid.csproj" />
+  </ItemGroup>
+</Project>
