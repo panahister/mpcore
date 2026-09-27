@@ -260,6 +260,105 @@ def reference(d):
     d.text(L + 372, 791, "Fits by standard (OpenID Connect, forwarded headers); not run by this project", size=11.5, fill=d.t["muted"])
 
 
+def audit(d):
+    d.heading(32, 44, "An audit trail is not a log",
+              "A log helps an operator find a fault. An audit trail answers a question somebody will ask in a year: who did this?")
+    # ---- the two paths
+    d.group(32, 92, 560, 270, "purple", "WHO DID WHAT, FROM WHAT TO WHAT")
+    d.card(48, 114, 160, 112, "green", "Your handler", ["changes an aggregate", "and returns"], kicker="a change")
+    d.arrow([(210, 170), (232, 170)], sw=1.7)
+    d.card(234, 114, 342, 112, "blue", "One commit", ["The change and its audit record are saved", "together. Rolled back, neither exists: the trail", "never claims a change that did not happen."], kicker="mp core")
+    d.card(48, 236, 160, 112, "rose", "A rule is broken", ["the attempt is refused,", "the change is rolled back"], kicker="a refused attempt")
+    d.arrow([(210, 292), (232, 292)], sw=1.7)
+    d.card(234, 236, 342, 112, "blue", "Written apart", ["The refusal is recorded on a connection of its", "own, so it survives the rollback: what somebody", "tried is often what a reviewer wants to know."], kicker="mp core")
+    # ---- what a record holds
+    d.group(608, 92, 320, 270, "slate", "WHAT A RECORD HOLDS")
+    rows = [("Who", "the actor, from the token"), ("What", "the action, the entity"), ("Change", "each field: before, after"),
+            ("Outcome", "done, refused, failed"), ("Why not", "the rule's own code"), ("When", "and which request")]
+    for k, (name, what) in enumerate(rows):
+        y = 120 + k * 39
+        d.rect(624, y, 288, 30, d.t["canvas"], d.t["frame"], r=7, sw=1)
+        d.text(636, y + 18.5, name, size=11.5, weight=700, fill=d.ink("purple"))
+        d.text(706, y + 18.5, what, size=11.5, fill=d.t["muted"])
+    # ---- the promises
+    promises = [("The actor is never a header", "It comes from the validated token. Queued work", "runs as a named actor: system:ReserveStock."),
+                ("Secrets cannot be recorded", "A policy names the fields that are kept;", "a credential is refused, an identifier masked."),
+                ("In your own database", "A table next to the business data, append-only:", "the role may insert and read, nothing else.")]
+    for k, (title, l1, l2) in enumerate(promises):
+        x = 32 + k * 302
+        d.rect(x, 382, 292, 82, d.fill("purple"), d.stroke("purple"), r=10, shadow=True)
+        d.text(x + 16, 406, title, size=12.8, weight=700, fill=d.ink("purple"))
+        d.text(x + 16, 426, l1, size=11.2, fill=d.t["muted"])
+        d.text(x + 16, 443, l2, size=11.2, fill=d.t["muted"])
+
+
+def language(d):
+    d.heading(32, 44, "No sentence is written in code",
+              "A failure carries a key and its arguments. The text is found when it is shown, in the language the caller asked for.")
+    d.card(32, 92, 250, 150, "green", "A rule is broken", ["`catalog.price_jump_too_large`", "", "`max_move_percent = 50`", "`current = 485.00`", "`requested = 4850.00`"], kicker="your code: a key, and arguments")
+    d.arrow([(284, 167), (312, 167)], sw=1.7)
+    d.group(316, 92, 300, 150, "teal", "THE MESSAGE CATALOG")
+    sources = [("1", "Texts edited at run time", "in the database"), ("2", "Your module's resource files", ".resx, one per language"), ("3", "MP Core's own texts", "English and Persian")]
+    for k, (n, name, where) in enumerate(sources):
+        y = 112 + k * 41
+        d.rect(330, y, 272, 34, d.t["canvas"], d.t["frame"], r=8, sw=1)
+        d.badge(347, y + 17, n, "teal", r=9)
+        d.text(364, y + 15, name, size=11.5, weight=700)
+        d.text(364, y + 28, where, size=10.3, fill=d.t["muted"])
+    d.arrow([(618, 140), (646, 120)], sw=1.7)
+    d.arrow([(618, 194), (646, 214)], sw=1.7)
+    d.rect(650, 92, 278, 68, d.fill("blue"), d.stroke("blue"), r=10, shadow=True)
+    d.text(664, 112, "ACCEPT-LANGUAGE: EN", size=9.5, weight=700, fill=d.accent("blue"), spacing="0.8")
+    d.text(664, 132, "A price may move by at most 50% in one", size=11.5)
+    d.text(664, 148, "step (from 485.00 to 4850.00).", size=11.5)
+    d.rect(650, 174, 278, 68, d.fill("blue"), d.stroke("blue"), r=10, shadow=True)
+    d.text(664, 194, "ACCEPT-LANGUAGE: FA", size=9.5, weight=700, fill=d.accent("blue"), spacing="0.8")
+    d.add(f'<text x="914" y="214" font-family="Vazirmatn, Tahoma, \'Segoe UI\', \'Geeza Pro\', sans-serif" font-size="12" fill="{d.t["text"]}" text-anchor="start" direction="rtl">قیمت در هر بار حداکثر ۵۰٪ می‌تواند تغییر کند</text>')
+    d.add(f'<text x="914" y="231" font-family="Vazirmatn, Tahoma, \'Segoe UI\', \'Geeza Pro\', sans-serif" font-size="12" fill="{d.t["text"]}" text-anchor="start" direction="rtl">(از 485.00 به 4850.00).</text>')
+    promises = [("The same on both transports", "Problem Details over REST, a rich gRPC status:", "one key, one text, one code for the client."),
+                ("A language falls back", "fa-IR, then fa, then the default. A text found", "nowhere is counted and logged, never invented."),
+                ("Support edits a text, live", "A stored translation wins over the file, and", "reaches every instance without a release.")]
+    for k, (title, l1, l2) in enumerate(promises):
+        x = 32 + k * 302
+        d.rect(x, 262, 292, 82, d.fill("teal"), d.stroke("teal"), r=10, shadow=True)
+        d.text(x + 16, 286, title, size=12.8, weight=700, fill=d.ink("teal"))
+        d.text(x + 16, 306, l1, size=11.2, fill=d.t["muted"])
+        d.text(x + 16, 323, l2, size=11.2, fill=d.t["muted"])
+
+
+write_both(f"{OUT}/audit", 960, 486, "Business audit: the change and its record in one commit, a refused attempt recorded apart", audit)
+write_both(f"{OUT}/language", 960, 366, "Localization: a key and arguments become a text in the caller's language, from three sources", language)
+def capabilities(d):
+    d.heading(32, 44, "Everything MP Core does, in one picture",
+              "Twelve areas, twenty-eight packages. The catalogue names, for each line, the package that carries it and how it was proved.")
+    areas = [
+        ("green", "Domain model", ["Aggregates, entities, value objects", "Business rules with a name and a code", "Domain and integration events", "No framework in the domain"]),
+        ("teal", "Use cases", ["Commands and queries, apart", "A handler is a static method", "Validation before the handler", "A failure is a value, not an exception"]),
+        ("blue", "One commit", ["The transaction is the framework's", "Outbox: a message leaves if committed", "A failure after a change rolls it back", "A failed attempt takes its messages"]),
+        ("amber", "Messaging", ["Apache Kafka and RabbitMQ", "Durable local queues, no broker", "Inbox: handled once", "Retry, dead letters, giving up"]),
+        ("purple", "Twice is once", ["Idempotency-Key on a request", "The key commits with the change", "A repeat receives the first answer", "Business keys, where a key is not enough"]),
+        ("rose", "Security", ["A bearer-only resource server", "Deny by default", "Keycloak, or any OpenID Connect", "Behind a gateway, trusting little"]),
+        ("blue", "Transport", ["REST, with Problem Details", "gRPC, with a rich status", "Both, each on its own port", "OpenAPI; versions by route"]),
+        ("purple", "Business audit", ["Who did what, from what to what", "In the commit of the change", "A refused attempt is kept", "Secrets refused, identifiers masked"]),
+        ("teal", "Language", ["No sentence is written in code", "The caller's language, both transports", "Fallback from fa-IR to fa to default", "Texts edited while it runs"]),
+        ("green", "Data and cache", ["PostgreSQL with EF Core", "TimescaleDB hypertables", "Memory, Redis, or both in two levels", "Paging and sorting, with limits"]),
+        ("slate", "Operations", ["Logs, traces, metrics: OpenTelemetry", "Secrets masked before they leave", "Alive and ready, REST and gRPC", "Resilient calls to other systems"]),
+        ("amber", "Tooling", ["One command generates a backend", "Shape, transport and broker: 18 combinations", "Ten skills for AI coding agents", "Multi-tenancy from a token's claim"]),
+    ]
+    w, h, gx, gy, x0, y0 = 293, 132, 8, 10, 32, 90
+    for i, (color, title, lines) in enumerate(areas):
+        x, y = x0 + (i % 3) * (w + gx), y0 + (i // 3) * (h + gy)
+        d.rect(x, y, w, h, d.fill(color), d.stroke(color), r=10, shadow=True)
+        clip = f"cap{i}"
+        d.add(f'<clipPath id="{clip}"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10"/></clipPath>')
+        d.add(f'<rect x="{x}" y="{y}" width="{w}" height="6" fill="{d.accent(color)}" clip-path="url(#{clip})"/>')
+        d.text(x + 14, y + 31, title, size=14.5, weight=700, fill=d.ink(color))
+        for k, line in enumerate(lines):
+            d.add(f'<circle cx="{x + 18}" cy="{y + 52 + k * 19.5}" r="2.4" fill="{d.accent(color)}"/>')
+            d.text(x + 28, y + 56 + k * 19.5, line, size=11.8, fill=d.t["text"])
+
+
+write_both(f"{OUT}/capabilities", 960, 668, "The twelve areas of MP Core's capabilities", capabilities)
 write_both(f"{OUT}/reference-architecture", 1000, 812, "A backend platform with a gateway, identity, messaging, data and observability, and MP Core inside the backends", reference)
 write_both(f"{OUT}/request", 960, 406, "One request through MP Core, from the caller to the broker", request)
 write_both(f"{OUT}/layers", 960, 580, "The four layers of a backend, what you write and what MP Core provides", layers)

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 366" width="960" height="366" role="img" aria-label="Localization: a key and arguments become a text in the caller&#x27;s language, from three sources">
+<title>Localization: a key and arguments become a text in the caller&#x27;s language, from three sources</title>
+<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1f2328" flood-opacity="0.06"/></filter></defs>
+<rect x="0.75" y="0.75" width="958.5" height="364.5" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+<text x="32" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1f2328" text-anchor="start">No sentence is written in code</text>
+<text x="32" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#57606a" text-anchor="start">A failure carries a key and its arguments. The text is found when it is shown, in the language the caller asked for.</text>
+<rect x="32" y="92" width="250" height="150" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<clipPath id="clip3"><rect x="32" y="92" width="250" height="150" rx="10"/></clipPath>
+<rect x="32" y="92" width="250" height="6" fill="#16a34a" clip-path="url(#clip3)"/>
+<text x="46" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#16a34a" text-anchor="start" letter-spacing="0.8">YOUR CODE: A KEY, AND ARGUMENTS</text>
+<text x="46" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#15803d" text-anchor="start">A rule is broken</text>
+<text x="46" y="160" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#15803d" text-anchor="start">catalog.price_jump_too_large</text>
+<text x="46" y="183.5" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#15803d" text-anchor="start">max_move_percent = 50</text>
+<text x="46" y="201.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#15803d" text-anchor="start">current = 485.00</text>
+<text x="46" y="218.5" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11.5" font-weight="400" fill="#15803d" text-anchor="start">requested = 4850.00</text>
+<path d="M 284 167 L 312 167" fill="none" stroke="#8c959f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 305.7 170.0 L 312 167 L 305.7 164.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="316" y="92" width="300" height="150" rx="14" fill="none" stroke="#2dd4bf" stroke-width="1.4" stroke-dasharray="5 5"/>
+<rect x="334" y="81" width="141.39999999999998" height="22" rx="6" fill="#ffffff" stroke="none" stroke-width="1.25"/>
+<rect x="334" y="81" width="141.39999999999998" height="22" rx="11" fill="#f0fdfa" stroke="#2dd4bf" stroke-width="1.1"/>
+<text x="404.7" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f766e" text-anchor="middle">THE MESSAGE CATALOG</text>
+<rect x="330" y="112" width="272" height="34" rx="8" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
+<circle cx="347" cy="129" r="9" fill="#0d9488"/>
+<text x="347" y="133" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<text x="364" y="127" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1f2328" text-anchor="start">Texts edited at run time</text>
+<text x="364" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="10.3" font-weight="400" fill="#57606a" text-anchor="start">in the database</text>
+<rect x="330" y="153" width="272" height="34" rx="8" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
+<circle cx="347" cy="170" r="9" fill="#0d9488"/>
+<text x="347" y="174" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<text x="364" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1f2328" text-anchor="start">Your module&#x27;s resource files</text>
+<text x="364" y="181" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="10.3" font-weight="400" fill="#57606a" text-anchor="start">.resx, one per language</text>
+<rect x="330" y="194" width="272" height="34" rx="8" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
+<circle cx="347" cy="211" r="9" fill="#0d9488"/>
+<text x="347" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+<text x="364" y="209" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1f2328" text-anchor="start">MP Core&#x27;s own texts</text>
+<text x="364" y="222" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="10.3" font-weight="400" fill="#57606a" text-anchor="start">English and Persian</text>
+<path d="M 618 140 L 646 120" fill="none" stroke="#8c959f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 642.6 126.1 L 646 120 L 639.1 121.2" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 618 194 L 646 214" fill="none" stroke="#8c959f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 639.1 212.8 L 646 214 L 642.6 207.9" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="650" y="92" width="278" height="68" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="664" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#2563eb" text-anchor="start" letter-spacing="0.8">ACCEPT-LANGUAGE: EN</text>
+<text x="664" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#1f2328" text-anchor="start">A price may move by at most 50% in one</text>
+<text x="664" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#1f2328" text-anchor="start">step (from 485.00 to 4850.00).</text>
+<rect x="650" y="174" width="278" height="68" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="664" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#2563eb" text-anchor="start" letter-spacing="0.8">ACCEPT-LANGUAGE: FA</text>
+<text x="914" y="214" font-family="Vazirmatn, Tahoma, 'Segoe UI', 'Geeza Pro', sans-serif" font-size="12" fill="#1f2328" text-anchor="start" direction="rtl">قیمت در هر بار حداکثر ۵۰٪ می‌تواند تغییر کند</text>
+<text x="914" y="231" font-family="Vazirmatn, Tahoma, 'Segoe UI', 'Geeza Pro', sans-serif" font-size="12" fill="#1f2328" text-anchor="start" direction="rtl">(از 485.00 به 4850.00).</text>
+<rect x="32" y="262" width="292" height="82" rx="10" fill="#f0fdfa" stroke="#2dd4bf" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="48" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#0f766e" text-anchor="start">The same on both transports</text>
+<text x="48" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">Problem Details over REST, a rich gRPC status:</text>
+<text x="48" y="323" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">one key, one text, one code for the client.</text>
+<rect x="334" y="262" width="292" height="82" rx="10" fill="#f0fdfa" stroke="#2dd4bf" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="350" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#0f766e" text-anchor="start">A language falls back</text>
+<text x="350" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">fa-IR, then fa, then the default. A text found</text>
+<text x="350" y="323" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">nowhere is counted and logged, never invented.</text>
+<rect x="636" y="262" width="292" height="82" rx="10" fill="#f0fdfa" stroke="#2dd4bf" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="652" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#0f766e" text-anchor="start">Support edits a text, live</text>
+<text x="652" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">A stored translation wins over the file, and</text>
+<text x="652" y="323" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">reaches every instance without a release.</text>
+</svg>

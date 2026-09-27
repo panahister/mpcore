@@ -13,7 +13,9 @@ once, in the open, with a test for each and the name of the person who first des
 [![.NET](https://img.shields.io/badge/.NET-10-512bd4)](global.json)
 
 [Get started](docs/guide/getting-started.md) ·
+[Capabilities](docs/guide/capabilities.md) ·
 [Reference architecture](docs/architecture/reference-architecture.md) ·
+[AI agents](#built-for-ai-coding-agents) ·
 [The sample](https://github.com/panahister/mpcore-storefront-sample) ·
 [Decisions](docs/decisions) ·
 [Release notes](docs/releases/0.9.0.md)
@@ -48,6 +50,18 @@ the ones that are wrong stay hidden until production finds them.
 
 **You write the business. MP Core is everything around it**, the same in every backend, so that the second
 service a team builds is as sound as the first.
+
+## Everything it does
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/capabilities-dark.svg">
+  <img alt="The twelve areas of MP Core's capabilities: domain model, use cases, one commit, messaging, idempotency, security, transport, business audit, language, data and cache, operations, tooling" src="docs/images/capabilities-light.svg" width="100%">
+</picture>
+
+[**The catalogue of capabilities**](docs/guide/capabilities.md) has every line of this picture, with the
+package that carries it and how it was proved: by a test of this repository, or by a scenario of the
+sample that runs against live backends. It ends with what MP Core deliberately **does not** do, because a
+framework that says yes to everything guarantees nothing.
 
 ## Start in two minutes
 
@@ -138,6 +152,56 @@ in the code.
 | What an aggregate protects | `CheckRule`: a rule is checked before the state changes, so an aggregate is never invalid |
 | What a reader may ask | A query: its own message, no unit of work, a read model that returns views. It is the only thing a `GET` sends |
 
+## An audit trail that can be trusted
+
+A log helps an operator find a fault, and is thrown away after some weeks. An audit trail answers a
+question somebody will ask in a year, perhaps a regulator: *who changed this, when, from what to what, and
+who tried and was refused?* Most backends build it late, as log lines, and find out in the first review
+that a log cannot answer it.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/audit-dark.svg">
+  <img alt="Business audit: the change and its record are saved in one commit; a refused attempt is recorded apart, so that it survives the rollback" src="docs/images/audit-light.svg" width="100%">
+</picture>
+
+| What a reviewer asks | How MP Core answers |
+|---|---|
+| Can the trail claim a change that did not happen? | No. The record is saved in the commit of the change it describes; rolled back, neither exists |
+| Is an attempt that was refused recorded? | Yes, on a connection of its own, so that it survives the rollback of what was refused |
+| Who is the actor? | Whoever the validated token names. Work from a queue runs as a named actor, such as `system:ReserveStock`, so that no record is anonymous |
+| Can a secret reach the trail? | A policy names the fields that are kept. A property that looks like a credential is refused; an identifier is masked |
+| Can a record be changed afterwards? | The database role of the backend may insert and read, and nothing else |
+| Where is it? | In the backend's own database, next to the business data, and readable through a port: `IAuditQuery` |
+
+Choose it with `--business-audit postgresql`. A handler records a business action in one line,
+`audit.RecordAsync(...)`; the changes of an entity are recorded without a line. In the sample, scenario S3
+reads the record of a price change that was refused.
+
+## Every message in the caller's language
+
+A backend that answers "Price jump too large" has decided, in code, that every caller reads English. A
+backend that answers a code alone has left the sentence to every client, and each will write its own.
+
+In MP Core **no sentence is written in code**. A rule, a validator and a failure carry a *key* and their
+*arguments*. The text is found when it is shown.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/language-dark.svg">
+  <img alt="Localization: a key and its arguments become a text in the language the caller asked for, from stored translations, resource files and MP Core's own texts" src="docs/images/language-light.svg" width="100%">
+</picture>
+
+| You need | MP Core gives you |
+|---|---|
+| The caller's language | `Accept-Language`, over REST and over gRPC, with the same result |
+| A second language | A resource file next to the first. MP Core's own messages ship in English and Persian |
+| A fallback | `fa-IR`, then `fa`, then the default language. A text that exists nowhere is counted on a metric and logged once, never invented |
+| Numbers in the sentence | Named placeholders: `{max_move_percent}`, filled from the rule's arguments |
+| A text changed without a release | Stored translations: support edits a text, and every instance shows it within its refresh interval |
+| A client that acts on the failure | The code and the error domain never change with the language; the text is for people |
+
+In the sample, scenario S13 shows a refusal in Persian, then a member of staff changes its text while
+the backend runs.
+
 ## Built for AI coding agents
 
 An agent that writes a handler which calls `SaveChanges`, or an endpoint that reads the user from a
@@ -168,6 +232,10 @@ before writing, what to ask the owner, what must never be decided alone, and how
 **One body, two agents.** Each skill is written once, in `.mpcore/skills/<name>/SKILL.md`. Claude Code finds
 it through `CLAUDE.md` and `.claude/skills/`, Codex through `AGENTS.md` and `.agents/skills/`. Choose with
 `--ai-tooling claude`, `codex` or `both`.
+
+**See it done.** In the sample, the same task was given to Claude Code and to Codex, each with the skill
+and nothing else. [Building with AI agents](https://github.com/panahister/mpcore-storefront-sample/blob/main/docs/building-with-ai-agents.md)
+has the task as it was given, what each agent did, and what a person still had to check.
 
 **What every skill holds to.** It reads the backend's manifest first, because the shape, the transport and
 the broker were decided when the backend was generated. It never invents a business rule to fill a gap.
@@ -269,6 +337,7 @@ All packages share one version and ship together.
 | Read | To |
 |---|---|
 | [Getting started](docs/guide/getting-started.md) | Generate a backend and write a first use case |
+| [Capabilities](docs/guide/capabilities.md) | Find everything MP Core does, and everything it does not |
 | [Reference architecture](docs/architecture/reference-architecture.md) | See the whole platform, part by part |
 | [Concepts](docs/guide/concepts.md) | Understand the execution model, the failure model, the three kinds of message, and what is guaranteed |
 | [Packages](docs/guide/packages.md) | Choose what to reference |
