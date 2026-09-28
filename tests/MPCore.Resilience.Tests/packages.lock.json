@@ -292,8 +292,12 @@
       "mpcore.resilience.http": {
         "type": "Project",
         "dependencies": {
+          "MPCore.Tenancy.Abstractions": "[0.9.1, )",
           "Microsoft.Extensions.Http.Resilience": "[10.9.0, )"
         }
+      },
+      "mpcore.tenancy.abstractions": {
+        "type": "Project"
       },
       "Microsoft.Extensions.Configuration.Abstractions": {
         "type": "CentralTransitive",

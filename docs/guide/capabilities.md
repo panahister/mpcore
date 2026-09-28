@@ -160,6 +160,7 @@ live backends on every change. A line with neither says so.
 | The generator refuses a template of another version | `MPCore.Cli` | Tests; the release gate |
 | Ten skills for AI coding agents, for Claude Code and for Codex | the template | Both agents were asked, in the sample, which skills they see |
 | Multi-tenancy: the tenant from a claim of the token, an ambient scope for work with no caller, recorded in the audit trail | `MPCore.Tenancy.Abstractions` | Tests; Tiffin S6, with two tenants. Storefront has one |
+| The tenant of a call between services: the caller writes it into `x-tenant-id`; the called service believes it only from a service it lists, never from a user, never over a tenant in the token (not released yet) | `MPCore.Resilience.Http` (`AddMPCoreTenantPropagation`), `MPCore.Security.AspNetCore` (`TrustedServiceClients`) | Tests: `TenantPropagationTests`, `TenantOverServiceCallsTests`, each guard seen failing; Tiffin: Payments' audit trail names the city of every payment Ordering opens |
 | Publication with no stored key | `release.yml` | The packages of `0.9.0` were published this way |
 
 ## What MP Core deliberately does not do
