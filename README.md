@@ -18,7 +18,7 @@ once, in the open, with a test for each and the name of the person who first des
 [AI agents](#built-for-ai-coding-agents) ·
 [The sample](https://github.com/panahister/mpcore-storefront-sample) ·
 [Decisions](docs/decisions) ·
-[Release notes](docs/releases/0.9.1.md)
+[Release notes](docs/releases/0.9.2.md)
 
 </div>
 
@@ -66,11 +66,11 @@ framework that says yes to everything guarantees nothing.
 ## Start in two minutes
 
 ```bash
-dotnet tool install --global MPCore.Cli --version 0.9.1
+dotnet tool install --global MPCore.Cli --version 0.9.2
 ```
 
 ```bash
-dotnet new install MPCore.Templates::0.9.1
+dotnet new install MPCore.Templates::0.9.2
 ```
 
 ```bash
@@ -343,7 +343,7 @@ All packages share one version and ship together.
 | [Concepts](docs/guide/concepts.md) | Understand the execution model, the failure model, the three kinds of message, and what is guaranteed |
 | [Packages](docs/guide/packages.md) | Choose what to reference |
 | [Decisions](docs/decisions) | Learn why: every convention, with its sources and its cost |
-| [Release notes](docs/releases/0.9.1.md) | See what changed, [0.9.0](docs/releases/0.9.0.md) included |
+| [Release notes](docs/releases/0.9.2.md) | See what changed, [0.9.1](docs/releases/0.9.1.md) and [0.9.0](docs/releases/0.9.0.md) included |
 
 A generated backend carries its own guides (`docs/architecture.md`, `docs/capabilities.md`,
 `src/Modules/README.md`), written for the options you chose.
