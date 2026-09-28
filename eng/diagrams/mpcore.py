@@ -312,11 +312,12 @@ def language(d):
     d.text(664, 132, "A price may move by at most 50% in one", size=11.5)
     d.text(664, 148, "step (from 485.00 to 4850.00).", size=11.5)
     d.rect(650, 174, 278, 68, d.fill("blue"), d.stroke("blue"), r=10, shadow=True)
-    d.text(664, 194, "ACCEPT-LANGUAGE: FA", size=9.5, weight=700, fill=d.accent("blue"), spacing="0.8")
-    d.add(f'<text x="914" y="214" font-family="Vazirmatn, Tahoma, \'Segoe UI\', \'Geeza Pro\', sans-serif" font-size="12" fill="{d.t["text"]}" text-anchor="start" direction="rtl">قیمت در هر بار حداکثر ۵۰٪ می‌تواند تغییر کند</text>')
-    d.add(f'<text x="914" y="231" font-family="Vazirmatn, Tahoma, \'Segoe UI\', \'Geeza Pro\', sans-serif" font-size="12" fill="{d.t["text"]}" text-anchor="start" direction="rtl">(از 485.00 به 4850.00).</text>')
+    d.text(664, 194, "ACCEPT-LANGUAGE: ZH-CN", size=9.5, weight=700, fill=d.accent("blue"), spacing="0.8")
+    cjk = "'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif"
+    d.add(f'<text x="664" y="214" font-family="{cjk}" font-size="12" fill="{d.t["text"]}">价格单次最多只能变动 50%</text>')
+    d.add(f'<text x="664" y="231" font-family="{cjk}" font-size="12" fill="{d.t["text"]}">（从 485.00 到 4850.00）。</text>')
     promises = [("The same on both transports", "Problem Details over REST, a rich gRPC status:", "one key, one text, one code for the client."),
-                ("A language falls back", "fa-IR, then fa, then the default. A text found", "nowhere is counted and logged, never invented."),
+                ("A language falls back", "zh-CN, then zh-Hans, then zh, then the default.", "A text found nowhere is logged, never invented."),
                 ("Support edits a text, live", "A stored translation wins over the file, and", "reaches every instance without a release.")]
     for k, (title, l1, l2) in enumerate(promises):
         x = 32 + k * 302
@@ -340,7 +341,7 @@ def capabilities(d):
         ("rose", "Security", ["A bearer-only resource server", "Deny by default", "Keycloak, or any OpenID Connect", "Behind a gateway, trusting little"]),
         ("blue", "Transport", ["REST, with Problem Details", "gRPC, with a rich status", "Both, each on its own port", "OpenAPI; versions by route"]),
         ("purple", "Business audit", ["Who did what, from what to what", "In the commit of the change", "A refused attempt is kept", "Secrets refused, identifiers masked"]),
-        ("teal", "Language", ["No sentence is written in code", "The caller's language, both transports", "Fallback from fa-IR to fa to default", "Texts edited while it runs"]),
+        ("teal", "Language", ["No sentence is written in code", "The caller's language, both transports", "Fallback from zh-CN to zh-Hans to zh", "Texts edited while it runs"]),
         ("green", "Data and cache", ["PostgreSQL with EF Core", "TimescaleDB hypertables", "Memory, Redis, or both in two levels", "Paging and sorting, with limits"]),
         ("slate", "Operations", ["Logs, traces, metrics: OpenTelemetry", "Secrets masked before they leave", "Alive and ready, REST and gRPC", "Resilient calls to other systems"]),
         ("amber", "Tooling", ["One command generates a backend", "Shape, transport and broker: 18 combinations", "Ten skills for AI coding agents", "Multi-tenancy from a token's claim"]),
