@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Net;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 using MPCore.Application.Results;
 
 namespace MPCore.Transport.Http.Tests;
@@ -139,6 +141,37 @@ public sealed class ProblemDetailsContractTests
             "این مقدار الزامی است.",
             root.GetProperty("violations").EnumerateArray().Single().GetProperty("message").GetString());
         Assert.Equal("Request validation failed.", root.GetProperty("title").GetString());
+    }
+
+    [Fact]
+    public async Task A_region_two_steps_from_what_is_supported_still_resolves()
+    {
+        // Chinese has three levels (zh-CN, its parent zh-Hans, its parent zh). A product that supports
+        // only the top one must still be reachable from a caller two steps below it, not only one.
+        await using var fixture = await ProblemDetailsFixture.CreateAsync(
+            configure: options =>
+            {
+                options.SupportedCultures.Clear();
+                options.SupportedCultures.Add("en");
+                options.SupportedCultures.Add("zh");
+                options.DefaultCulture = "en";
+            },
+            configureServices: services =>
+                services.AddSingleton<IHttpFailureLocalizer>(new CultureNameLocalizer()));
+
+        using var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            new Uri("/fail?category=Validation", UriKind.Relative));
+        request.Headers.TryAddWithoutValidation("accept-language", "zh-CN");
+        var response = await fixture.Client.SendAsync(request);
+        var root = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
+
+        Assert.Equal("zh", root.GetProperty("detail").GetString());
+    }
+
+    private sealed class CultureNameLocalizer : IHttpFailureLocalizer
+    {
+        public string? Localize(FailureMessageDescriptor message, CultureInfo culture) => culture.Name;
     }
 
     [Fact]

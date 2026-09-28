@@ -56,6 +56,30 @@ public sealed class GrpcFailureWireTests
     }
 
     [Fact]
+    public async Task A_region_two_steps_from_what_is_supported_still_resolves()
+    {
+        // Chinese has three levels (zh-CN, its parent zh-Hans, its parent zh). A product that supports
+        // only the top one must still be reachable from a caller two steps below it, not only one. Both
+        // transports resolve culture with the same rules; this is the gRPC side of that proof.
+        await using var fixture = await GrpcFixture.CreateAsync(
+            configure: options =>
+            {
+                options.SupportedCultures.Clear();
+                options.SupportedCultures.Add("en");
+                options.SupportedCultures.Add("zh");
+                options.DefaultCulture = "en";
+            },
+            localizer: new CultureNameLocalizer());
+        var headers = new Metadata { { "accept-language", "zh-CN" } };
+
+        var exception = await Assert.ThrowsAsync<RpcException>(async () =>
+            await fixture.Client.FailAsync(new FailureRequest(), headers));
+
+        var status = exception.GetRpcStatus();
+        Assert.Equal("zh", status?.GetDetail<LocalizedMessage>()?.Locale);
+    }
+
+    [Fact]
     public async Task A_broken_business_rule_keeps_its_identity_and_localized_message_on_the_wire()
     {
         await using var fixture = await GrpcFixture.CreateAsync();
@@ -168,14 +192,17 @@ public sealed class GrpcFailureWireTests
 
         public CapturingLoggerProvider Logs { get; }
 
-        public static async Task<GrpcFixture> CreateAsync(bool allowRetry = false)
+        public static async Task<GrpcFixture> CreateAsync(
+            bool allowRetry = false,
+            Action<GrpcFailureOptions>? configure = null,
+            IGrpcFailureLocalizer? localizer = null)
         {
             var builder = WebApplication.CreateBuilder();
             builder.WebHost.UseTestServer();
             var logs = new CapturingLoggerProvider();
             builder.Logging.ClearProviders();
             builder.Logging.AddProvider(logs);
-            builder.Services.AddSingleton<IGrpcFailureLocalizer, TestLocalizer>();
+            builder.Services.AddSingleton(localizer ?? new TestLocalizer());
             if (allowRetry)
             {
                 builder.Services.AddSingleton<IGrpcRetrySafetyPolicy, AllowGrpcRetryPolicy>();
@@ -187,6 +214,7 @@ public sealed class GrpcFailureWireTests
                 options.SupportedCultures.Add("en");
                 options.SupportedCultures.Add("fa");
                 options.DefaultCulture = "en";
+                configure?.Invoke(options);
             });
             builder.Services.AddSingleton<FailureProbeService>();
             var application = builder.Build();
@@ -204,6 +232,12 @@ public sealed class GrpcFailureWireTests
             _channel.Dispose();
             await _application.DisposeAsync();
         }
+    }
+
+    private sealed class CultureNameLocalizer : IGrpcFailureLocalizer
+    {
+        public string? Localize(FailureMessageDescriptor message, System.Globalization.CultureInfo culture) =>
+            culture.Name;
     }
 
     private sealed class TestLocalizer : IGrpcFailureLocalizer
