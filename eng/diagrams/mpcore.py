@@ -327,6 +327,48 @@ def language(d):
         d.text(x + 16, 323, l2, size=11.2, fill=d.t["muted"])
 
 
+def samples(d):
+    d.heading(32, 44, "Two samples, both run on every change",
+              "The same framework under an online store and under a delivery platform. Tests and checks are from runs on GitHub.")
+    cards = [
+        ("green", "The first sample", "Storefront", "An online store",
+         "A modular monolith of four modules, and two services",
+         [("Transports", "REST and gRPC"), ("Messaging", "Kafka and RabbitMQ"), ("Data", "PostgreSQL, TimescaleDB, Redis"),
+          ("Tenants", "one"), ("Business rules", "55"), ("Tests", "262"), ("Scenarios", "22: 146 and 160 checks"), ("MP Core", "0.9.1")],
+         ["A checkout sent twice, or eight at once", "An audit trail that keeps a refused attempt", "Texts in the caller's language, edited live"],
+         ["postgresql", "timescale", "redis", "apachekafka", "rabbitmq", "keycloak", "apisix"], "mpcore-storefront-sample"),
+        ("amber", "The second sample", "Tiffin", "Food delivery",
+         "Nine services, a database each, no shared assembly",
+         [("Transports", "REST and gRPC"), ("Messaging", "Kafka and RabbitMQ, a saga"), ("Data", "PostgreSQL, TimescaleDB, Redis, S3"),
+          ("Tenants", "two cities"), ("Business rules", "33"), ("Tests", "213"), ("Scenarios", "15: 266 checks, each store"), ("MP Core", "0.9.2")],
+         ["An order through six services, and taken back", "The city on every message and every call", "A service down, and nothing lost"],
+         ["postgresql", "timescale", "redis", "apachekafka", "rabbitmq", "keycloak", "apisix", "rustfs", "seaweedfs"], "mpcore-tiffin-sample"),
+    ]
+    w, gx, x0, y0, h = 440, 16, 32, 86, 448
+    for i, (color, kicker, name, what, shape, facts, proves, icons, repo) in enumerate(cards):
+        x = x0 + i * (w + gx)
+        d.rect(x, y0, w, h, d.fill(color), d.stroke(color), r=12, shadow=True)
+        d.add(f'<rect x="{x}" y="{y0}" width="{w}" height="6" rx="3" fill="{d.accent(color)}"/>')
+        d.text(x + 18, y0 + 30, kicker.upper(), size=9.5, weight=700, fill=d.accent(color), spacing="0.8")
+        d.text(x + 18, y0 + 58, name, size=22, weight=700, fill=d.ink(color))
+        d.text(x + 18 + len(name) * 13 + 10, y0 + 58, what, size=13, fill=d.t["muted"])
+        d.text(x + 18, y0 + 80, shape, size=12, fill=d.t["text"])
+        for k, (label, value) in enumerate(facts):
+            fy = y0 + 106 + k * 23
+            d.line(x + 18, fy + 7, x + w - 18, fy + 7, color=d.stroke(color), sw=0.6, dash="2 4")
+            d.text(x + 18, fy, label, size=11, fill=d.t["muted"])
+            d.text(x + 150, fy, value, size=11.5, weight=600, fill=d.ink(color) if label in ("Scenarios", "Tests") else d.t["text"])
+        py = y0 + 106 + len(facts) * 23 + 8
+        d.text(x + 18, py, "WHAT IT PROVES FIRST", size=9.5, weight=700, fill=d.accent(color), spacing="0.8")
+        for k, line in enumerate(proves):
+            d.status(x + 24, py + 16 + k * 18 - 4, "run")
+            d.text(x + 36, py + 16 + k * 18, line, size=11.5)
+        iy = y0 + h - 70
+        for k, ic in enumerate(icons):
+            d.icon(ic, x + 18 + k * 26, iy, 18)
+        d.chip(x + 18, y0 + h - 40, "github.com/panahister/" + repo, "blue", size=10.5, pad=10, mono=False)
+
+
 write_both(f"{OUT}/audit", 960, 486, "Business audit: the change and its record in one commit, a refused attempt recorded apart", audit)
 write_both(f"{OUT}/language", 960, 366, "Localization: a key and arguments become a text in the caller's language, from three sources", language)
 def capabilities(d):
@@ -364,5 +406,6 @@ write_both(f"{OUT}/reference-architecture", 1000, 812, "A backend platform with 
 write_both(f"{OUT}/request", 960, 406, "One request through MP Core, from the caller to the broker", request)
 write_both(f"{OUT}/layers", 960, 580, "The four layers of a backend, what you write and what MP Core provides", layers)
 write_both(f"{OUT}/ddd", 960, 584, "The building blocks of Domain-Driven Design and the MP Core type that carries each", ddd)
+write_both(f"{OUT}/samples", 960, 560, "The two samples: Storefront, an online store, and Tiffin, food delivery in nine services; what each is built of, how it was proved and what it proves", samples)
 write_both(f"{OUT}/skills", 960, 430, "The ten skills for AI coding agents and how Codex and Claude Code find them", skills)
 print("drawn:", ", ".join(sorted(os.listdir(OUT))))
