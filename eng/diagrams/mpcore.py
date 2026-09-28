@@ -340,7 +340,7 @@ def samples(d):
         ("amber", "The second sample", "Tiffin", "Food delivery",
          "Nine services, a database each, no shared assembly",
          [("Transports", "REST and gRPC"), ("Messaging", "Kafka and RabbitMQ, a saga"), ("Data", "PostgreSQL, TimescaleDB, Redis, S3"),
-          ("Tenants", "two cities"), ("Business rules", "33"), ("Tests", "213"), ("Scenarios", "15: 266 checks, each store"), ("MP Core", "0.9.2")],
+          ("Tenants", "two cities"), ("Business rules", "33"), ("Tests", "216"), ("Scenarios", "16: 286 checks, each store"), ("MP Core", "0.9.2")],
          ["An order through six services, and taken back", "The city on every message and every call", "A service down, and nothing lost"],
          ["postgresql", "timescale", "redis", "apachekafka", "rabbitmq", "keycloak", "apisix", "rustfs", "seaweedfs"], "mpcore-tiffin-sample"),
     ]
