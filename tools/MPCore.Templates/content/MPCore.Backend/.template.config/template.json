@@ -246,6 +246,14 @@
       "datatype": "text",
       "defaultValue": "replace-me",
       "replaces": "MPCORE_SECURITY_AUDIENCE"
+    },
+    "userSecretsId": {
+      "type": "generated",
+      "generator": "guid",
+      "parameters": {
+        "defaultFormat": "D"
+      },
+      "replaces": "MPCORE_USER_SECRETS_ID"
     }
   },
   "sources": [
@@ -305,6 +313,12 @@
           "condition": "(!includeBusinessAudit)",
           "exclude": [
             "src/MPCore.Backend.Infrastructure/Audit/**"
+          ]
+        },
+        {
+          "condition": "(shape != \"service\")",
+          "exclude": [
+            "tests/MPCore.Backend.Tests/ArchitectureTests.cs"
           ]
         }
       ]
