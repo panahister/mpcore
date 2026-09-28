@@ -16,7 +16,8 @@ once, in the open, with a test for each and the name of the person who first des
 [Capabilities](docs/guide/capabilities.md) ·
 [Reference architecture](docs/architecture/reference-architecture.md) ·
 [AI agents](#built-for-ai-coding-agents) ·
-[The sample](https://github.com/panahister/mpcore-storefront-sample) ·
+[Storefront](https://github.com/panahister/mpcore-storefront-sample) ·
+[Tiffin](https://github.com/panahister/mpcore-tiffin-sample) ·
 [Decisions](docs/decisions) ·
 [Release notes](docs/releases/0.9.2.md)
 
@@ -59,7 +60,7 @@ service a team builds is as sound as the first.
 </picture>
 
 [**The catalogue of capabilities**](docs/guide/capabilities.md) has every line of this picture, with the
-package that carries it and how it was proved: by a test of this repository, or by a scenario of the
+package that carries it and how it was proved: by a test of this repository, or by a scenario of a
 sample that runs against live backends. It ends with what MP Core deliberately **does not** do, because a
 framework that says yes to everything guarantees nothing.
 
@@ -122,17 +123,17 @@ OTLP for telemetry. A product that speaks the standard fits. The table says whic
 
 | Part | Product | How MP Core works with it | Proved |
 |---|---|---|---|
-| API gateway | [Apache APISIX](https://apisix.apache.org) | TLS ends at the edge; REST and gRPC are routed to separate listeners; forwarded headers are believed from trusted proxies only; identity headers a caller could forge are removed | Run by the sample's scenarios |
+| API gateway | [Apache APISIX](https://apisix.apache.org) | TLS ends at the edge; REST and gRPC are routed to separate listeners; forwarded headers are believed from trusted proxies only; identity headers a caller could forge are removed | Run by the scenarios of both samples |
 | API gateway | [WSO2 API Manager](https://wso2.com/api-manager/), or another gateway | The same: it forwards the bearer token and the `X-Forwarded-*` headers | Fits by standard. Not run by this project |
-| Identity | [Keycloak](https://www.keycloak.org) | A preset for realm roles, client roles and service accounts; one audience per backend | Run by the sample's scenarios |
+| Identity | [Keycloak](https://www.keycloak.org) | A preset for realm roles, client roles and service accounts; one audience per backend; a service's own token by client credentials. A service account is recognised by `client_id`, which Keycloak 25 and later write only for a client with the `service_account` scope | Run by the scenarios of both samples; client credentials by Tiffin's |
 | Identity | WSO2 Identity Server, Microsoft Entra ID, another OpenID Connect provider | A plain mapping of claims to roles, without a provider's name in the code | Fits by standard. Unit tests only |
-| Messaging | [Apache Kafka](https://kafka.apache.org) | Integration events, partitioned by key; an outbox on the way out, an inbox on the way in | Run by the sample's scenarios |
-| Messaging | [RabbitMQ](https://www.rabbitmq.com) | Work for one reader, on durable queues | Run by the sample's scenarios |
+| Messaging | [Apache Kafka](https://kafka.apache.org) | Integration events, partitioned by key; an outbox on the way out, an inbox on the way in; the tenant in a header | Run by the scenarios of both samples |
+| Messaging | [RabbitMQ](https://www.rabbitmq.com) | Work for one reader, on durable queues | Run by the scenarios of both samples; a saga's requests and answers in Tiffin |
 | Execution | [Wolverine](https://wolverinefx.net) | Handlers, middleware, durable local queues and the outbox | Run by the framework's own tests |
 | Data | [PostgreSQL](https://www.postgresql.org) with Entity Framework Core | The unit of work, the outbox, the audit trail, idempotency and stored translations | Run by the framework's integration tests |
-| Data | [TimescaleDB](https://www.timescale.com) | Hypertables, created in a migration | Run by the sample's scenarios |
-| Cache | [Redis](https://redis.io) | A distributed cache, or the second level behind an in-process one | Run by the sample's scenarios |
-| Telemetry | [OpenTelemetry](https://opentelemetry.io) with Jaeger, Prometheus and Grafana | Logs, traces and metrics over OTLP, each signal to its own destination | Run by the sample's scenarios |
+| Data | [TimescaleDB](https://www.timescale.com) | Hypertables, compression and retention, created in a migration | Run by the scenarios of both samples |
+| Cache | [Redis](https://redis.io) | A distributed cache, or the second level behind an in-process one | Run by the scenarios of both samples |
+| Telemetry | [OpenTelemetry](https://opentelemetry.io) with Jaeger, Prometheus and Grafana | Logs, traces and metrics over OTLP, each signal to its own destination | Run by Storefront's scenarios. Configured in Tiffin and not looked at |
 
 ## Domain-Driven Design
 
@@ -174,7 +175,7 @@ that a log cannot answer it.
 | Where is it? | In the backend's own database, next to the business data, and readable through a port: `IAuditQuery` |
 
 Choose it with `--business-audit postgresql`. A handler records a business action in one line,
-`audit.RecordAsync(...)`; the changes of an entity are recorded without a line. In the sample, scenario S3
+`audit.RecordAsync(...)`; the changes of an entity are recorded without a line. In Storefront, scenario S3
 reads the record of a price change that was refused.
 
 ## Every message in the caller's language
@@ -199,7 +200,7 @@ In MP Core **no sentence is written in code**. A rule, a validator and a failure
 | A text changed without a release | Stored translations: support edits a text, and every instance shows it within its refresh interval |
 | A client that acts on the failure | The code and the error domain never change with the language; the text is for people |
 
-In the sample, scenario S13 shows a refusal in Persian, then a member of staff changes its text while
+In Storefront, scenario S13 shows a refusal in Persian, then a member of staff changes its text while
 the backend runs. The same scenario asks for `zh-CN` and receives the rule of the picture above in
 Simplified Chinese, from the Catalog's `zh-Hans` resource file.
 
@@ -234,7 +235,7 @@ before writing, what to ask the owner, what must never be decided alone, and how
 it through `CLAUDE.md` and `.claude/skills/`, Codex through `AGENTS.md` and `.agents/skills/`. Choose with
 `--ai-tooling claude`, `codex` or `both`.
 
-**See it done.** In the sample, the same task was given to Claude Code and to Codex, each with the skill
+**See it done.** In Storefront, the same task was given to Claude Code and to Codex, each with the skill
 and nothing else. [Building with AI agents](https://github.com/panahister/mpcore-storefront-sample/blob/main/docs/building-with-ai-agents.md)
 has the task as it was given, what each agent did, and what a person still had to check.
 
@@ -253,13 +254,15 @@ document proves nothing.
 | A message never leaves without the change that caused it, even when a save fails and is retried | Eight checkouts of one basket at the same moment, repeated. Before the fix: 3 accepted, 16 orders. After: 5 accepted, 5 orders |
 | A request repeated with the same key runs once | Two concurrent attempts with one key: one commits, both callers receive its answer |
 | An event delivered three times is handled once | A test against a real broker host, seen failing with the inbox removed |
-| A failure returned after a change rolls the change back | Integration tests; and in the sample, a refused checkout leaves the basket as it was |
+| A failure returned after a change rolls the change back | Integration tests; and in Storefront, a refused checkout leaves the basket as it was |
 | A refused attempt is still audited, although its transaction was rolled back | An integration test: the audit record survives the rollback |
-| No endpoint is reachable without a token unless it says so | A test reads the composition of a generated backend and names the only endpoints that may be anonymous; the sample's scenarios ask each backend without a token |
+| No endpoint is reachable without a token unless it says so | A test reads the composition of a generated backend and names the only endpoints that may be anonymous; the scenarios of both samples ask each backend without a token |
+| A tenant travels with a message and with a call between services, and is believed from a listed service only | Tests seen failing: the handler saw no tenant, and each of six guards broken on purpose failed its test. In Tiffin, Payments' audit trail names the city of all 20 payments the scenarios open; with Ordering taken off Payments' list, the next one names none |
 | A published version is never built again | The release gate verifies the packed files by their hashes, and proves that it rejects twelve kinds of bad file |
 
-The sample's [lessons](https://github.com/panahister/mpcore-storefront-sample/blob/main/docs/lessons.md)
-tell what was wrong before each of these was true.
+Storefront's [lessons](https://github.com/panahister/mpcore-storefront-sample/blob/main/docs/lessons.md) and
+Tiffin's [findings](https://github.com/panahister/mpcore-tiffin-sample/blob/main/docs/findings.md) tell what
+was wrong before each of these was true.
 
 ## On the shoulders of
 
@@ -293,15 +296,30 @@ MP Core also learned from code that others gave away: Microsoft's [eShop](https:
 Jason Taylor's and Steve Smith's Clean Architecture templates, and Jeremy D. Miller's Wolverine, on which
 its execution model stands.
 
-## The sample
+## The samples
 
-[**Storefront**](https://github.com/panahister/mpcore-storefront-sample) is an online store built with
-MP Core as three backends behind a gateway: a modular monolith of four modules and two services, over
-REST, gRPC, Kafka and RabbitMQ, with Keycloak, PostgreSQL, TimescaleDB and Redis. It starts with four
-commands, and twenty-one business scenarios run against it, on your machine and on GitHub.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/samples-dark.svg">
+  <img alt="Two samples: Storefront, an online store built as a modular monolith and two services, with 262 tests and 22 scenarios; and Tiffin, food delivery in nine services and two cities, with 213 tests and 15 scenarios of 266 checks. What each is built of and what it proves first" src="docs/images/samples-light.svg" width="100%">
+</picture>
 
-It is where MP Core is proved, and where a developer learns it: a path of thirteen steps through the code,
-one idea at a time.
+Two samples run on MP Core, and on GitHub on every change. Each is where a part of MP Core is proved, and
+each found what MP Core then fixed.
+
+| | [**Storefront**](https://github.com/panahister/mpcore-storefront-sample) | [**Tiffin**](https://github.com/panahister/mpcore-tiffin-sample) |
+|---|---|---|
+| What it is | An online store | Food delivery, in two cities |
+| Its shape | A modular monolith of four modules, and two services | Nine services, a database each, no shared assembly |
+| Behind | Apache APISIX, Keycloak | Apache APISIX, Keycloak, and Access in front of Keycloak's administration |
+| Between them | Kafka and RabbitMQ | Kafka, and RabbitMQ for a saga's requests and answers |
+| Data | PostgreSQL, TimescaleDB, Redis | PostgreSQL, TimescaleDB, Redis, and RustFS or SeaweedFS behind the S3 API |
+| Proved by | 262 tests; 22 scenarios, 146 and 160 checks | 213 tests; 15 scenarios, 266 checks with each file store |
+| Built with | MP Core `0.9.1` | MP Core `0.9.2` |
+| Start with | the [learning path](https://github.com/panahister/mpcore-storefront-sample/blob/main/docs/learning-path.md): thirteen steps through the code, one idea at a time | [the journey of one order](https://github.com/panahister/mpcore-tiffin-sample#one-order-through-six-services), and [what building it found](https://github.com/panahister/mpcore-tiffin-sample/blob/main/docs/findings.md) |
+| What MP Core gained from it | the fixes of `0.9.0`: [lessons](https://github.com/panahister/mpcore-storefront-sample/blob/main/docs/lessons.md) | the tenant of a message and a service's own token (`0.9.1`), the tenant of a call (`0.9.2`) |
+
+Each starts with four commands. The numbers are those of the last runs on GitHub; each sample's README says
+which run.
 
 ## What MP Core is not
 

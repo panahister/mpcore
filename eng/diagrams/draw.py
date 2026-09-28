@@ -54,6 +54,7 @@ TILES = {
     "apisix": ("AX", "#e8433e"), "wso2": ("W2", "#ff7300"), "grpc": ("gR", "#2a9d8f"), "wolverine": ("Wv", "#6b4fbb"),
     "mpcore": ("MP", "#2563eb"), "oidc": ("ID", "#f78c40"), "wiremock": ("WM", "#1e88a8"), "rest": ("{ }", "#0d9488"),
     "people": ("", "#6e7781"),
+    "rustfs": ("RF", "#e05d2c"), "seaweedfs": ("SW", "#2f9e44"),
 }
 _paths = {}
 
