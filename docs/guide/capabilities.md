@@ -71,6 +71,7 @@ live backends on every change. A line with neither says so.
 | Two brokers in one backend | both | Sample: the Commerce backend |
 | Publishing through a port that knows no broker: `IMessagePublisher`, with correlation, tenant and idempotency key | `MPCore.Messaging.Abstractions` | Tests |
 | A message carries the tenant of the work that published it, and its handler works for that tenant, the save included (since `0.9.1`) | `MPCore.Messaging.Wolverine` | Tests: `TenantOverMessagesTests`, seen failing; Tiffin S1, S6 |
+| A delay set by the publisher: a deadline for a step of a process, delivered no sooner than its delay after the commit, kept in the host's durable store and not in the broker, on a local queue, RabbitMQ and Kafka (not released yet) | `MPCore.Messaging.Abstractions` (`MessageDeliveryContext.DeliverAfter`), `MPCore.Messaging.Wolverine` | Tests: `DelayedDeliveryTests`, seen failing, against PostgreSQL, RabbitMQ and Kafka; a host restart in between |
 | Retry with a cooldown, dead letters | Wolverine, configured by the host | Sample S7, S16 |
 
 ## 6. Transport
@@ -181,7 +182,7 @@ says yes to everything guarantees nothing.
 | Validators that read the database | A check that needs state is a business rule |
 | Automatic retry of a failure the business returned | A verdict is not retried |
 | Delivery of an event that has no route | A route is declared, and a test proves it |
-| A partition key or a delay set by the publisher | Set by the host's routing rules |
+| A partition key set by the publisher | Set by the host's routing rules |
 | A worker host without a transport | Generate a service |
 | Cache invalidation by tags | Evict by key, after the commit |
 | Redaction of metric labels | Never put an identifier in a label |

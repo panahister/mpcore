@@ -29,6 +29,8 @@ docker compose -f eng/compose.test.yaml up -d
 export MPCORE_TEST_POSTGRESQL='Host=localhost;Port=54329;Database=mpcore_it;Username=mpcore;Password=mpcore'
 export MPCORE_TEST_TIMESCALE='Host=localhost;Port=54330;Database=mpcore_it;Username=mpcore;Password=mpcore'
 export MPCORE_TEST_REDIS='localhost:56390'
+export MPCORE_TEST_RABBITMQ='amqp://mpcore:mpcore@localhost:56720'
+export MPCORE_TEST_KAFKA='localhost:59094'
 dotnet test MPCore.sln --configuration Release --no-build
 ```
 

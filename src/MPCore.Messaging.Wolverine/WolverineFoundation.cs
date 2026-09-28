@@ -122,6 +122,11 @@ internal static class MessageDelivery
         IMessageBus messageBus, object message, MessageDeliveryContext delivery, string? tenant, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(delivery);
+        if (delivery.DeliverAfter is { } delay && delay < TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(delivery), delay, "A message cannot be delivered before it was published.");
+        }
+
         cancellationToken.ThrowIfCancellationRequested();
 
         // A tenant the publisher names wins: a job that works for one tenant after another says which.
@@ -139,6 +144,13 @@ internal static class MessageDelivery
         if (integrationEvent is not null)
         {
             Add(options, MessageHeaders.EventVersion, integrationEvent.EventVersion.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        }
+
+        // Wolverine keeps a message with a delay in the host's durable store and sends it when the delay has
+        // passed, whatever the transport: neither Kafka nor RabbitMQ is asked to wait (ADR-015).
+        if (delivery.DeliverAfter is { } delay && delay > TimeSpan.Zero)
+        {
+            options.ScheduleDelay = delay;
         }
 
         return options;
