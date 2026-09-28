@@ -16,6 +16,8 @@
     <!-- A queued handler has no request and so no user; this adapter names it as a system actor for the
          whole of its execution, save included. Abstractions only. -->
     <ProjectReference Include="../MPCore.Security.Abstractions/MPCore.Security.Abstractions.csproj" />
+    <!-- A message belongs to a tenant, and its handler works for that tenant. Abstractions only. -->
+    <ProjectReference Include="../MPCore.Tenancy.Abstractions/MPCore.Tenancy.Abstractions.csproj" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <!-- Pinned with EF Core. Left transitive, Relational resolves through Npgsql or Wolverine to an
          older patch (10.0.4) while EF Core is 10.0.11, and a consumer compiled against both fails with

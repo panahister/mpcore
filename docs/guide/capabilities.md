@@ -70,6 +70,7 @@ live backends on every change. A line with neither says so.
 | RabbitMQ: durable queues | `MPCore.Messaging.Wolverine.RabbitMQ` | Sample S18 |
 | Two brokers in one backend | both | Sample: the Commerce backend |
 | Publishing through a port that knows no broker: `IMessagePublisher`, with correlation, tenant and idempotency key | `MPCore.Messaging.Abstractions` | Tests |
+| A message carries the tenant of the work that published it, and its handler works for that tenant, the save included (since `0.9.1`) | `MPCore.Messaging.Wolverine` | Tests: `TenantOverMessagesTests`, seen failing; Tiffin S1, S6 |
 | Retry with a cooldown, dead letters | Wolverine, configured by the host | Sample S7, S16 |
 
 ## 6. Transport
@@ -146,6 +147,7 @@ live backends on every change. A line with neither says so.
 | A Prometheus scrape endpoint, protected by default | `MPCore.Observability.Prometheus` | Tests |
 | Health: alive and ready, over REST and over gRPC | the template | Tests; proved with the databases stopped |
 | Calls to other systems with timeouts, retries and a circuit breaker | `MPCore.Resilience.Http` | Tests: `MPCore.Resilience.Tests`; sample S6, S7 |
+| A call to another service as the service itself: a token by OAuth 2.0 client credentials, asked for once, never sent in cleartext (since `0.9.1`) | `MPCore.Resilience.Http` | Tests: `ServiceIdentityTests`; Tiffin S0, S1, S10 |
 
 ## 12. Tooling
 
@@ -157,7 +159,7 @@ live backends on every change. A line with neither says so.
 | A manifest of the choices in every generated backend | `.mpcore/template-manifest.json` | Tests |
 | The generator refuses a template of another version | `MPCore.Cli` | Tests; the release gate |
 | Ten skills for AI coding agents, for Claude Code and for Codex | the template | Both agents were asked, in the sample, which skills they see |
-| Multi-tenancy: the tenant from a claim of the token, an ambient scope for work with no caller, recorded in the audit trail | `MPCore.Tenancy.Abstractions` | Tests. The sample has one tenant |
+| Multi-tenancy: the tenant from a claim of the token, an ambient scope for work with no caller, recorded in the audit trail | `MPCore.Tenancy.Abstractions` | Tests; Tiffin S6, with two tenants. Storefront has one |
 | Publication with no stored key | `release.yml` | The packages of `0.9.0` were published this way |
 
 ## What MP Core deliberately does not do

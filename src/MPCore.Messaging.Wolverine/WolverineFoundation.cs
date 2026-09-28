@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MPCore.Messaging.Abstractions;
 using MPCore.Persistence.Abstractions;
+using MPCore.Tenancy;
 using Wolverine;
 using Wolverine.EntityFrameworkCore;
 using Wolverine.ErrorHandling;
@@ -47,33 +48,88 @@ public sealed class WolverineFoundationOptions
     }
 }
 
-/// <summary>The Wolverine-backed <see cref="IMessagePublisher"/>.</summary>
+/// <summary>The Wolverine-backed <see cref="IMessagePublisher"/>, for a host that has no tenant context of its own.</summary>
+/// <remarks>
+/// A message is published for the tenant of the open <see cref="TenantScope"/>, and without a tenant when
+/// none is open. MP Core registers <see cref="WolverineTenantMessagePublisher"/>, which also asks the
+/// host's <see cref="ITenantContext"/>; this type stays for whoever constructs a publisher by hand.
+/// </remarks>
 /// <param name="messageBus">The Wolverine message bus.</param>
 public sealed class WolverineMessagePublisher(IMessageBus messageBus) : IMessagePublisher
 {
     /// <inheritdoc />
-    public ValueTask PublishAsync(object message, CancellationToken cancellationToken = default)
+    public ValueTask PublishAsync(object message, CancellationToken cancellationToken = default) =>
+        MessageDelivery.PublishAsync(messageBus, message, TenantScope.Current, cancellationToken);
+
+    /// <inheritdoc />
+    public ValueTask PublishAsync(object message, MessageDeliveryContext delivery, CancellationToken cancellationToken = default) =>
+        MessageDelivery.PublishAsync(messageBus, message, delivery, TenantScope.Current, cancellationToken);
+}
+
+/// <summary>The Wolverine-backed <see cref="IMessagePublisher"/> MP Core registers: a message belongs to the tenant of the work that publishes it.</summary>
+/// <remarks>
+/// <para>
+/// When the publisher names no tenant, the tenant is the one the host knows: the token's in a request, the
+/// open <see cref="TenantScope"/> in a handler that runs from a queue. <see cref="HandlerTenantMiddleware"/>
+/// reads it on the other side.
+/// </para>
+/// <para>
+/// One constructor, on purpose. Wolverine writes the code that builds a handler's dependencies. Given a
+/// second constructor without the tenant context it used that one, whichever was declared first, and every
+/// message left without its tenant (ADR-014).
+/// </para>
+/// </remarks>
+/// <param name="messageBus">The Wolverine message bus.</param>
+/// <param name="tenants">
+/// The host's tenant context. Optional: a host that registers none still publishes for the ambient
+/// <see cref="TenantScope"/>, and a single-tenant host publishes without a tenant.
+/// </param>
+public sealed class WolverineTenantMessagePublisher(IMessageBus messageBus, ITenantContext? tenants = null) : IMessagePublisher
+{
+    private string? Tenant => tenants?.TenantId ?? TenantScope.Current;
+
+    /// <inheritdoc />
+    public ValueTask PublishAsync(object message, CancellationToken cancellationToken = default) =>
+        MessageDelivery.PublishAsync(messageBus, message, Tenant, cancellationToken);
+
+    /// <inheritdoc />
+    public ValueTask PublishAsync(object message, MessageDeliveryContext delivery, CancellationToken cancellationToken = default) =>
+        MessageDelivery.PublishAsync(messageBus, message, delivery, Tenant, cancellationToken);
+}
+
+/// <summary>How a message leaves: with its correlation, its tenant, and a key a consumer can deduplicate on.</summary>
+internal static class MessageDelivery
+{
+    public static ValueTask PublishAsync(IMessageBus messageBus, object message, string? tenant, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         // An integration event already knows its identity. Sending it as the idempotency key lets any
         // consumer, MP Core's inbox or another system's, recognise a second delivery of the same event.
-        return message is IIntegrationEvent integrationEvent
-            ? messageBus.PublishAsync(message, Delivery(new MessageDeliveryContext(
-                integrationEvent.CorrelationId, integrationEvent.CausationId, null, integrationEvent.EventId.ToString("N")),
-                integrationEvent))
-            : messageBus.PublishAsync(message);
+        if (message is IIntegrationEvent integrationEvent)
+        {
+            return messageBus.PublishAsync(message, Options(new MessageDeliveryContext(
+                integrationEvent.CorrelationId, integrationEvent.CausationId, tenant, integrationEvent.EventId.ToString("N")),
+                integrationEvent));
+        }
+
+        return tenant is null
+            ? messageBus.PublishAsync(message)
+            : messageBus.PublishAsync(message, Options(new MessageDeliveryContext(null, null, tenant), null));
     }
 
-    /// <inheritdoc />
-    public ValueTask PublishAsync(object message, MessageDeliveryContext delivery, CancellationToken cancellationToken = default)
+    public static ValueTask PublishAsync(
+        IMessageBus messageBus, object message, MessageDeliveryContext delivery, string? tenant, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(delivery);
         cancellationToken.ThrowIfCancellationRequested();
-        return messageBus.PublishAsync(message, Delivery(delivery, message as IIntegrationEvent));
+
+        // A tenant the publisher names wins: a job that works for one tenant after another says which.
+        var named = delivery.TenantId is null ? delivery with { TenantId = tenant } : delivery;
+        return messageBus.PublishAsync(message, Options(named, message as IIntegrationEvent));
     }
 
-    private static DeliveryOptions Delivery(MessageDeliveryContext delivery, IIntegrationEvent? integrationEvent)
+    private static DeliveryOptions Options(MessageDeliveryContext delivery, IIntegrationEvent? integrationEvent)
     {
         var options = new DeliveryOptions();
         Add(options, MessageHeaders.CorrelationId, delivery.CorrelationId);
@@ -149,7 +205,7 @@ public static class WolverineFoundationExtensions
         hostBuilder.ConfigureServices(services =>
         {
             services.AddSingleton(foundation);
-            services.AddScoped<IMessagePublisher, WolverineMessagePublisher>();
+            services.AddScoped<IMessagePublisher, WolverineTenantMessagePublisher>();
         });
 
         hostBuilder.UseWolverine(options =>
@@ -181,6 +237,10 @@ public static class WolverineFoundationExtensions
             // A handler with no request behind it runs as a named system actor, save included; see
             // HandlerActorMiddleware.
             options.Policies.AddMiddleware(typeof(HandlerActorMiddleware));
+
+            // A handler works for the tenant its message belongs to, save included; see
+            // HandlerTenantMiddleware.
+            options.Policies.AddMiddleware(typeof(HandlerTenantMiddleware));
 
             // A broken business rule is a verdict, not a transient fault: every retry would replay the
             // same verdict against the same state. The message goes straight to the dead-letter queue,

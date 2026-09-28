@@ -16,6 +16,7 @@
     <ProjectReference Include="../../src/MPCore.Validation.FluentValidation/MPCore.Validation.FluentValidation.csproj" />
     <!-- Test-only: the port-based transaction tests need a real MPCoreDbContext and the IClock port. -->
     <ProjectReference Include="../../src/MPCore.Application/MPCore.Application.csproj" />
+    <ProjectReference Include="../../src/MPCore.Tenancy.Abstractions/MPCore.Tenancy.Abstractions.csproj" />
     <ProjectReference Include="../../src/MPCore.Persistence.EntityFrameworkCore.PostgreSql/MPCore.Persistence.EntityFrameworkCore.PostgreSql.csproj" />
     <ProjectReference Include="../../src/MPCore.Messaging.Wolverine.Kafka/MPCore.Messaging.Wolverine.Kafka.csproj" />
     <ProjectReference Include="../../src/MPCore.Messaging.Wolverine.RabbitMQ/MPCore.Messaging.Wolverine.RabbitMQ.csproj" />

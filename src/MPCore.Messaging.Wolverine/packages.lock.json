@@ -702,10 +702,13 @@
       "mpcore.persistence.abstractions": {
         "type": "Project",
         "dependencies": {
-          "MPCore.Domain": "[0.2.0-alpha.9, )"
+          "MPCore.Domain": "[0.9.0, )"
         }
       },
       "mpcore.security.abstractions": {
+        "type": "Project"
+      },
+      "mpcore.tenancy.abstractions": {
         "type": "Project"
       },
       "Microsoft.EntityFrameworkCore.Design": {
