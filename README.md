@@ -194,13 +194,14 @@ In MP Core **no sentence is written in code**. A rule, a validator and a failure
 |---|---|
 | The caller's language | `Accept-Language`, over REST and over gRPC, with the same result |
 | A second language | A resource file next to the first. MP Core's own messages ship in English and Persian |
-| A fallback | `fa-IR`, then `fa`, then the default language. A text that exists nowhere is counted on a metric and logged once, never invented |
+| A fallback | `zh-CN`, then `zh-Hans`, then `zh`, then the default language. A text that exists nowhere is counted on a metric and logged once, never invented |
 | Numbers in the sentence | Named placeholders: `{max_move_percent}`, filled from the rule's arguments |
 | A text changed without a release | Stored translations: support edits a text, and every instance shows it within its refresh interval |
 | A client that acts on the failure | The code and the error domain never change with the language; the text is for people |
 
 In the sample, scenario S13 shows a refusal in Persian, then a member of staff changes its text while
-the backend runs.
+the backend runs. The same scenario asks for `zh-CN` and receives the rule of the picture above in
+Simplified Chinese, from the Catalog's `zh-Hans` resource file.
 
 ## Built for AI coding agents
 
