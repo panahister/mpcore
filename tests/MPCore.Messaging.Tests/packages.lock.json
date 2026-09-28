@@ -593,11 +593,12 @@
       "mpcore.messaging.wolverine": {
         "type": "Project",
         "dependencies": {
-          "MPCore.Application": "[0.2.0-alpha.9, )",
-          "MPCore.Domain": "[0.2.0-alpha.9, )",
-          "MPCore.Messaging.Abstractions": "[0.2.0-alpha.9, )",
-          "MPCore.Persistence.Abstractions": "[0.2.0-alpha.9, )",
-          "MPCore.Security.Abstractions": "[0.2.0-alpha.9, )",
+          "MPCore.Application": "[0.9.0, )",
+          "MPCore.Domain": "[0.9.0, )",
+          "MPCore.Messaging.Abstractions": "[0.9.0, )",
+          "MPCore.Persistence.Abstractions": "[0.9.0, )",
+          "MPCore.Security.Abstractions": "[0.9.0, )",
+          "MPCore.Tenancy.Abstractions": "[0.9.0, )",
           "Microsoft.EntityFrameworkCore": "[10.0.11, )",
           "Microsoft.EntityFrameworkCore.Relational": "[10.0.11, )",
           "WolverineFx": "[6.31.0, )",
@@ -609,28 +610,28 @@
       "mpcore.messaging.wolverine.kafka": {
         "type": "Project",
         "dependencies": {
-          "MPCore.Messaging.Wolverine": "[0.2.0-alpha.9, )",
+          "MPCore.Messaging.Wolverine": "[0.9.0, )",
           "WolverineFx.Kafka": "[6.31.0, )"
         }
       },
       "mpcore.messaging.wolverine.rabbitmq": {
         "type": "Project",
         "dependencies": {
-          "MPCore.Messaging.Wolverine": "[0.2.0-alpha.9, )",
+          "MPCore.Messaging.Wolverine": "[0.9.0, )",
           "WolverineFx.RabbitMQ": "[6.31.0, )"
         }
       },
       "mpcore.persistence.abstractions": {
         "type": "Project",
         "dependencies": {
-          "MPCore.Domain": "[0.2.0-alpha.9, )"
+          "MPCore.Domain": "[0.9.0, )"
         }
       },
       "mpcore.persistence.entityframeworkcore.postgresql": {
         "type": "Project",
         "dependencies": {
-          "MPCore.Domain": "[0.2.0-alpha.9, )",
-          "MPCore.Persistence.Abstractions": "[0.2.0-alpha.9, )",
+          "MPCore.Domain": "[0.9.0, )",
+          "MPCore.Persistence.Abstractions": "[0.9.0, )",
           "Microsoft.EntityFrameworkCore": "[10.0.11, )",
           "Microsoft.EntityFrameworkCore.Relational": "[10.0.11, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
@@ -639,12 +640,15 @@
       "mpcore.security.abstractions": {
         "type": "Project"
       },
+      "mpcore.tenancy.abstractions": {
+        "type": "Project"
+      },
       "mpcore.validation.fluentvalidation": {
         "type": "Project",
         "dependencies": {
           "FluentValidation": "[12.1.1, )",
           "FluentValidation.DependencyInjectionExtensions": "[12.1.1, )",
-          "MPCore.Application": "[0.2.0-alpha.9, )",
+          "MPCore.Application": "[0.9.0, )",
           "WolverineFx": "[6.31.0, )",
           "WolverineFx.FluentValidation": "[6.31.0, )"
         }
