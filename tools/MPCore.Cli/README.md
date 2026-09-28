@@ -6,7 +6,7 @@
 mpcore new backend --organization Acme --component Catalog \
   --output ./catalog --transport both \
   --shape modular-monolith --messaging kafka \
-  --mpcore-version 0.9.0
+  --mpcore-version 0.9.1
 ```
 
 Install the `MPCore.Templates` package **of the same version** before running the command. The CLI verifies this after generation and refuses to continue on a mismatch; see *Template compatibility* below.
@@ -21,7 +21,7 @@ Install the `MPCore.Templates` package **of the same version** before running th
 | `--transport` | **yes** | `grpc`, `rest`, `both` | none |
 | `--shape` | no | `service`, `modular-monolith` | `service` |
 | `--messaging` | no | `kafka`, `rabbitmq`, `none` | `kafka` |
-| `--mpcore-version` | no | exact semantic version | `0.9.0` |
+| `--mpcore-version` | no | exact semantic version | `0.9.1` |
 | `--ai-tooling` | no | `both`, `codex`, `claude`, `none` | `both` |
 | `--business-audit` | no | `none`, `postgresql` | `none` |
 | `--cache` | no | `none`, `memory`, `redis`, `hybrid` | `memory` |
@@ -80,9 +80,9 @@ adds `aiTooling`, so a generated repository records which assistant entry points
   "cache": "memory",
   "timeseries": "none",
   "aiTooling": "both",
-  "mpcoreVersion": "0.9.0",
-  "templateVersion": "0.9.0",
-  "cliVersion": "0.9.0",
+  "mpcoreVersion": "0.9.1",
+  "templateVersion": "0.9.1",
+  "cliVersion": "0.9.1",
   "generatedAtUtc": "2026-09-06T00:00:00+00:00"
 }
 ```
@@ -106,7 +106,7 @@ The template therefore ships a version marker that the CLI reads immediately aft
 
 ```bash
 dotnet new uninstall MPCore.Templates
-dotnet new install MPCore.Templates::0.9.0
+dotnet new install MPCore.Templates::0.9.1
 ```
 
 A published or distributed version is never rebuilt with different bytes. A corrected build always
