@@ -97,5 +97,69 @@ much as how long it waits. No package is added, and no dependency: the grant is 
 
 | | |
 |---|---|
-| **The tenant of a call between services** | A service's own token names no tenant. Tiffin carries the tenant in the request (a field of the gRPC message) and the called service believes it because it believes the caller. The audit trail of the called service then records no tenant for that change. Whether MP Core should carry the tenant of a call, as it now carries the tenant of a message, and whom the called service should believe, is a decision about trust and is left to the owner |
+| **The tenant of a call between services** | Decided on 2026-09-28: see the addendum below |
 | **A deadline for a step of a process** | MP Core's publisher cannot delay a message, deliberately. A saga whose step may never be answered needs a deadline |
+
+## Addendum, 2026-09-28: the tenant of a call between services
+
+- Status: Accepted by the owner, 2026-09-28
+
+### Context
+
+A service that calls another on behalf of a tenant calls with its own token (section 3), and that token
+names no tenant: a service belongs to no city. The called service therefore worked for nobody. Tiffin saw
+it in the audit trail of Payments: every payment that Ordering opened over gRPC was recorded without a
+city, while every change made from a message named one (Tiffin, finding T-05).
+
+### Decision
+
+**The tenant of a call travels in a header, as the tenant of a message does, and is believed only from a
+service the called host lists.**
+
+| Step | Who | What |
+|---|---|---|
+| Calling | `AddMPCoreTenantPropagation()`, on the client's builder (`MPCore.Resilience.Http`) | writes the tenant of the work into `x-tenant-id`: the host's `ITenantContext`, else the open `TenantScope`. A tenant the caller names on the request wins. A value that is not a tenant name is not sent |
+| Being called | `AddMPCoreTenancyFromClaim(options => options.TrustedServiceClients.Add("..."))` (`MPCore.Security.AspNetCore`) | the tenant is the token's claim. Only when the token names none, the actor is a service, and its client id is listed, the header is read |
+
+`TenantHeader` (`MPCore.Tenancy.Abstractions`) names the header and says what a tenant name is: 1 to 128
+characters, ASCII letters and digits, `-`, `_`, `.` and `:`. Two values, or one that is not a name, name
+nobody.
+
+**Why the header is believed from a listed service.** The called service believes the caller about who it
+is, because the identity provider signed the token. Whom the caller works for is the caller's word. A
+service of the same platform is trusted with that word as a broker of the platform is trusted with the
+header of a message (section 1): both are inside the platform's boundary. The list says which services are
+inside. It is empty by default, so a host that says nothing believes no header, as before.
+
+**Why never from a user, and never over the token.** A user who could name a tenant could name any tenant.
+A tenant the identity provider wrote into a token is the provider's word, and the provider is believed
+before any caller.
+
+### What a service's token must carry
+
+A caller is a service only if its token says so (`ActorClaimMappingOptions`): a client id in `client_id`,
+and no user name or one that starts with `service-account-`. Keycloak 25 and later write `client_id` only
+for a client that has the `service_account` client scope. Tiffin's realm file did not give it to its five
+service clients: Payments saw Ordering as a user, and so would have refused its header. The realm was
+corrected; a realm file lists `service_account` in `defaultClientScopes` of every service client, as
+Storefront's does.
+
+### Alternatives that were not taken
+
+| Alternative | Why not |
+|---|---|
+| The tenant in the body of every request, believed by the handler (what Tiffin did) | each contract carries it, each service reads it its own way, and the audit trail, which reads `ITenantContext`, never sees it |
+| Token exchange (RFC 8693): the caller exchanges the user's token for one that names the user, the tenant and the calling service (`act`) | the strongest: the identity provider, not the caller, names the tenant. It needs a provider that supports the exchange and a round trip per call. **Fits by standard, not run**; a platform that trusts none of its own services should take it |
+| Forwarding the user's token | the called service would accept a user where it accepts only services; the user's token would travel through services it was not issued for |
+| Believing the header from any service | one service that is compromised could then work for every tenant of every service |
+| W3C Baggage (`baggage` header, W3C Recommendation, and OpenTelemetry's propagation of it) | the same shape: context that travels with a call in a header. But every hop may read and change baggage, and a receiver has no rule for whom to believe; a tenant decides which data a call may touch. A header of its own, with a rule for whom it is believed from, keeps that decision in one place |
+
+### Consequences
+
+- The audit trail of a called service names the tenant of the call. In Tiffin, all twenty payments that
+  Ordering opened in the scenarios name their city; with Ordering taken off Payments' list, the next one
+  names none.
+- A host lists the services it believes. Adding a service to a platform is also a decision about which
+  hosts believe it.
+- The edge may remove `x-tenant-id` from requests that come from outside; the backend does not depend on
+  it, because a user's header is never read.

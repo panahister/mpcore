@@ -43,10 +43,15 @@ public sealed class ActorClaimMappingOptions
     public string RoleClaimType { get; set; } = "role";
 
     /// <summary>
-    /// Gets or sets the claim identifying a machine caller. When the claim is present and its value
-    /// equals the subject, or when no user-name claim exists, the actor is a
-    /// <see cref="ActorKind.Service"/>.
+    /// Gets or sets the claim identifying a machine caller. The actor is a <see cref="ActorKind.Service"/>
+    /// when this claim is present and either the token has no user name or its user name starts with
+    /// <see cref="ServiceAccountUserNamePrefix"/>. Otherwise it is a <see cref="ActorKind.User"/>.
     /// </summary>
+    /// <remarks>
+    /// Keycloak 25 and later write <c>client_id</c> only for a client that has the <c>service_account</c>
+    /// client scope. A client created in the console has it; a client imported from a realm file has it only
+    /// when the file lists it in <c>defaultClientScopes</c>. Without it a service's token maps to a user.
+    /// </remarks>
     public string? ServiceAccountClientIdClaim { get; set; } = "client_id";
 
     /// <summary>
