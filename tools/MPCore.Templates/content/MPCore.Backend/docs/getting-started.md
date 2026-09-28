@@ -36,6 +36,22 @@ dotnet restore
 dotnet build --configuration Release
 ```
 
+## Test
+
+```bash
+dotnet test tests/MPCore.Backend.Tests
+```
+
+`tests/MPCore.Backend.Tests` needs no database, no broker and no identity provider: `HostHealthChecksTests`
+proves that the alive check answers healthy on the process alone, never touching the database the ready
+check needs.
+<!--#if (shape == "service") -->
+`ArchitectureTests` proves the domain and the application name no provider and know nothing of the layers
+around them — Robert C. Martin's Dependency Rule, held by a test because the compiler alone cannot see it
+across project boundaries the way it sees it within one.
+<!--#endif -->
+As you add a capability, add its test here or to a project of its own; `.mpcore/skills/mpcore-verify-business-behavior/SKILL.md` says how.
+
 ## Configuration — replace before running
 
 `src/*.Api/appsettings.json` ships values that are deliberately unusable, so the host fails fast
@@ -49,11 +65,8 @@ rather than starting with a working default that nobody meant to keep:
 | `Messaging:*` | only when this project has a broker configured |
 
 **Do not put real values in `appsettings.json`.** Use user secrets, which live outside the
-repository:
-
-```bash
-dotnet user-secrets init --project src/*.Api
-```
+repository — the project already carries a `UserSecretsId`, a fresh GUID generated with this project,
+so no `dotnet user-secrets init` step is needed:
 
 ```bash
 dotnet user-secrets set "ConnectionStrings:PostgreSql" "<your connection string>" --project src/*.Api
@@ -61,6 +74,12 @@ dotnet user-secrets set "ConnectionStrings:PostgreSql" "<your connection string>
 
 Environment variables work too: `Security__Authority`, `ConnectionStrings__PostgreSql`. Nothing
 secret belongs in a committed file, and no credential belongs in a commit message or an issue.
+
+`appsettings.Development.json` ships with the project, for `ASPNETCORE_ENVIRONMENT=Development`
+(`dotnet run`'s own default): it binds Kestrel to `localhost` instead of every interface, trusts the
+loopback and Docker's own networks as a gateway's address, accepts an identity provider over plain
+HTTP, and lets a broker started fresh auto-provision its topics or queues. None of that belongs in
+`appsettings.json`, which a production deployment also reads.
 
 <!--#if (includeCacheConnection) -->
 `ConnectionStrings:Redis` is a StackExchange.Redis configuration string. The generated value
