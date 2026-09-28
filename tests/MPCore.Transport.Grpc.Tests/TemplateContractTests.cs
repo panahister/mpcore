@@ -16,7 +16,7 @@ public sealed class TemplateContractTests
     /// published version is never rebuilt with different bytes, so this constant moves only when a
     /// new prerelease is cut.
     /// </summary>
-    private const string CohortVersion = "0.9.2";
+    private const string CohortVersion = "0.9.3";
 
     [Fact]
     public void The_template_targets_the_current_cohort_and_the_transport_neutral_host()
