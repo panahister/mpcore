@@ -25,7 +25,11 @@ public static partial class TimescaleSql
     public static string AddRetentionPolicy(string table, string olderThan, string? schema = null) =>
         $"SELECT add_retention_policy({Literal(Qualified(schema, table))}, INTERVAL {Literal(Interval(olderThan))}, if_not_exists => TRUE);";
 
-    /// <summary>Enables compression, ordered and optionally segmented by columns.</summary>
+    /// <summary>
+    /// Enables compression, ordered by a column newest first (<c>DESC</c>) and optionally segmented by a
+    /// column. The direction is fixed, and the column is a name alone: a time series is read from its
+    /// latest point back.
+    /// </summary>
     public static string EnableCompression(string table, string orderBy, string? segmentBy = null, string? schema = null)
     {
         var settings = $"timescaledb.compress, timescaledb.compress_orderby = {Literal(Identifier(orderBy) + " DESC")}";
@@ -109,7 +113,7 @@ public static class TimescaleMigrationBuilderExtensions
         return migrationBuilder;
     }
 
-    /// <summary>Enables compression and adds a compression policy. Idempotent.</summary>
+    /// <summary>Enables compression, ordered by <paramref name="orderBy"/> newest first, and adds a compression policy. Idempotent.</summary>
     public static MigrationBuilder AddCompression(this MigrationBuilder migrationBuilder, string table, string orderBy, string compressOlderThan, string? segmentBy = null, string? schema = null)
     {
         ArgumentNullException.ThrowIfNull(migrationBuilder);

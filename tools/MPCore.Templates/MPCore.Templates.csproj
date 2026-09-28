@@ -2,7 +2,7 @@
   <PropertyGroup>
     <PackageId>MPCore.Templates</PackageId>
     <PackageType>Template</PackageType>
-    <VersionPrefix>0.9.0</VersionPrefix>
+    <VersionPrefix>0.9.1</VersionPrefix>
     <Authors>Mehdi Panahi</Authors>
     <Copyright>Copyright (c) The MP Core contributors</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

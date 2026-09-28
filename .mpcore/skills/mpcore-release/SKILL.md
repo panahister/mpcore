@@ -24,7 +24,7 @@ move, in `docs/releases/<version>.md`.
 1. Move the whole cohort together: runtime packages, `MPCore.Cli` and `MPCore.Templates`. The version is
    declared in five places, and `TemplateContractTests` fails when they disagree:
    `src/Directory.Build.props`, the two tool project files, `template.json` (twice) and
-   `MPCoreCli.CohortVersionValue`.
+   `MPCoreCli.CohortVersionValue`. The READMEs of the two tools name it too, and the test reads the CLI's.
 2. Locked restore, Release build with warnings as errors, full test run with the integration variables
    set (`eng/compose.test.yaml`). Report real numbers.
 3. Generate both shapes from the template and build them.

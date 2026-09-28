@@ -1,6 +1,6 @@
 # ADR-014 — The tenant of a message, and the identity of a service
 
-- Status: Proposed; pending owner acceptance
+- Status: Accepted, 2026-09-28
 - Date: 2026-09-28
 - Extends: ADR-003 (Wolverine transport), ADR-007 (reusable security and current actor), ADR-011 (application execution model)
 
