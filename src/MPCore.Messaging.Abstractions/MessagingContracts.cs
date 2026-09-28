@@ -46,7 +46,20 @@ public sealed record MessageDeliveryContext(
     string? CorrelationId,
     string? CausationId,
     string? TenantId = null,
-    string? IdempotencyKey = null);
+    string? IdempotencyKey = null)
+{
+    /// <summary>
+    /// Gets how long after the publishing work commits the message is delivered, at the earliest. Null or zero:
+    /// at once. Until then the message is kept in the host's durable store, so a host that stops does not lose
+    /// it. Meant for a deadline: a message that asks, when it arrives, whether what was awaited has happened.
+    /// </summary>
+    /// <remarks>
+    /// A delay is a lower bound, never an exact time: the message arrives when its delay has passed and the
+    /// host has picked it up. A handler that receives it asks the state, and does nothing when the awaited
+    /// thing has happened meanwhile (ADR-015).
+    /// </remarks>
+    public TimeSpan? DeliverAfter { get; init; }
+}
 
 /// <summary>The transport header names MP Core uses for message correlation.</summary>
 public static class MessageHeaders

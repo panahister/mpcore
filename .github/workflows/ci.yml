@@ -42,6 +42,34 @@ jobs:
         ports: ["6379:6379"]
         options: >-
           --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 20
+      rabbitmq:
+        image: rabbitmq:4.1.4-management-alpine
+        env:
+          RABBITMQ_DEFAULT_USER: mpcore
+          RABBITMQ_DEFAULT_PASS: mpcore
+        ports: ["5672:5672"]
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q check_running" --health-interval 5s --health-timeout 10s --health-retries 30
+      # One Kafka node that is its own controller (KRaft); the address it gives clients is the runner's.
+      kafka:
+        image: apache/kafka:4.0.0
+        env:
+          KAFKA_NODE_ID: 1
+          KAFKA_PROCESS_ROLES: broker,controller
+          KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+          KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,EXTERNAL://localhost:9094
+          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+          KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+          KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+          KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+          KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+          CLUSTER_ID: mPc0reTestsKafka00001w
+        ports: ["9094:9094"]
+        options: >-
+          --health-cmd "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092" --health-interval 5s --health-timeout 10s --health-retries 30 --health-start-period 20s
     env:
       DOTNET_NOLOGO: "true"
       DOTNET_CLI_TELEMETRY_OPTOUT: "1"
@@ -49,6 +77,8 @@ jobs:
       MPCORE_TEST_POSTGRESQL: Host=localhost;Port=5432;Database=mpcore_it;Username=mpcore;Password=mpcore
       MPCORE_TEST_TIMESCALE: Host=localhost;Port=5433;Database=mpcore_it;Username=mpcore;Password=mpcore
       MPCORE_TEST_REDIS: localhost:6379
+      MPCORE_TEST_RABBITMQ: amqp://mpcore:mpcore@localhost:5672
+      MPCORE_TEST_KAFKA: localhost:9094
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
