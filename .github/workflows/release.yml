@@ -114,6 +114,8 @@ jobs:
           status="$(curl -s -o /dev/null -w '%{http_code}' "https://api.nuget.org/v3-flatcontainer/mpcore.domain/$VERSION/mpcore.domain.nuspec")"
           echo "nuget.org answers $status for MPCore.Domain $VERSION"
           [ "$status" = "404" ]
+      - name: Restore the API-compatibility baseline from nuget.org
+        run: ./eng/restore-api-baseline.sh
       - name: Restore (locked)
         run: dotnet restore MPCore.sln --locked-mode
       - name: Build (warnings are errors)
