@@ -63,20 +63,17 @@ internal sealed class HttpRequestContextFactory(IOptions<HttpFailureOptions> opt
                 continue;
             }
 
-            var exact = supported.FirstOrDefault(item =>
-                string.Equals(item.Name, requested.Name, StringComparison.OrdinalIgnoreCase));
-            if (exact is not null)
+            // The requested culture's own parent chain, not one step of it: a script-disambiguated
+            // language such as Chinese has three levels (zh-CN, its parent zh-Hans, its parent zh), and
+            // a product that supports only the top one must still be reachable from a region two steps
+            // below it.
+            for (var culture = requested; culture.Name.Length > 0; culture = culture.Parent)
             {
-                return exact;
-            }
-
-            if (!requested.IsNeutralCulture && requested.Parent.Name.Length > 0)
-            {
-                var parent = supported.FirstOrDefault(item =>
-                    string.Equals(item.Name, requested.Parent.Name, StringComparison.OrdinalIgnoreCase));
-                if (parent is not null)
+                var match = supported.FirstOrDefault(item =>
+                    string.Equals(item.Name, culture.Name, StringComparison.OrdinalIgnoreCase));
+                if (match is not null)
                 {
-                    return parent;
+                    return match;
                 }
             }
         }
