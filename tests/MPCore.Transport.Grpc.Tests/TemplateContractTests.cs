@@ -93,7 +93,12 @@ public sealed class TemplateContractTests
         Assert.Equal(
             new[] { "src/MPCore.Backend.Infrastructure/Audit/**" },
             modifiers["(!includeBusinessAudit)"]);
-        Assert.Equal(9, modifiers.Count);  // conditions are unique; duplicates would mask a rule
+        // A modular monolith has no module yet to hold an architecture test against: the file is
+        // generated for shape == "service" only, where the domain and the application are fixed projects.
+        Assert.Equal(
+            new[] { "tests/MPCore.Backend.Tests/ArchitectureTests.cs" },
+            modifiers["(shape != \"service\")"]);
+        Assert.Equal(10, modifiers.Count);  // conditions are unique; duplicates would mask a rule
     }
 
     [Fact]
