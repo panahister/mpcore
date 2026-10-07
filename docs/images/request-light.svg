@@ -1,95 +1,95 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 406" width="960" height="406" role="img" aria-label="One request through MP Core, from the caller to the broker">
 <title>One request through MP Core, from the caller to the broker</title>
-<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1f2328" flood-opacity="0.06"/></filter></defs>
-<rect x="0.75" y="0.75" width="958.5" height="404.5" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
-<text x="32" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1f2328" text-anchor="start">One request, from the caller to the broker</text>
-<text x="32" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#57606a" text-anchor="start">You write the green box. MP Core is everything around it, the same in every backend.</text>
-<rect x="32" y="92" width="138" height="196" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.25" filter="url(#shadow)"/>
+<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.07"/></filter></defs>
+<rect x="0.75" y="0.75" width="958.5" height="404.5" rx="16" fill="#f7f9fc" stroke="#d8e0ea" stroke-width="1.5"/>
+<text x="32" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#111827" text-anchor="start">One request, from the caller to the broker</text>
+<text x="32" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#64748b" text-anchor="start">You write the green box. MP Core is everything around it, the same in every backend.</text>
+<rect x="32" y="92" width="138" height="196" rx="10" fill="#eef4ff" stroke="#88a9ff" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip3"><rect x="32" y="92" width="138" height="196" rx="10"/></clipPath>
-<rect x="32" y="92" width="138" height="6" fill="#2563eb" clip-path="url(#clip3)"/>
-<text x="46" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#2563eb" text-anchor="start" letter-spacing="0.8">MP CORE</text>
-<text x="46" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1d4ed8" text-anchor="start">Transport</text>
-<text x="46" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">REST and gRPC</text>
-<text x="46" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">on separate ports</text>
-<text x="46" y="201.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Problem Details</text>
-<text x="46" y="218.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">(RFC 9457)</text>
-<text x="46" y="236.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Rich gRPC status</text>
-<circle cx="150" cy="118" r="11" fill="#2563eb"/>
+<rect x="32" y="92" width="138" height="6" fill="#315fe8" clip-path="url(#clip3)"/>
+<text x="46" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#315fe8" text-anchor="start" letter-spacing="0.8">MP CORE</text>
+<text x="46" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#2447c5" text-anchor="start">Transport</text>
+<text x="46" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">REST and gRPC</text>
+<text x="46" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">on separate ports</text>
+<text x="46" y="201.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Problem Details</text>
+<text x="46" y="218.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">(RFC 9457)</text>
+<text x="46" y="236.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Rich gRPC status</text>
+<circle cx="150" cy="118" r="11" fill="#315fe8"/>
 <text x="150" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
-<rect x="184" y="92" width="138" height="196" rx="10" fill="#fff1f2" stroke="#fb7185" stroke-width="1.25" filter="url(#shadow)"/>
+<rect x="184" y="92" width="138" height="196" rx="10" fill="#fff1f5" stroke="#fda4af" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip15"><rect x="184" y="92" width="138" height="196" rx="10"/></clipPath>
-<rect x="184" y="92" width="138" height="6" fill="#e11d48" clip-path="url(#clip15)"/>
-<text x="198" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#e11d48" text-anchor="start" letter-spacing="0.8">MP CORE</text>
+<rect x="184" y="92" width="138" height="6" fill="#f43f5e" clip-path="url(#clip15)"/>
+<text x="198" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#f43f5e" text-anchor="start" letter-spacing="0.8">MP CORE</text>
 <text x="198" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#be123c" text-anchor="start">Security</text>
-<text x="198" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Bearer token</text>
-<text x="198" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">validated</text>
-<text x="198" y="201.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Deny by default</text>
-<text x="198" y="224.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">A named actor</text>
-<text x="198" y="242.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">in every record</text>
-<circle cx="302" cy="118" r="11" fill="#e11d48"/>
+<text x="198" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Bearer token</text>
+<text x="198" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">validated</text>
+<text x="198" y="201.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Deny by default</text>
+<text x="198" y="224.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">A named actor</text>
+<text x="198" y="242.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">in every record</text>
+<circle cx="302" cy="118" r="11" fill="#f43f5e"/>
 <text x="302" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
-<path d="M 171 190.0 L 182 190.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M 175.7 193.0 L 182 190.0 L 175.7 187.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="336" y="92" width="138" height="196" rx="10" fill="#f0fdfa" stroke="#2dd4bf" stroke-width="1.25" filter="url(#shadow)"/>
+<path d="M 171 190.0 L 182 190.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 175.7 193.0 L 182 190.0 L 175.7 187.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="336" y="92" width="138" height="196" rx="10" fill="#ecfdf8" stroke="#5eead4" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip29"><rect x="336" y="92" width="138" height="196" rx="10"/></clipPath>
-<rect x="336" y="92" width="138" height="6" fill="#0d9488" clip-path="url(#clip29)"/>
-<text x="350" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#0d9488" text-anchor="start" letter-spacing="0.8">MP CORE</text>
+<rect x="336" y="92" width="138" height="6" fill="#14b8a6" clip-path="url(#clip29)"/>
+<text x="350" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#14b8a6" text-anchor="start" letter-spacing="0.8">MP CORE</text>
 <text x="350" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0f766e" text-anchor="start">Validation</text>
-<text x="350" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">The shape of the</text>
-<text x="350" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">request, checked</text>
-<text x="350" y="195.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">before the handler</text>
-<text x="350" y="218.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">One violation</text>
-<text x="350" y="236.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">per field</text>
-<circle cx="454" cy="118" r="11" fill="#0d9488"/>
+<text x="350" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">The shape of the</text>
+<text x="350" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">request, checked</text>
+<text x="350" y="195.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">before the handler</text>
+<text x="350" y="218.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">One violation</text>
+<text x="350" y="236.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">per field</text>
+<circle cx="454" cy="118" r="11" fill="#14b8a6"/>
 <text x="454" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
-<path d="M 323 190.0 L 334 190.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M 327.7 193.0 L 334 190.0 L 327.7 187.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="488" y="92" width="138" height="196" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<path d="M 323 190.0 L 334 190.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 327.7 193.0 L 334 190.0 L 327.7 187.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="488" y="92" width="138" height="196" rx="10" fill="#ecfdf8" stroke="#65e2c1" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip43"><rect x="488" y="92" width="138" height="196" rx="10"/></clipPath>
-<rect x="488" y="92" width="138" height="6" fill="#16a34a" clip-path="url(#clip43)"/>
-<text x="502" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#16a34a" text-anchor="start" letter-spacing="0.8">YOU WRITE</text>
-<text x="502" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#15803d" text-anchor="start">Your handler</text>
-<text x="502" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">A static method</text>
-<text x="502" y="183.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Aggregate</text>
-<text x="502" y="201.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Business rules</text>
-<text x="502" y="218.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Value objects</text>
-<text x="502" y="242.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">It never saves</text>
-<circle cx="606" cy="118" r="11" fill="#16a34a"/>
+<rect x="488" y="92" width="138" height="6" fill="#14b8a6" clip-path="url(#clip43)"/>
+<text x="502" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#14b8a6" text-anchor="start" letter-spacing="0.8">YOU WRITE</text>
+<text x="502" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0f766e" text-anchor="start">Your handler</text>
+<text x="502" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">A static method</text>
+<text x="502" y="183.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Aggregate</text>
+<text x="502" y="201.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Business rules</text>
+<text x="502" y="218.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Value objects</text>
+<text x="502" y="242.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">It never saves</text>
+<circle cx="606" cy="118" r="11" fill="#14b8a6"/>
 <text x="606" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
-<path d="M 475 190.0 L 486 190.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M 479.7 193.0 L 486 190.0 L 479.7 187.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="640" y="92" width="138" height="196" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.25" filter="url(#shadow)"/>
+<path d="M 475 190.0 L 486 190.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 479.7 193.0 L 486 190.0 L 479.7 187.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="640" y="92" width="138" height="196" rx="10" fill="#eef4ff" stroke="#88a9ff" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip57"><rect x="640" y="92" width="138" height="196" rx="10"/></clipPath>
-<rect x="640" y="92" width="138" height="6" fill="#2563eb" clip-path="url(#clip57)"/>
-<text x="654" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#2563eb" text-anchor="start" letter-spacing="0.8">MP CORE</text>
-<text x="654" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1d4ed8" text-anchor="start">One commit</text>
-<text x="654" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">The change</text>
-<text x="654" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">The messages</text>
-<text x="654" y="195.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">The audit record</text>
-<text x="654" y="212.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">The idempotency key</text>
-<text x="654" y="236.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">All, or none</text>
-<circle cx="758" cy="118" r="11" fill="#2563eb"/>
+<rect x="640" y="92" width="138" height="6" fill="#315fe8" clip-path="url(#clip57)"/>
+<text x="654" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#315fe8" text-anchor="start" letter-spacing="0.8">MP CORE</text>
+<text x="654" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#2447c5" text-anchor="start">One commit</text>
+<text x="654" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">The change</text>
+<text x="654" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">The messages</text>
+<text x="654" y="195.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">The audit record</text>
+<text x="654" y="212.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">The idempotency key</text>
+<text x="654" y="236.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">All, or none</text>
+<circle cx="758" cy="118" r="11" fill="#315fe8"/>
 <text x="758" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">5</text>
-<path d="M 627 190.0 L 638 190.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M 631.7 193.0 L 638 190.0 L 631.7 187.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="792" y="92" width="138" height="196" rx="10" fill="#fffbeb" stroke="#fbbf24" stroke-width="1.25" filter="url(#shadow)"/>
+<path d="M 627 190.0 L 638 190.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 631.7 193.0 L 638 190.0 L 631.7 187.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="792" y="92" width="138" height="196" rx="10" fill="#ecfeff" stroke="#67e8f9" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip71"><rect x="792" y="92" width="138" height="196" rx="10"/></clipPath>
-<rect x="792" y="92" width="138" height="6" fill="#d97706" clip-path="url(#clip71)"/>
-<text x="806" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#d97706" text-anchor="start" letter-spacing="0.8">MP CORE</text>
-<text x="806" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#b45309" text-anchor="start">Messages</text>
-<text x="806" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Released after</text>
-<text x="806" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">the commit</text>
-<text x="806" y="201.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Kafka, RabbitMQ</text>
-<text x="806" y="224.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">Inbox on the</text>
-<text x="806" y="242.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">consumer</text>
-<circle cx="910" cy="118" r="11" fill="#d97706"/>
+<rect x="792" y="92" width="138" height="6" fill="#06b6d4" clip-path="url(#clip71)"/>
+<text x="806" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#06b6d4" text-anchor="start" letter-spacing="0.8">MP CORE</text>
+<text x="806" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0e7490" text-anchor="start">Messages</text>
+<text x="806" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Released after</text>
+<text x="806" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">the commit</text>
+<text x="806" y="201.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Kafka, RabbitMQ</text>
+<text x="806" y="224.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">Inbox on the</text>
+<text x="806" y="242.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">consumer</text>
+<circle cx="910" cy="118" r="11" fill="#06b6d4"/>
 <text x="910" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">6</text>
-<path d="M 779 190.0 L 790 190.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M 783.7 193.0 L 790 190.0 L 783.7 187.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="32" y="314" width="440" height="58" rx="10" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1.25" filter="url(#shadow)"/>
-<text x="48" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#6d28d9" text-anchor="start">A failure is a value</text>
-<text x="48" y="357" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">One model on both transports, in the caller&#x27;s language</text>
-<rect x="488" y="314" width="440" height="58" rx="10" fill="#f6f8fa" stroke="#afb8c1" stroke-width="1.25" filter="url(#shadow)"/>
-<text x="504" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#424a53" text-anchor="start">Everything is observable</text>
-<text x="504" y="357" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">OpenTelemetry logs, traces and metrics, with redaction</text>
+<path d="M 779 190.0 L 790 190.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 783.7 193.0 L 790 190.0 L 783.7 187.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="32" y="314" width="440" height="58" rx="10" fill="#f3f0ff" stroke="#b5a1ff" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="48" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#6338c7" text-anchor="start">A failure is a value</text>
+<text x="48" y="357" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">One model on both transports, in the caller&#x27;s language</text>
+<rect x="488" y="314" width="440" height="58" rx="10" fill="#f1f5f9" stroke="#b8c4d2" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="504" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#475569" text-anchor="start">Everything is observable</text>
+<text x="504" y="357" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">OpenTelemetry logs, traces and metrics, with redaction</text>
 </svg>

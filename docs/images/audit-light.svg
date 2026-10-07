@@ -1,79 +1,79 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 486" width="960" height="486" role="img" aria-label="Business audit: the change and its record in one commit, a refused attempt recorded apart">
 <title>Business audit: the change and its record in one commit, a refused attempt recorded apart</title>
-<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1f2328" flood-opacity="0.06"/></filter></defs>
-<rect x="0.75" y="0.75" width="958.5" height="484.5" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
-<text x="32" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1f2328" text-anchor="start">An audit trail is not a log</text>
-<text x="32" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#57606a" text-anchor="start">A log helps an operator find a fault. An audit trail answers a question somebody will ask in a year: who did this?</text>
-<rect x="32" y="92" width="560" height="270" rx="14" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-dasharray="5 5"/>
-<rect x="50" y="81" width="220.6" height="22" rx="6" fill="#ffffff" stroke="none" stroke-width="1.25"/>
-<rect x="50" y="81" width="220.6" height="22" rx="11" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1.1"/>
-<text x="160.3" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#6d28d9" text-anchor="middle">WHO DID WHAT, FROM WHAT TO WHAT</text>
-<rect x="48" y="114" width="160" height="112" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.25" filter="url(#shadow)"/>
+<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.07"/></filter></defs>
+<rect x="0.75" y="0.75" width="958.5" height="484.5" rx="16" fill="#f7f9fc" stroke="#d8e0ea" stroke-width="1.5"/>
+<text x="32" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#111827" text-anchor="start">An audit trail is not a log</text>
+<text x="32" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#64748b" text-anchor="start">A log helps an operator find a fault. An audit trail answers a question somebody will ask in a year: who did this?</text>
+<rect x="32" y="92" width="560" height="270" rx="14" fill="none" stroke="#b5a1ff" stroke-width="1.4" stroke-dasharray="5 5"/>
+<rect x="50" y="81" width="220.6" height="22" rx="6" fill="#f7f9fc" stroke="none" stroke-width="1.25"/>
+<rect x="50" y="81" width="220.6" height="22" rx="11" fill="#f3f0ff" stroke="#b5a1ff" stroke-width="1.1"/>
+<text x="160.3" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#6338c7" text-anchor="middle">WHO DID WHAT, FROM WHAT TO WHAT</text>
+<rect x="48" y="114" width="160" height="112" rx="10" fill="#ecfdf8" stroke="#65e2c1" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip7"><rect x="48" y="114" width="160" height="112" rx="10"/></clipPath>
-<rect x="48" y="114" width="160" height="6" fill="#16a34a" clip-path="url(#clip7)"/>
-<text x="62" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#16a34a" text-anchor="start" letter-spacing="0.8">A CHANGE</text>
-<text x="62" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#15803d" text-anchor="start">Your handler</text>
-<text x="62" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">changes an aggregate</text>
-<text x="62" y="199.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">and returns</text>
-<path d="M 210 170 L 232 170" fill="none" stroke="#8c959f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M 225.7 173.0 L 232 170 L 225.7 167.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="234" y="114" width="342" height="112" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.25" filter="url(#shadow)"/>
+<rect x="48" y="114" width="160" height="6" fill="#14b8a6" clip-path="url(#clip7)"/>
+<text x="62" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#14b8a6" text-anchor="start" letter-spacing="0.8">A CHANGE</text>
+<text x="62" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0f766e" text-anchor="start">Your handler</text>
+<text x="62" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">changes an aggregate</text>
+<text x="62" y="199.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">and returns</text>
+<path d="M 210 170 L 232 170" fill="none" stroke="#8fa0b4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 225.7 173.0 L 232 170 L 225.7 167.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="234" y="114" width="342" height="112" rx="10" fill="#eef4ff" stroke="#88a9ff" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip16"><rect x="234" y="114" width="342" height="112" rx="10"/></clipPath>
-<rect x="234" y="114" width="342" height="6" fill="#2563eb" clip-path="url(#clip16)"/>
-<text x="248" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#2563eb" text-anchor="start" letter-spacing="0.8">MP CORE</text>
-<text x="248" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1d4ed8" text-anchor="start">One commit</text>
-<text x="248" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">The change and its audit record are saved</text>
-<text x="248" y="199.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">together. Rolled back, neither exists: the trail</text>
-<text x="248" y="217.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">never claims a change that did not happen.</text>
-<rect x="48" y="236" width="160" height="112" rx="10" fill="#fff1f2" stroke="#fb7185" stroke-width="1.25" filter="url(#shadow)"/>
+<rect x="234" y="114" width="342" height="6" fill="#315fe8" clip-path="url(#clip16)"/>
+<text x="248" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#315fe8" text-anchor="start" letter-spacing="0.8">MP CORE</text>
+<text x="248" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#2447c5" text-anchor="start">One commit</text>
+<text x="248" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">The change and its audit record are saved</text>
+<text x="248" y="199.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">together. Rolled back, neither exists: the trail</text>
+<text x="248" y="217.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">never claims a change that did not happen.</text>
+<rect x="48" y="236" width="160" height="112" rx="10" fill="#fff1f5" stroke="#fda4af" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip24"><rect x="48" y="236" width="160" height="112" rx="10"/></clipPath>
-<rect x="48" y="236" width="160" height="6" fill="#e11d48" clip-path="url(#clip24)"/>
-<text x="62" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#e11d48" text-anchor="start" letter-spacing="0.8">A REFUSED ATTEMPT</text>
+<rect x="48" y="236" width="160" height="6" fill="#f43f5e" clip-path="url(#clip24)"/>
+<text x="62" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#f43f5e" text-anchor="start" letter-spacing="0.8">A REFUSED ATTEMPT</text>
 <text x="62" y="282" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#be123c" text-anchor="start">A rule is broken</text>
-<text x="62" y="304" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">the attempt is refused,</text>
-<text x="62" y="321.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">the change is rolled back</text>
-<path d="M 210 292 L 232 292" fill="none" stroke="#8c959f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M 225.7 295.0 L 232 292 L 225.7 289.0" fill="none" stroke="#8c959f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="234" y="236" width="342" height="112" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="62" y="304" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">the attempt is refused,</text>
+<text x="62" y="321.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">the change is rolled back</text>
+<path d="M 210 292 L 232 292" fill="none" stroke="#8fa0b4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 225.7 295.0 L 232 292 L 225.7 289.0" fill="none" stroke="#8fa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="234" y="236" width="342" height="112" rx="10" fill="#eef4ff" stroke="#88a9ff" stroke-width="1.25" filter="url(#shadow)"/>
 <clipPath id="clip33"><rect x="234" y="236" width="342" height="112" rx="10"/></clipPath>
-<rect x="234" y="236" width="342" height="6" fill="#2563eb" clip-path="url(#clip33)"/>
-<text x="248" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#2563eb" text-anchor="start" letter-spacing="0.8">MP CORE</text>
-<text x="248" y="282" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1d4ed8" text-anchor="start">Written apart</text>
-<text x="248" y="304" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">The refusal is recorded on a connection of its</text>
-<text x="248" y="321.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">own, so it survives the rollback: what somebody</text>
-<text x="248" y="339.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#57606a" text-anchor="start">tried is often what a reviewer wants to know.</text>
-<rect x="608" y="92" width="320" height="270" rx="14" fill="none" stroke="#afb8c1" stroke-width="1.4" stroke-dasharray="5 5"/>
-<rect x="626" y="81" width="141.39999999999998" height="22" rx="6" fill="#ffffff" stroke="none" stroke-width="1.25"/>
-<rect x="626" y="81" width="141.39999999999998" height="22" rx="11" fill="#f6f8fa" stroke="#afb8c1" stroke-width="1.1"/>
-<text x="696.7" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#424a53" text-anchor="middle">WHAT A RECORD HOLDS</text>
-<rect x="624" y="120" width="288" height="30" rx="7" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
-<text x="636" y="138.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6d28d9" text-anchor="start">Who</text>
-<text x="706" y="138.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">the actor, from the token</text>
-<rect x="624" y="159" width="288" height="30" rx="7" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
-<text x="636" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6d28d9" text-anchor="start">What</text>
-<text x="706" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">the action, the entity</text>
-<rect x="624" y="198" width="288" height="30" rx="7" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
-<text x="636" y="216.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6d28d9" text-anchor="start">Change</text>
-<text x="706" y="216.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">each field: before, after</text>
-<rect x="624" y="237" width="288" height="30" rx="7" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
-<text x="636" y="255.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6d28d9" text-anchor="start">Outcome</text>
-<text x="706" y="255.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">done, refused, failed</text>
-<rect x="624" y="276" width="288" height="30" rx="7" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
-<text x="636" y="294.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6d28d9" text-anchor="start">Why not</text>
-<text x="706" y="294.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">the rule&#x27;s own code</text>
-<rect x="624" y="315" width="288" height="30" rx="7" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
-<text x="636" y="333.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6d28d9" text-anchor="start">When</text>
-<text x="706" y="333.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#57606a" text-anchor="start">and which request</text>
-<rect x="32" y="382" width="292" height="82" rx="10" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1.25" filter="url(#shadow)"/>
-<text x="48" y="406" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#6d28d9" text-anchor="start">The actor is never a header</text>
-<text x="48" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">It comes from the validated token. Queued work</text>
-<text x="48" y="443" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">runs as a named actor: system:ReserveStock.</text>
-<rect x="334" y="382" width="292" height="82" rx="10" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1.25" filter="url(#shadow)"/>
-<text x="350" y="406" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#6d28d9" text-anchor="start">Secrets cannot be recorded</text>
-<text x="350" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">A policy names the fields that are kept;</text>
-<text x="350" y="443" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">a credential is refused, an identifier masked.</text>
-<rect x="636" y="382" width="292" height="82" rx="10" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1.25" filter="url(#shadow)"/>
-<text x="652" y="406" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#6d28d9" text-anchor="start">In your own database</text>
-<text x="652" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">A table next to the business data, append-only:</text>
-<text x="652" y="443" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#57606a" text-anchor="start">the role may insert and read, nothing else.</text>
+<rect x="234" y="236" width="342" height="6" fill="#315fe8" clip-path="url(#clip33)"/>
+<text x="248" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#315fe8" text-anchor="start" letter-spacing="0.8">MP CORE</text>
+<text x="248" y="282" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#2447c5" text-anchor="start">Written apart</text>
+<text x="248" y="304" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">The refusal is recorded on a connection of its</text>
+<text x="248" y="321.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">own, so it survives the rollback: what somebody</text>
+<text x="248" y="339.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b" text-anchor="start">tried is often what a reviewer wants to know.</text>
+<rect x="608" y="92" width="320" height="270" rx="14" fill="none" stroke="#b8c4d2" stroke-width="1.4" stroke-dasharray="5 5"/>
+<rect x="626" y="81" width="141.39999999999998" height="22" rx="6" fill="#f7f9fc" stroke="none" stroke-width="1.25"/>
+<rect x="626" y="81" width="141.39999999999998" height="22" rx="11" fill="#f1f5f9" stroke="#b8c4d2" stroke-width="1.1"/>
+<text x="696.7" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#475569" text-anchor="middle">WHAT A RECORD HOLDS</text>
+<rect x="624" y="120" width="288" height="30" rx="7" fill="#f7f9fc" stroke="#d8e0ea" stroke-width="1"/>
+<text x="636" y="138.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6338c7" text-anchor="start">Who</text>
+<text x="706" y="138.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#64748b" text-anchor="start">the actor, from the token</text>
+<rect x="624" y="159" width="288" height="30" rx="7" fill="#f7f9fc" stroke="#d8e0ea" stroke-width="1"/>
+<text x="636" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6338c7" text-anchor="start">What</text>
+<text x="706" y="177.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#64748b" text-anchor="start">the action, the entity</text>
+<rect x="624" y="198" width="288" height="30" rx="7" fill="#f7f9fc" stroke="#d8e0ea" stroke-width="1"/>
+<text x="636" y="216.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6338c7" text-anchor="start">Change</text>
+<text x="706" y="216.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#64748b" text-anchor="start">each field: before, after</text>
+<rect x="624" y="237" width="288" height="30" rx="7" fill="#f7f9fc" stroke="#d8e0ea" stroke-width="1"/>
+<text x="636" y="255.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6338c7" text-anchor="start">Outcome</text>
+<text x="706" y="255.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#64748b" text-anchor="start">done, refused, failed</text>
+<rect x="624" y="276" width="288" height="30" rx="7" fill="#f7f9fc" stroke="#d8e0ea" stroke-width="1"/>
+<text x="636" y="294.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6338c7" text-anchor="start">Why not</text>
+<text x="706" y="294.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#64748b" text-anchor="start">the rule&#x27;s own code</text>
+<rect x="624" y="315" width="288" height="30" rx="7" fill="#f7f9fc" stroke="#d8e0ea" stroke-width="1"/>
+<text x="636" y="333.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6338c7" text-anchor="start">When</text>
+<text x="706" y="333.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#64748b" text-anchor="start">and which request</text>
+<rect x="32" y="382" width="292" height="82" rx="10" fill="#f3f0ff" stroke="#b5a1ff" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="48" y="406" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#6338c7" text-anchor="start">The actor is never a header</text>
+<text x="48" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#64748b" text-anchor="start">It comes from the validated token. Queued work</text>
+<text x="48" y="443" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#64748b" text-anchor="start">runs as a named actor: system:ReserveStock.</text>
+<rect x="334" y="382" width="292" height="82" rx="10" fill="#f3f0ff" stroke="#b5a1ff" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="350" y="406" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#6338c7" text-anchor="start">Secrets cannot be recorded</text>
+<text x="350" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#64748b" text-anchor="start">A policy names the fields that are kept;</text>
+<text x="350" y="443" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#64748b" text-anchor="start">a credential is refused, an identifier masked.</text>
+<rect x="636" y="382" width="292" height="82" rx="10" fill="#f3f0ff" stroke="#b5a1ff" stroke-width="1.25" filter="url(#shadow)"/>
+<text x="652" y="406" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#6338c7" text-anchor="start">In your own database</text>
+<text x="652" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#64748b" text-anchor="start">A table next to the business data, append-only:</text>
+<text x="652" y="443" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#64748b" text-anchor="start">the role may insert and read, nothing else.</text>
 </svg>

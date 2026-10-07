@@ -9,15 +9,17 @@ once, in the open, with a test for each and the name of the person who first des
 
 [![NuGet](https://img.shields.io/nuget/v/MPCore.Domain?label=nuget&color=004880)](https://www.nuget.org/profiles/panahister)
 [![ci](https://github.com/panahister/mpcore/actions/workflows/ci.yml/badge.svg)](https://github.com/panahister/mpcore/actions/workflows/ci.yml)
-[![licence](https://img.shields.io/badge/licence-Apache--2.0-blue)](LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-10-512bd4)](global.json)
+[![license](https://img.shields.io/badge/license-Apache--2.0-6267e8)](LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-10-6267e8)](global.json)
 
 [Get started](docs/guide/getting-started.md) ·
 [Capabilities](docs/guide/capabilities.md) ·
 [Reference architecture](docs/architecture/reference-architecture.md) ·
+[Ecosystem](docs/architecture/ecosystem.md) ·
 [AI agents](#built-for-ai-coding-agents) ·
 [Storefront](https://github.com/panahister/mpcore-storefront-sample) ·
 [Tiffin](https://github.com/panahister/mpcore-tiffin-sample) ·
+[MP Frontend](https://github.com/panahister/mpfrontend) ·
 [Decisions](docs/decisions) ·
 [Release notes](docs/releases/0.9.3.md)
 
@@ -51,6 +53,19 @@ the ones that are wrong stay hidden until production finds them.
 
 **You write the business. MP Core is everything around it**, the same in every backend, so that the second
 service a team builds is as sound as the first.
+
+## One ecosystem, clear ownership
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/ecosystem-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/ecosystem-light.svg">
+  <img alt="The MP ecosystem: MP Core and MP Frontend foundations build Storefront and Tiffin reference products, while Keycloak and APISIX provide explicit identity and edge boundaries" src="docs/images/ecosystem-light.svg" width="100%">
+</picture>
+
+MP Core and [MP Frontend](https://github.com/panahister/mpfrontend) are reusable foundations. Storefront
+and Tiffin are independently runnable references. Tiffin keeps identity and edge configuration in their
+own repositories, so each boundary has one reviewable owner. The
+[ecosystem guide](docs/architecture/ecosystem.md) maps every repository, responsibility, and non-goal.
 
 ## Everything it does
 
