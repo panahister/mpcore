@@ -12,26 +12,26 @@ MONO = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mo
 
 THEMES = {
     "light": {
-        "canvas": "#ffffff", "frame": "#d0d7de", "text": "#1f2328", "muted": "#57606a", "line": "#8c959f",
-        "shadow": "#1f2328", "shadow_opacity": "0.06",
-        "blue":   ("#eff6ff", "#60a5fa", "#1d4ed8", "#2563eb"),
-        "green":  ("#f0fdf4", "#4ade80", "#15803d", "#16a34a"),
-        "amber":  ("#fffbeb", "#fbbf24", "#b45309", "#d97706"),
-        "purple": ("#f5f3ff", "#a78bfa", "#6d28d9", "#7c3aed"),
-        "teal":   ("#f0fdfa", "#2dd4bf", "#0f766e", "#0d9488"),
-        "rose":   ("#fff1f2", "#fb7185", "#be123c", "#e11d48"),
-        "slate":  ("#f6f8fa", "#afb8c1", "#424a53", "#6e7781"),
+        "canvas": "#f7f9fc", "frame": "#d8e0ea", "text": "#111827", "muted": "#64748b", "line": "#8fa0b4",
+        "shadow": "#0f172a", "shadow_opacity": "0.07",
+        "blue":   ("#eef4ff", "#88a9ff", "#2447c5", "#315fe8"),
+        "green":  ("#ecfdf8", "#65e2c1", "#0f766e", "#14b8a6"),
+        "cyan":  ("#ecfeff", "#67e8f9", "#0e7490", "#06b6d4"),
+        "purple": ("#f3f0ff", "#b5a1ff", "#6338c7", "#7c5ce7"),
+        "teal":   ("#ecfdf8", "#5eead4", "#0f766e", "#14b8a6"),
+        "rose":   ("#fff1f5", "#fda4af", "#be123c", "#f43f5e"),
+        "slate":  ("#f1f5f9", "#b8c4d2", "#475569", "#64748b"),
     },
     "dark": {
-        "canvas": "#0d1117", "frame": "#30363d", "text": "#e6edf3", "muted": "#9198a1", "line": "#6e7681",
-        "shadow": "#000000", "shadow_opacity": "0.35",
-        "blue":   ("#0d1f3c", "#2f6fdb", "#9cc4ff", "#3b82f6"),
-        "green":  ("#0b2417", "#2ea043", "#7ee2a0", "#2ea043"),
-        "amber":  ("#2b1d06", "#bb8009", "#f2cc60", "#d29922"),
-        "purple": ("#1d1537", "#8957e5", "#d2b8ff", "#a371f7"),
-        "teal":   ("#07241f", "#1f9d8b", "#7fe3d2", "#2bb5a0"),
-        "rose":   ("#2d1018", "#da3650", "#ffa3b3", "#f0506e"),
-        "slate":  ("#161b22", "#484f58", "#c9d1d9", "#8b949e"),
+        "canvas": "#08111f", "frame": "#293a50", "text": "#f3f7fc", "muted": "#9aa9bc", "line": "#66788d",
+        "shadow": "#020611", "shadow_opacity": "0.38",
+        "blue":   ("#0e1a36", "#315fe8", "#b4c5ff", "#6888ff"),
+        "green":  ("#082d2a", "#14b8a6", "#80f2d2", "#2dd4bf"),
+        "cyan":  ("#062b38", "#0891b2", "#a5f3fc", "#22d3ee"),
+        "purple": ("#1d173a", "#7c5ce7", "#d8ccff", "#a78bfa"),
+        "teal":   ("#072d2b", "#14b8a6", "#99f6e4", "#2dd4bf"),
+        "rose":   ("#34121d", "#e54867", "#ffb3c1", "#fb7185"),
+        "slate":  ("#111c2c", "#40536a", "#d6e0ec", "#8fa1b5"),
     },
 }
 
@@ -42,8 +42,8 @@ THEMES = {
 ICON_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icons")
 BRAND = {
     "keycloak": ("#4d4d4d", "#c9d1d9"), "apachekafka": ("#231f20", "#e6edf3"), "rabbitmq": ("#ff6600", "#ff7a1a"),
-    "postgresql": ("#4169e1", "#7b96f0"), "redis": ("#ff4438", "#ff5d52"), "timescale": ("#d99a00", "#fdb515"),
-    "opentelemetry": ("#425cc7", "#f5a800"), "jaeger": ("#3ba9c0", "#66cfe3"), "prometheus": ("#e6522c", "#f0683f"),
+    "postgresql": ("#4169e1", "#7b96f0"), "redis": ("#ff4438", "#ff5d52"), "timescale": ("#315fe8", "#9fb4ff"),
+    "opentelemetry": ("#425cc7", "#9fb4ff"), "jaeger": ("#3ba9c0", "#66cfe3"), "prometheus": ("#e6522c", "#f0683f"),
     "grafana": ("#f46800", "#ff7f1f"), "dotnet": ("#512bd4", "#a08bff"), "docker": ("#2496ed", "#4aa8f0"),
     "nuget": ("#004880", "#5aa9e6"), "githubactions": ("#2088ff", "#4c9dff"), "openid": ("#f78c40", "#f78c40"),
     "claude": ("#d97757", "#e38b6d"), "openai": ("#412991", "#e6edf3"), "kubernetes": ("#326ce5", "#5b8df0"),
@@ -113,7 +113,7 @@ class Diagram:
             self.add(f'<circle cx="{cx}" cy="{cy}" r="5" fill="{self.accent("green")}"/>')
             self.add(f'<path d="M {cx-2.4} {cy+0.2} L {cx-0.6} {cy+2} L {cx+2.6} {cy-1.8}" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>')
         else:
-            self.add(f'<circle cx="{cx}" cy="{cy}" r="4.3" fill="none" stroke="{self.accent("amber")}" stroke-width="1.7"/>')
+            self.add(f'<circle cx="{cx}" cy="{cy}" r="4.3" fill="none" stroke="{self.accent("cyan")}" stroke-width="1.7"/>')
 
     # ---- colours
     def fill(self, c): return self.t[c][0]

@@ -21,7 +21,7 @@ def request(d):
         ("teal", "3", "Validation", ["The shape of the", "request, checked", "before the handler", "", "One violation", "per field"]),
         ("green", "4", "Your handler", ["A static method", "", "Aggregate", "Business rules", "Value objects", "", "It never saves"]),
         ("blue", "5", "One commit", ["The change", "The messages", "The audit record", "The idempotency key", "", "All, or none"]),
-        ("amber", "6", "Messages", ["Released after", "the commit", "", "Kafka, RabbitMQ", "", "Inbox on the", "consumer"]),
+        ("cyan", "6", "Messages", ["Released after", "the commit", "", "Kafka, RabbitMQ", "", "Inbox on the", "consumer"]),
     ]
     for i, (color, n, title, lines) in enumerate(steps):
         x = x0 + i * (w + gap)
@@ -52,7 +52,7 @@ def layers(d):
         ("green", "Domain", "the business",
          ["Aggregates and entities", "Value objects", "Business rules with a name", "Domain and integration events"],
          ["`MPCore.Domain`", "", "Nothing else. No provider,", "no framework, no attribute."]),
-        ("amber", "Infrastructure", "adapters",
+        ("cyan", "Infrastructure", "adapters",
          ["Mappings and migrations", "Repositories, read models", "Gateways to other systems"],
          ["`MPCore.Persistence.EntityFrameworkCore`", "`MPCore.Messaging.Wolverine  .Kafka  .RabbitMQ`", "`MPCore.Caching.*   MPCore.Audit.*`", "`MPCore.Idempotency   MPCore.Resilience.Http`"]),
     ]
@@ -127,7 +127,7 @@ def skills(d):
         ("purple", "Plan", ["plan-bounded-context"]),
         ("green", "Build", ["implement-ddd-module", "implement-vertical-slice", "design-transport-contract"]),
         ("rose", "Protect and operate", ["apply-security", "apply-business-audit", "apply-observability"]),
-        ("amber", "Connect", ["configure-messaging", "integrate-contexts"]),
+        ("cyan", "Connect", ["configure-messaging", "integrate-contexts"]),
         ("teal", "Prove", ["verify-business-behavior"]),
     ]
     widths = [164, 186, 170, 164, 196]
@@ -147,7 +147,7 @@ def skills(d):
     d.text(50, by + 74, "Written once, for the options you chose:", size=12, fill=d.t["muted"])
     d.text(50, by + 92, "shape, transport, messaging.", size=12, fill=d.t["muted"])
     for k, (name, files, color, mark) in enumerate([
-        ("Claude Code", ["CLAUDE.md", ".claude/skills/"], "amber", "claude"),
+        ("Claude Code", ["CLAUDE.md", ".claude/skills/"], "cyan", "claude"),
         ("Codex", ["AGENTS.md", ".agents/skills/"], "teal", "openai"),
     ]):
         yy = by + k * 60
@@ -222,7 +222,7 @@ def reference(d):
     # ---- messaging
     d.arrow([(L + 170, 610), (L + 170, 638)], sw=1.8, both=True)
     d.arrow([(L + 506, 610), (L + 506, 638)], sw=1.8, both=True)
-    d.group(L, 650, 332, 104, "amber", "MESSAGING")
+    d.group(L, 650, 332, 104, "cyan", "MESSAGING")
     d.tile(L + 12, 670, 150, 74, "apachekafka", "Apache Kafka", "events, for many readers", "run", size=24)
     d.tile(L + 170, 670, 150, 74, "rabbitmq", "RabbitMQ", "work, for one reader", "run", size=24)
 
@@ -337,7 +337,7 @@ def samples(d):
           ("Tenants", "one"), ("Business rules", "55"), ("Tests", "262"), ("Scenarios", "22: 146 and 160 checks"), ("MP Core", "0.9.1")],
          ["A checkout sent twice, or eight at once", "An audit trail that keeps a refused attempt", "Texts in the caller's language, edited live"],
          ["postgresql", "timescale", "redis", "apachekafka", "rabbitmq", "keycloak", "apisix"], "mpcore-storefront-sample"),
-        ("amber", "The second sample", "Tiffin", "Food delivery",
+        ("cyan", "The second sample", "Tiffin", "Food delivery",
          "Nine services, a database each, no shared assembly",
          [("Transports", "REST and gRPC"), ("Messaging", "Kafka and RabbitMQ, a saga"), ("Data", "PostgreSQL, TimescaleDB, Redis, S3"),
           ("Tenants", "two cities"), ("Business rules", "33"), ("Tests", "216"), ("Scenarios", "16: 286 checks, each store"), ("MP Core", "0.9.2")],
@@ -378,7 +378,7 @@ def capabilities(d):
         ("green", "Domain model", ["Aggregates, entities, value objects", "Business rules with a name and a code", "Domain and integration events", "No framework in the domain"]),
         ("teal", "Use cases", ["Commands and queries, apart", "A handler is a static method", "Validation before the handler", "A failure is a value, not an exception"]),
         ("blue", "One commit", ["The transaction is the framework's", "Outbox: a message leaves if committed", "A failure after a change rolls it back", "A failed attempt takes its messages"]),
-        ("amber", "Messaging", ["Apache Kafka and RabbitMQ", "Durable local queues, no broker", "Inbox: handled once", "Retry, dead letters, giving up"]),
+        ("cyan", "Messaging", ["Apache Kafka and RabbitMQ", "Durable local queues, no broker", "Inbox: handled once", "Retry, dead letters, giving up"]),
         ("purple", "Twice is once", ["Idempotency-Key on a request", "The key commits with the change", "A repeat receives the first answer", "Business keys, where a key is not enough"]),
         ("rose", "Security", ["A bearer-only resource server", "Deny by default", "Keycloak, or any OpenID Connect", "Behind a gateway, trusting little"]),
         ("blue", "Transport", ["REST, with Problem Details", "gRPC, with a rich status", "Both, each on its own port", "OpenAPI; versions by route"]),
@@ -386,7 +386,7 @@ def capabilities(d):
         ("teal", "Language", ["No sentence is written in code", "The caller's language, both transports", "Fallback from zh-CN to zh-Hans to zh", "Texts edited while it runs"]),
         ("green", "Data and cache", ["PostgreSQL with EF Core", "TimescaleDB hypertables", "Memory, Redis, or both in two levels", "Paging and sorting, with limits"]),
         ("slate", "Operations", ["Logs, traces, metrics: OpenTelemetry", "Secrets masked before they leave", "Alive and ready, REST and gRPC", "Resilient calls to other systems"]),
-        ("amber", "Tooling", ["One command generates a backend", "Shape, transport and broker: 18 combinations", "Ten skills for AI coding agents", "Multi-tenancy from a token's claim"]),
+        ("cyan", "Tooling", ["One command generates a backend", "Shape, transport and broker: 18 combinations", "Ten skills for AI coding agents", "Multi-tenancy from a token's claim"]),
     ]
     w, h, gx, gy, x0, y0 = 293, 132, 8, 10, 32, 90
     for i, (color, title, lines) in enumerate(areas):
@@ -401,6 +401,46 @@ def capabilities(d):
             d.text(x + 28, y + 56 + k * 19.5, line, size=11.8, fill=d.t["text"])
 
 
+def ecosystem(d):
+    d.heading(40, 44, "The MP ecosystem",
+              "Two reusable foundations, independently secured platform boundaries, and reference products that prove the contracts.")
+
+    d.text(40, 96, "FOUNDATIONS", size=10.5, weight=700, fill=d.t["muted"], spacing="1.3")
+    d.card(40, 116, 260, 104, "blue", "MP Core",
+           [".NET backend architecture", "packages · CLI · template"], kicker="backend foundation", title_size=18)
+    d.card(40, 330, 260, 104, "purple", "MP Frontend",
+           ["React and Next.js architecture", "packages · CLI · AI workflows"], kicker="frontend foundation", title_size=18)
+
+    d.text(410, 96, "REFERENCE PRODUCT", size=10.5, weight=700, fill=d.t["muted"], spacing="1.3")
+    d.card(410, 116, 250, 104, "purple", "Storefront",
+           ["modular monolith + services", "backend reference"], kicker="commerce", title_size=18)
+
+    d.group(710, 98, 450, 390, "teal", "Tiffin reference platform", dash="7 5")
+    d.card(735, 330, 170, 106, "green", ["Tiffin", "Frontend"],
+           ["customer + operations"], kicker="product surfaces", title_size=16)
+    d.card(940, 126, 190, 82, "purple", "Keycloak",
+           ["identity + authorization"], kicker="authority", title_size=16)
+    d.card(940, 232, 190, 82, "blue", "Apache APISIX",
+           ["declarative REST + gRPC"], kicker="edge", title_size=16)
+    d.card(940, 350, 190, 104, "teal", ["Tiffin", "Backend"],
+           ["nine MP Core services"], kicker="business platform", title_size=16)
+
+    d.arrow([(300, 168), (410, 168)], color=d.accent("blue"), sw=2.2)
+    d.text(355, 153, "builds", size=10, weight=700, fill=d.t["muted"], anchor="middle")
+    d.arrow([(300, 380), (735, 380)], color=d.accent("purple"), sw=2.2)
+    d.text(512, 365, "builds", size=10, weight=700, fill=d.t["muted"], anchor="middle")
+    d.arrow([(300, 198), (350, 198), (350, 468), (1018, 468), (1018, 454)],
+            color=d.accent("blue"), sw=2.2)
+    d.text(520, 483, "backend foundation", size=10, weight=700, fill=d.t["muted"], anchor="middle")
+    d.arrow([(905, 356), (920, 356), (920, 167), (940, 167)], color=d.accent("purple"), sw=2)
+    d.arrow([(905, 404), (920, 404), (920, 273), (940, 273)], color=d.accent("blue"), sw=2)
+    d.arrow([(1035, 208), (1035, 350)], color=d.accent("purple"), sw=2)
+    d.arrow([(1082, 314), (1082, 350)], color=d.accent("blue"), sw=2)
+
+    d.text(40, 515, "Every repository owns a bounded source contract; no product imports another repository's private design or runtime state.",
+           size=12.5, fill=d.t["muted"])
+
+
 write_both(f"{OUT}/capabilities", 960, 668, "The twelve areas of MP Core's capabilities", capabilities)
 write_both(f"{OUT}/reference-architecture", 1000, 812, "A backend platform with a gateway, identity, messaging, data and observability, and MP Core inside the backends", reference)
 write_both(f"{OUT}/request", 960, 406, "One request through MP Core, from the caller to the broker", request)
@@ -408,4 +448,5 @@ write_both(f"{OUT}/layers", 960, 580, "The four layers of a backend, what you wr
 write_both(f"{OUT}/ddd", 960, 584, "The building blocks of Domain-Driven Design and the MP Core type that carries each", ddd)
 write_both(f"{OUT}/samples", 960, 560, "The two samples: Storefront, an online store, and Tiffin, food delivery in nine services; what each is built of, how it was proved and what it proves", samples)
 write_both(f"{OUT}/skills", 960, 430, "The ten skills for AI coding agents and how Codex and Claude Code find them", skills)
+write_both(f"{OUT}/ecosystem", 1200, 548, "The MP ecosystem: MP Core and MP Frontend foundations with Storefront and Tiffin references", ecosystem)
 print("drawn:", ", ".join(sorted(os.listdir(OUT))))
