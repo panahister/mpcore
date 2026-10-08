@@ -188,3 +188,10 @@ the wiring by hand and an opt-in switch of the template and the CLI, as business
 stays by hand.** The template does not generate it; the generated `docs/architecture.md` lists the lines that
 add it (section 5), and `TemplateContractTests.The_catalogue_and_the_architecture_document_describe_idempotency_as_it_is_implemented`
 holds that the document and the runtime agree.
+
+## Amendment 2026-10-08 — the business key stays the product's
+
+Accepted by the repository owner on 2026-10-08 (open point E of the review above). The third guard of
+section 1, a business key on the aggregate, stays the product's: whether two entries are the same business
+fact is a rule of the product's domain, and MP Core stays business-neutral. MP Core offers no helper to declare
+one; the module guide says how a product keys an aggregate by the thing it decides about.
