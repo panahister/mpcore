@@ -276,3 +276,16 @@ document or a skill states it and no test checks it.
 | E | The first consequence says the three new packages are reported as new in the cohort (`NEW_IN_COHORT`). They are on nuget.org since `0.9.0`, but `eng/package-ids.sh` still lists them, with `MPCore.Idempotency.EntityFrameworkCore.PostgreSql`, so their API is never compared with a baseline; since the version moved past the baseline, the build says so for each |
 | F | Decision 3.5 has a REST test only; the stored-translation refresh (5.8) is proved on one instance, not across two |
 | G | Decisions 1.6, 2.2, 7.3, 7.4 and 7.5 are conventions with no check; the owner may accept them as such |
+
+## Amendment 2026-10-08 — the facts of the consequences, as they are now
+
+Approved by the repository owner on 2026-10-08 (open point D of the review above). The consequences
+recorded the state of 2026-09-27; this amendment states today's, taken from the tree:
+
+| Consequence as written | Now | Taken from |
+|---|---|---|
+| "27 runtime packages, 29 with the tools" | 28 runtime packages, 30 with the CLI and the template, and 28 symbol packages | the 28 `src/MPCore.*` projects; `RUNTIME_IDS` and `TOOL_IDS` in `eng/package-ids.sh`; `EXPECTED_NUPKG=30`, `EXPECTED_SNUPKG=28` in `eng/verify-release-artifacts.sh` |
+| The three new packages have no alpha.9 baseline and are reported as new in the cohort (`NEW_IN_COHORT`) | they are published since `0.9.0` and validated against the `0.9.3` baseline like every other package; `NEW_IN_COHORT` is empty, and `eng/restore-api-baseline.sh` fails while a listed package is published at the baseline version | `eng/package-ids.sh`, `eng/restore-api-baseline.sh` |
+| "The cohort declared in code is still `0.2.0-alpha.9`", and the changes ship in the next prerelease | the cohort declared in code is `0.10.0`, not yet published; the last published version is `0.9.3` (tag `v0.9.3`), the API baseline | `VersionPrefix` and `MPCoreBaselineVersion` in `src/Directory.Build.props` |
+
+The decisions of this record are unchanged by these facts.
