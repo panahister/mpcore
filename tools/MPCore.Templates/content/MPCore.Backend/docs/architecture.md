@@ -428,6 +428,22 @@ browser callback.
 Business authorization stays in this backend. A gateway can reject early; it cannot decide whether
 *this* actor may act on *that* record.
 
+### Mutual TLS between services (off by default)
+
+With `Security:MutualTls:Enabled`, every TLS listener requires a client certificate. The handshake fails
+unless the certificate's chain ends at one of `Security:MutualTls:CertificateAuthorityPaths` (never the
+system store), it is valid now and for client authentication, and it carries a name listed in
+`AllowedWorkloadNames`: a URI such as a SPIFFE ID, compared exactly, or a DNS name. The certificate is a
+transport rule and a name check. The bearer token is still the caller: `ICurrentActorAccessor` never
+returns the certificate, and the authenticated fallback still requires a token.
+
+A listener becomes TLS in `Kestrel:Endpoints`, with its own certificate, for example
+`"Grpc": { "Url": "https://0.0.0.0:8081", "Protocols": "Http2", "Certificate": { "Path": "...", "KeyPath": "..." } }`.
+An endpoint marked `RequireWorkloadCertificate()` also refuses, with `401`, a request that reaches it
+without a valid certificate. Behind a proxy that terminates TLS, the client's certificate is read from the
+`X-Client-Cert` header only when the request comes from `Security:MutualTls:TrustedProxies`. A calling
+service presents its certificate with `AddMPCoreClientCertificate` on its HTTP or gRPC client.
+
 ## Configuration
 
 | Setting | Why it must be set |

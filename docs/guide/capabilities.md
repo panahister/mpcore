@@ -100,6 +100,7 @@ live backends on every change. A line with neither says so.
 | Roles from any OpenID Connect provider, flat or nested claims | the same | Tests |
 | Behind a gateway: forwarded headers from trusted proxies only | the same | Tests; sample S20 |
 | Identity headers a caller could forge are removed before authentication | the same | Tests; sample S20 |
+| Mutual TLS between services: every TLS listener requires a client certificate from configured authorities only, valid now and for client authentication, with a listed workload name (a SPIFFE ID or a DNS name); the bearer token stays the caller. A proxy's forwarded certificate is read only from listed proxies; a calling service presents its certificate with `AddMPCoreClientCertificate` (next version, not yet released; ADR-017) | `MPCore.Security.AspNetCore` (`AddMPCoreMutualTls`), `MPCore.Resilience.Http` (`AddMPCoreClientCertificate`); the template, off by default | Tests: `MutualTlsTests`, seen failing, against real TLS listeners |
 | Named policies contributed by the product | the same | Sample S11, S19 |
 
 ## 8. Business audit

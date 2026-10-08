@@ -123,6 +123,14 @@ builder.Services.AddMPCoreGatewayForwarding(options =>
     }
 });
 
+// Mutual TLS between services is opt-in (MP Core ADR-017). When on, every TLS listener requires a client
+// certificate from the configured authorities with a listed workload name; the bearer token stays the
+// caller of every request. A listener becomes TLS in Kestrel:Endpoints, with its own certificate.
+if (builder.Configuration.GetValue("Security:MutualTls:Enabled", false))
+{
+    builder.Services.AddMPCoreMutualTls(options => builder.Configuration.GetSection("Security:MutualTls").Bind(options));
+}
+
 // MP Core does not map the health probes, so it cannot enforce anonymous access to them. This host
 // maps them and therefore owns the decision, applied with AllowAnonymous() where they are mapped.
 var allowAnonymousHealthEndpoints =
@@ -213,6 +221,9 @@ var app = builder.Build();
 
 // ADR-007 pipeline order. UseAuthentication always precedes UseAuthorization, and both follow
 // UseRouting so the authenticated fallback policy sees resolved endpoint metadata.
+// A client certificate is believed from a trusted proxy only, so it is read before gateway forwarding
+// replaces the proxy's address. Without mutual TLS this does nothing.
+app.UseMPCoreCertificateForwarding();
 // Forwarded headers come first, so everything after it sees the scheme and client the gateway saw.
 app.UseMPCoreGatewayForwarding();
 // #if (includeRest)
@@ -242,6 +253,9 @@ app.UseRouting();
 app.UseTransportPortSeparation();
 // #endif
 app.UseAuthentication();
+// An endpoint marked RequireWorkloadCertificate() without a valid certificate is refused with 401 here.
+// Without mutual TLS this does nothing.
+app.UseMPCoreMutualTls();
 app.UseAuthorization();
 
 // #if (includeGrpc)

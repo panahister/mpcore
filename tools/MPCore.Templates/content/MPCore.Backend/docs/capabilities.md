@@ -126,6 +126,7 @@ adding one later is a scope change.
 | Generic OIDC claim mapping (flat `roles` claim) | Supported | `Security:ClaimMapping:Preset` = `GenericOidc` |
 | Actor kind distinction (user / service / system) | Supported | token claims; `SystemActorScope` for jobs |
 | Gateway forwarded headers from trusted proxies only | Supported | `Gateway:TrustedProxies` (empty = ignored) |
+| Mutual TLS between services: a client certificate from listed authorities with a listed workload name, beside the bearer token | Supported, off by default | `Security:MutualTls:Enabled`, with a TLS listener in `Kestrel:Endpoints`; `RequireWorkloadCertificate()` on an endpoint |
 
 The backend never hosts login, signup, OTP or a browser callback. It validates a token it is given.
 Behind a gateway it still validates signature, issuer, audience and expiry itself: a gateway in front

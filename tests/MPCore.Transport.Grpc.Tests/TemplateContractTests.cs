@@ -1224,6 +1224,30 @@ public sealed class TemplateContractTests
     }
 
     [Fact]
+    public void Mutual_tls_between_services_is_opt_in_and_placed_where_it_can_see_the_proxy_and_the_endpoint()
+    {
+        var program = File.ReadAllText(Path.Combine(TemplateRoot, "src/MPCore.Backend.Api/Program.cs"));
+        Assert.Contains("if (builder.Configuration.GetValue(\"Security:MutualTls:Enabled\", false))", program, StringComparison.Ordinal);
+        Assert.Contains("builder.Services.AddMPCoreMutualTls(options => builder.Configuration.GetSection(\"Security:MutualTls\").Bind(options));", program, StringComparison.Ordinal);
+
+        // The certificate a proxy forwards is read before gateway forwarding replaces the proxy's address, and
+        // the endpoint's requirement is checked after routing and authentication, before authorization.
+        var certificateForwarding = program.IndexOf("app.UseMPCoreCertificateForwarding();", StringComparison.Ordinal);
+        var gatewayForwarding = program.IndexOf("app.UseMPCoreGatewayForwarding();", StringComparison.Ordinal);
+        var authentication = program.IndexOf("app.UseAuthentication();", StringComparison.Ordinal);
+        var mutualTls = program.IndexOf("app.UseMPCoreMutualTls();", StringComparison.Ordinal);
+        var authorization = program.IndexOf("app.UseAuthorization();", StringComparison.Ordinal);
+        Assert.True(certificateForwarding > 0 && certificateForwarding < gatewayForwarding, "a forwarded certificate is read before gateway forwarding");
+        Assert.True(authentication < mutualTls && mutualTls < authorization, "the workload certificate is checked between authentication and authorization");
+
+        var settings = File.ReadAllText(Path.Combine(TemplateRoot, "src/MPCore.Backend.Api/appsettings.json"));
+        Assert.Contains("\"MutualTls\": {", settings, StringComparison.Ordinal);
+        Assert.Contains("\"Enabled\": false", settings, StringComparison.Ordinal);
+        Assert.Contains("\"AllowedWorkloadNames\": []", settings, StringComparison.Ordinal);
+        Assert.Contains("\"RevocationMode\": \"NoCheck\"", settings, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Gateway_forwarding_is_opt_in_and_first_in_the_pipeline_and_claim_mapping_is_a_named_preset()
     {
         var program = File.ReadAllText(Path.Combine(TemplateRoot, "src/MPCore.Backend.Api/Program.cs"));
