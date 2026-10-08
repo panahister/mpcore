@@ -98,3 +98,55 @@ The executor and its ports are in `MPCore.Application`; this package stores the 
 |---|---|
 | `MPCore.Cli` | The `mpcore` command: a guarded generator that validates every option before it creates anything, and checks that the template and the packages are of one version. |
 | `MPCore.Templates` | The `mpcore-backend` template for `dotnet new`, which the generator invokes. |
+
+## Which commit a package was built from
+
+Every package of the cohort records the commit it was built from, in two places a consumer's build can read:
+
+| Where | What | Written by |
+|---|---|---|
+| The package's nuspec | `<repository type="git" url="https://github.com/panahister/mpcore" commit="<40-character commit>" />` | Source Link, through `PublishRepositoryUrl` |
+| Every assembly | `AssemblyInformationalVersion`, as `<version>+<40-character commit>` | Source Link (`IncludeSourceRevisionInInformationalVersion`) |
+
+A version names one commit. Continuous integration fails when shipped code changed since the published
+version that the source still declares (`eng/check-version-moved.sh`); the version then moves to the next
+unused one before anything is packed (ADR-010, addendum of 2026-10-08). The release gate checks, on the
+packed bytes, that all thirty packages record one commit and that every assembly carries it
+(`eng/verify-release-artifacts.sh`).
+
+### Running exactly one commit of `main`
+
+A commit of `main` is available as a package when the owner publishes it: a release, or a prerelease of
+that commit, `<version>-main.<n>`, where `<n>` is the number of commits in `main`'s history up to it. Each
+`main` commit has at most one such version, and a later commit a higher one. Both are published by the
+release workflow (`release.yml`), started by hand.
+
+A backend generated from a prerelease's template is pinned to the prerelease with
+`--mpcore-version <version>-main.<n>`: the template and the CLI of a prerelease embed the version the
+source declares.
+
+### Failing the build on another commit
+
+[`eng/consumer/MPCore.PinnedCommit.targets`](../../eng/consumer/MPCore.PinnedCommit.targets) is a check for
+the consuming repository. Copy it there, import it from `Directory.Build.targets`, and set the commit:
+
+```xml
+<Project>
+  <Import Project="eng/MPCore.PinnedCommit.targets" />
+  <PropertyGroup>
+    <MPCorePinnedCommit>0123456789abcdef0123456789abcdef01234567</MPCorePinnedCommit>
+  </PropertyGroup>
+</Project>
+```
+
+After restore, every project that resolves an `MPCore.*` package reads the commit that package records and
+stops on the first one that names another:
+
+```text
+error : MP Core: MPCore.Security.AspNetCore 0.9.4-main.25 records commit '48045c7...', not the pinned 0123456....
+```
+
+A short or malformed commit is refused; without `MPCorePinnedCommit` the check does nothing. It lives in the
+consumer's repository on purpose: a check shipped inside the package it checks could be replaced with it.
+`eng/verify-consumer-pin.sh` proves it against packed packages in a throw-away NuGet cache, in continuous
+integration and in the release workflow.

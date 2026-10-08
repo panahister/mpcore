@@ -46,6 +46,15 @@ verify_release() {
   local V="$1" D="$2"
   FAILURES=0
   [ -d "$D" ] || { bad "release directory not found: $D"; return 1; }
+  # A prerelease of main, <declared>-main.<n>, is the cohort of one main commit packed with a version
+  # suffix. Its packages, nuspecs and dependency pins carry the whole version; the template and the CLI
+  # embed the version the source declares, and a backend generated from them is pinned to the prerelease
+  # with --mpcore-version. Every other version is embedded as it is.
+  local VE="$V"
+  if [[ "$V" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-main\.[0-9]+$ ]]; then
+    VE="${BASH_REMATCH[1]}"
+    info "prerelease of main: the template and the CLI embed the declared version $VE"
+  fi
 
   head_ "frozen hashes"
   if [ -f "$D/SHA256SUMS.txt" ]; then
@@ -130,6 +139,32 @@ verify_release() {
   [ "$bad_ident" -eq 0 ]   && ok "all $EXPECTED_NUPKG nuspec versions = $V"
   [ "$bad_payload" -eq 0 ] && ok "all ${#RUNTIME_IDS[@]} runtime packages carry lib/$TFM/<id>.dll"
   [ "$bad_deps" -eq 0 ]    && ok "every MPCore dependency in every package is pinned to $V"
+
+  head_ "every package: the commit it was built from"
+  # Source Link writes the repository commit into every nuspec and "+<commit>" into the informational
+  # version of every assembly. A consumer that pins a commit checks one or the other, so the whole cohort
+  # must name one commit in both places. MPCORE_EXPECTED_COMMIT, when set, is the commit the packages
+  # must name: the release workflow sets it to the commit it checked out.
+  local cohort_commit="" recorded bad_commit=0 carried
+  for id in "${RUNTIME_IDS[@]}" "${TOOL_IDS[@]}"; do
+    recorded="$(unzip -p "$D/$id.$V.nupkg" "$id.nuspec" 2>/dev/null \
+      | sed -n 's/.*<repository[^>]* commit="\([0-9a-f]\{40\}\)".*/\1/p' | head -1)"
+    if [ -z "$recorded" ]; then bad "$id records no source commit in its nuspec"; bad_commit=1; continue; fi
+    [ -n "$cohort_commit" ] || cohort_commit="$recorded"
+    [ "$recorded" = "$cohort_commit" ] || { bad "$id records commit $recorded; the cohort records $cohort_commit"; bad_commit=1; }
+  done
+  if [ -n "${MPCORE_EXPECTED_COMMIT:-}" ] && [ "$cohort_commit" != "$MPCORE_EXPECTED_COMMIT" ]; then
+    bad "the cohort records commit ${cohort_commit:-(none)}, not the expected $MPCORE_EXPECTED_COMMIT"; bad_commit=1
+  fi
+  if [ -n "$cohort_commit" ]; then
+    for id in "${RUNTIME_IDS[@]}"; do
+      carried="$(unzip -p "$D/$id.$V.nupkg" "lib/$TFM/$id.dll" 2>/dev/null | LC_ALL=C grep -a -c "+$cohort_commit")"
+      [ "${carried:-0}" -gt 0 ] || { bad "$id.dll does not carry +$cohort_commit in its informational version"; bad_commit=1; }
+    done
+    carried="$(unzip -p "$D/MPCore.Cli.$V.nupkg" "tools/$TFM/any/MPCore.Cli.dll" 2>/dev/null | LC_ALL=C grep -a -c "+$cohort_commit")"
+    [ "${carried:-0}" -gt 0 ] || { bad "MPCore.Cli.dll does not carry +$cohort_commit in its informational version"; bad_commit=1; }
+  fi
+  [ "$bad_commit" -eq 0 ] && ok "all $EXPECTED_NUPKG packages record commit $cohort_commit, and every assembly carries +$cohort_commit"
 
   # ---------------- packed template ----------------
   local T; T="$(mktemp -d)"
@@ -281,8 +316,8 @@ verify_release() {
     # placing a decoy "isRequired": true in a neighbouring symbol - can widen it past its own
     # closing brace and answer for the wrong symbol.
     tj() { python3 -c 'import json,sys;d=json.load(open(sys.argv[1]))["symbols"];print(eval(sys.argv[2],{},{"s":d}))' "$TJSON" "$1" 2>/dev/null; }
-    expect_eq "templateVersion default (what the marker resolves to)" "$(tj 's["templateVersion"]["defaultValue"]')" "$V"
-    expect_eq "mpcoreVersion default (runtime pins in generated projects)" "$(tj 's["mpcoreVersion"]["defaultValue"]')" "$V"
+    expect_eq "templateVersion default (what the marker resolves to)" "$(tj 's["templateVersion"]["defaultValue"]')" "$VE"
+    expect_eq "mpcoreVersion default (runtime pins in generated projects)" "$(tj 's["mpcoreVersion"]["defaultValue"]')" "$VE"
     expect_eq "transport is the required choice" "$(tj 's["transport"].get("isRequired") is True')" "True"
     expect_eq "transport has no default" "$(tj '"defaultValue" not in s["transport"]')" "True"
     expect_eq "businessAudit defaults to none (an audit trail is chosen, never implied)" "$(tj 's["businessAudit"]["defaultValue"]')" "none"
@@ -307,7 +342,7 @@ verify_release() {
     # against a mismatched template and observing exit 4 (see ADR-010).
     local CLI_STRINGS; CLI_STRINGS="$(LC_ALL=C tr -d '\000' < "$DLL")"
     grep_lit() { printf '%s' "$CLI_STRINGS" | LC_ALL=C grep -a -c "$1"; }
-    expect_eq "assembly contains cohort version $V"          "$(grep_lit "$V" | awk '{print ($1>0)?"yes":"no"}')" "yes"
+    expect_eq "assembly contains cohort version $VE"         "$(grep_lit "$VE" | awk '{print ($1>0)?"yes":"no"}')" "yes"
     expect_eq "assembly contains the mismatch message"       "$(grep_lit 'Template/CLI version mismatch')" "1"
     expect_eq "assembly contains the marker filename"        "$(grep_lit 'mpcore-template-version' | awk '{print ($1>0)?"yes":"no"}')" "yes"
     # Presence, not a line count: the literal legitimately appears in both the generation gate and
@@ -320,13 +355,13 @@ verify_release() {
   head_ "packed CLI documentation"
   local RM="$C/README.md"
   if [ -f "$RM" ]; then
-    expect_eq "README documents version $V"             "$(grep -cF "$V" "$RM" | awk '{print ($1>0)?"yes":"no"}')" "yes"
+    expect_eq "README documents version $VE"            "$(grep -cF "$VE" "$RM" | awk '{print ($1>0)?"yes":"no"}')" "yes"
     expect_eq "README documents manifest schema $EXPECTED_MANIFEST_SCHEMA" \
       "$(grep -c "\"schemaVersion\": $EXPECTED_MANIFEST_SCHEMA" "$RM")" "1"
     expect_eq "README documents no superseded schema" \
       "$(grep -cE '"schemaVersion": [0-9]+' "$RM" | awk -v n=1 '{print ($1>n)?"extra":"none"}')" "none"
     expect_eq "README documents the exit 4 gate"        "$(grep -c 'exits `4`' "$RM")" "1"
-    local stale; stale="$(grep -oE '0\.2\.0-alpha\.[0-9]+' "$RM" | sort -u | grep -v "^$V$" | tr '\n' ' ')"
+    local stale; stale="$(grep -oE '0\.2\.0-alpha\.[0-9]+' "$RM" | sort -u | grep -v "^$VE$" | tr '\n' ' ')"
     expect_eq "README carries no superseded version" "${stale:-none}" "none"
   else
     bad "MPCore.Cli package has no README.md"
@@ -495,9 +530,19 @@ self_test() {
   ( cd "$S/case12" && eval "$refreeze" )
   assert_case "case 12 (claude adapter grew a duplicated body)" "$S/case12" "$V" "duplicated body" || failed=1
 
+  # 13: one package records another source commit, hashes refrozen. A consumer that pins a commit would
+  # be told the cohort is one commit while one of its packages was built from another.
+  cp -R "$D" "$S/case13"; local W13="$S/work13"; mkdir -p "$W13"
+  ( cd "$W13" && unzip -qo "$S/case13/MPCore.Hosting.$V.nupkg" )
+  sedi -E 's/(<repository[^>]* commit=")[0-9a-f]{40}/\1fedcba9876543210fedcba9876543210fedcba98/' "$W13/MPCore.Hosting.nuspec"
+  rm -f "$S/case13/MPCore.Hosting.$V.nupkg"
+  ( cd "$W13" && zip -qr "$S/case13/MPCore.Hosting.$V.nupkg" . )
+  ( cd "$S/case13" && eval "$refreeze" )
+  assert_case "case 13 (one package records another source commit)" "$S/case13" "$V" "records commit" || failed=1
+
   rm -rf "$S"
   printf '\n'
-  [ "$failed" -eq 0 ] && { printf 'self-test PASSED: all twelve bad artifacts rejected by the expected assertions\n'; return 0; }
+  [ "$failed" -eq 0 ] && { printf 'self-test PASSED: all thirteen bad artifacts rejected by the expected assertions\n'; return 0; }
   printf 'self-test FAILED\n'; return 1
 }
 

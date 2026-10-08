@@ -1,0 +1,59 @@
+<Project>
+  <!--
+    Fails the build when a restored MP Core package was built from a commit other than the one this
+    repository pins. Copy this file into the consuming repository, import it from Directory.Build.targets,
+    and set the full commit SHA of MP Core's main that the product runs:
+
+      <Import Project="eng/MPCore.PinnedCommit.targets" />
+      <PropertyGroup>
+        <MPCorePinnedCommit>0123456789abcdef0123456789abcdef01234567</MPCorePinnedCommit>
+      </PropertyGroup>
+
+    Every MP Core package records the commit it was built from in its nuspec, as the repository element's
+    commit attribute (written by Source Link). After restore, this target reads that attribute from every
+    MPCore.* package a project resolved, and stops the build on the first one that names another commit.
+    Without MPCorePinnedCommit it does nothing.
+
+    The check lives in the consumer's own repository, not in an MP Core package: a check shipped inside the
+    package it verifies could be replaced together with that package.
+  -->
+  <Target Name="MPCoreVerifyPinnedCommit"
+          AfterTargets="ResolvePackageAssets"
+          DependsOnTargets="_MPCoreCollectPinnedPackages;_MPCoreVerifyEachPinnedPackage"
+          Condition="'$(MPCorePinnedCommit)' != ''" />
+
+  <Target Name="_MPCoreCollectPinnedPackages" Condition="'$(MPCorePinnedCommit)' != ''">
+    <Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(MPCorePinnedCommit)', '^[0-9a-f]{40}$'))"
+           Text="MP Core: MPCorePinnedCommit must be a full commit SHA of 40 lower-case hexadecimal characters, not '$(MPCorePinnedCommit)'." />
+    <ItemGroup>
+      <_MPCoreResolvedFile Include="@(ResolvedCompileFileDefinitions);@(RuntimeCopyLocalItems)"
+                           Condition="$([System.String]::Copy('%(NuGetPackageId)').StartsWith('MPCore.'))" />
+      <_MPCorePinnedPackage Include="%(_MPCoreResolvedFile.NuGetPackageId)"
+                            Version="%(_MPCoreResolvedFile.NuGetPackageVersion)" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Runs once per resolved MP Core package (target batching over its identity). Its condition is evaluated
+    before the target runs, so the packages are collected by the target before it, not by a dependency.
+  -->
+  <Target Name="_MPCoreVerifyEachPinnedPackage"
+          Outputs="%(_MPCorePinnedPackage.Identity)"
+          Condition="'$(MPCorePinnedCommit)' != '' AND '@(_MPCorePinnedPackage)' != ''">
+    <PropertyGroup>
+      <_MPCorePackageId>%(_MPCorePinnedPackage.Identity)</_MPCorePackageId>
+      <_MPCorePackageVersion>%(_MPCorePinnedPackage.Version)</_MPCorePackageVersion>
+      <_MPCorePackageIdLower>$(_MPCorePackageId.ToLowerInvariant())</_MPCorePackageIdLower>
+      <_MPCoreNuspec>$([MSBuild]::EnsureTrailingSlash('$(NuGetPackageRoot)'))$(_MPCorePackageIdLower)/$(_MPCorePackageVersion.ToLowerInvariant())/$(_MPCorePackageIdLower).nuspec</_MPCoreNuspec>
+      <_MPCoreRecordedCommit></_MPCoreRecordedCommit>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(_MPCoreNuspec)')"
+           Text="MP Core: the nuspec of $(_MPCorePackageId) $(_MPCorePackageVersion) was not found at $(_MPCoreNuspec); its commit cannot be checked." />
+    <XmlPeek XmlInputPath="$(_MPCoreNuspec)"
+             Query="/*[local-name()='package']/*[local-name()='metadata']/*[local-name()='repository']/@commit">
+      <Output TaskParameter="Result" PropertyName="_MPCoreRecordedCommit" />
+    </XmlPeek>
+    <Error Condition="'$(_MPCoreRecordedCommit)' != '$(MPCorePinnedCommit)'"
+           Text="MP Core: $(_MPCorePackageId) $(_MPCorePackageVersion) records commit '$(_MPCoreRecordedCommit)', not the pinned $(MPCorePinnedCommit)." />
+  </Target>
+</Project>

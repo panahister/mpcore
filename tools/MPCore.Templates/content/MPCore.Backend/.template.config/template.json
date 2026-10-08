@@ -190,7 +190,7 @@
     "templateVersion": {
       "type": "parameter",
       "datatype": "text",
-      "defaultValue": "0.9.3",
+      "defaultValue": "0.9.4",
       "replaces": "MPCORE_TEMPLATE_VERSION"
     },
     "aiTooling": {
@@ -232,7 +232,7 @@
     "mpcoreVersion": {
       "type": "parameter",
       "datatype": "text",
-      "defaultValue": "0.9.3",
+      "defaultValue": "0.9.4",
       "replaces": "MPCORE_VERSION"
     },
     "securityAuthority": {

@@ -165,6 +165,7 @@ live backends on every change. A line with neither says so.
 | Multi-tenancy: the tenant from a claim of the token, an ambient scope for work with no caller, recorded in the audit trail | `MPCore.Tenancy.Abstractions` | Tests; Tiffin S6, with two tenants. Storefront has one |
 | The tenant of a call between services: the caller writes it into `x-tenant-id`; the called service believes it only from a service it lists, never from a user, never over a tenant in the token (since `0.9.2`) | `MPCore.Resilience.Http` (`AddMPCoreTenantPropagation`), `MPCore.Security.AspNetCore` (`TrustedServiceClients`) | Tests: `TenantPropagationTests`, `TenantOverServiceCallsTests`, each guard seen failing; Tiffin: Payments' audit trail names the city of every payment Ordering opens |
 | Publication with no stored key | `release.yml` | The packages of `0.9.0` were published this way |
+| A version names one commit: every package records its commit, continuous integration fails when shipped code changed under a published version, a commit of `main` can be published as a prerelease `<version>-main.<n>`, and a consumer's build can fail on a package of another commit (next version, not yet released; ADR-010, addendum of 2026-10-08) | `eng/check-version-moved.sh`, `release.yml`, `eng/consumer/MPCore.PinnedCommit.targets` | Self-tests of the version check and of the release gate, each seen failing; `eng/verify-consumer-pin.sh` against packed packages; `SourceRevisionTests`. No prerelease has been published |
 
 ## What MP Core deliberately does not do
 

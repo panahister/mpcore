@@ -10,13 +10,20 @@
 #
 # A published version is never built again (ADR-010). Run a rehearsal first: it does everything except
 # publish.
+#
+# Two kinds of version. A release is the version the source declares (VersionPrefix). A prerelease of main
+# is <declared>-main.<n>, run on main: n is the number of commits in main's history up to the commit the
+# run checked out, so each main commit has exactly one prerelease version, and a later commit a higher one.
+# Its template and CLI embed the declared version; a backend generated from them is pinned to the
+# prerelease with --mpcore-version. Every package records the commit it was built from (ADR-010, addendum
+# of 2026-10-08).
 name: release
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "The version to publish. It must be the version the source declares."
+        description: "The version to publish: the version the source declares, or <declared>-main.<n>, a prerelease of the main commit that is the n-th of main's history."
         required: true
         type: string
       publish:
@@ -101,14 +108,30 @@ jobs:
       VERSION: ${{ inputs.version }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The whole history: a prerelease is numbered by it, and the version check reads the commit that
+          # published the declared version.
+          fetch-depth: 0
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
-      - name: The version asked for is the version the source declares
+      - name: The version asked for is the declared version, or the prerelease of this main commit
+        id: version
         run: |
           declared="$(sed -n 's/.*<VersionPrefix>\(.*\)<\/VersionPrefix>.*/\1/p' src/Directory.Build.props | head -1)"
-          echo "declared: $declared, asked for: $VERSION"
-          [ "$declared" = "$VERSION" ]
+          count="$(git rev-list --count HEAD)"
+          echo "declared: $declared, asked for: $VERSION, commits up to this one: $count"
+          if [ "$VERSION" = "$declared" ]; then
+            echo "suffix=" >> "$GITHUB_OUTPUT"
+          elif [ "$VERSION" = "$declared-main.$count" ]; then
+            [ "$GITHUB_REF" = "refs/heads/main" ] || { echo "a prerelease of main is cut from main, not from $GITHUB_REF"; exit 1; }
+            echo "suffix=main.$count" >> "$GITHUB_OUTPUT"
+          else
+            echo "a release of this commit is $declared; a prerelease of it is $declared-main.$count"
+            exit 1
+          fi
+      - name: A changed cohort moves its version (ADR-010)
+        run: ./eng/check-version-moved.sh
       - name: The version is not on nuget.org yet
         run: |
           status="$(curl -s -o /dev/null -w '%{http_code}' "https://api.nuget.org/v3-flatcontainer/mpcore.domain/$VERSION/mpcore.domain.nuspec")"
@@ -119,18 +142,22 @@ jobs:
       - name: Restore (locked)
         run: dotnet restore MPCore.sln --locked-mode
       - name: Build (warnings are errors)
-        run: dotnet build MPCore.sln --configuration Release --no-restore
+        run: dotnet build MPCore.sln --configuration Release --no-restore -p:VersionSuffix="${{ steps.version.outputs.suffix }}"
       - name: Test
         run: dotnet test MPCore.sln --configuration Release --no-build
       - name: Pack
-        run: dotnet pack MPCore.sln --configuration Release --no-build --output "artifacts/release/$VERSION"
+        run: dotnet pack MPCore.sln --configuration Release --no-build -p:VersionSuffix="${{ steps.version.outputs.suffix }}" --output "artifacts/release/$VERSION"
       - name: Freeze the hashes
         working-directory: artifacts/release/${{ inputs.version }}
         run: for f in *.nupkg *.snupkg; do shasum -a 256 "$f"; done | sort -k2 > SHA256SUMS.txt
       - name: Verify the packed files
+        env:
+          MPCORE_EXPECTED_COMMIT: ${{ github.sha }}
         run: ./eng/verify-release-artifacts.sh "$VERSION"
       - name: Prove the gate rejects bad files
         run: ./eng/verify-release-artifacts.sh --self-test "$VERSION"
+      - name: A consumer can pin the commit the packages record
+        run: ./eng/verify-consumer-pin.sh "artifacts/release/$VERSION" "$VERSION" "${{ github.sha }}"
       - uses: actions/upload-artifact@v7
         with:
           name: release-${{ inputs.version }}

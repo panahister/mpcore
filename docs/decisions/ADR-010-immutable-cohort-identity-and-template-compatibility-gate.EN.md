@@ -204,3 +204,39 @@ reconciled in either direction, and no text was edited to make the two agree.
 **Where the earlier report was wrong.** The verification report produced for `0.2.0-alpha.8`
 described its environment as isolated. That claim was false against the §1 definition for the reason
 above, and the lab documents that repeat it are annotated in the lab repository rather than deleted.
+
+## Addendum 2026-10-08 — a version names one commit (proposed; pending owner acceptance)
+
+This addendum adds no exception to §1. It makes the rule checkable from the commit history, and lets a
+consumer prove which commit it runs.
+
+**What went wrong.** The source kept declaring `0.9.3` after `0.9.3` was published from `bd41bd3`, while
+shipped code changed under it. A package built from the newer source would have carried the published
+number over different bytes, and a consumer who pinned MP Core by a commit of `main` could not tell which
+code a package held. The repository's habit was to move `VersionPrefix` only in the commit that releases.
+
+**Decision.**
+
+| Rule | Held by |
+|---|---|
+| Every package records the commit it was built from: the nuspec's `repository` element carries it, and every assembly's informational version is `<version>+<commit>` | Source Link; `SourceRevisionTests`; the release gate checks the packed bytes: one commit for all thirty packages, and, in the workflow, the commit it checked out |
+| When the declared version is published and shipped code changed since the commit its packages record, the build fails until `VersionPrefix` moves to the next unused version | `eng/check-version-moved.sh`, in continuous integration and in the release workflow, with a self-test |
+| A commit of `main` can be published as a prerelease, `<declared>-main.<n>`, where `n` is the number of commits in `main`'s history up to it | `release.yml`, started by the owner; it refuses any other suffix, and a prerelease run from another branch |
+| A published version, release or prerelease, is never published again | `release.yml` asks nuget.org before it builds |
+| A consumer can fail its own build when a restored package records another commit | `eng/consumer/MPCore.PinnedCommit.targets`, proved by `eng/verify-consumer-pin.sh` |
+
+"Shipped code" is what reaches a package of the cohort: `src`, `tools/MPCore.Cli`, `tools/MPCore.Templates`,
+the packed `docs/nuget` README, `Directory.Build.props` and `Directory.Packages.props`. A document outside
+the packages still needs no new version (§1).
+
+**Sources.** *Semantic Versioning 2.0.0* (Tom Preston-Werner), items 9 and 11: a prerelease version ranks
+below its release, and numeric identifiers compare as numbers, so `0.9.4-main.25` ranks below
+`0.9.4-main.26` and both below `0.9.4`; item 10: build metadata is ignored for precedence, which is why the
+commit is not the version. Microsoft Learn, "Package versioning" (NuGet): NuGet follows SemVer 2.0.0
+prerelease labels and treats a published version as immutable. The .NET Foundation's Source Link
+(`dotnet/sourcelink`): the repository commit in the nuspec and the `+<commit>` informational version.
+
+**Alternatives that were not taken.** Releases only, with a consumer building MP Core from the commit: one
+artifact per commit stops being something a consumer can restore. A prerelease for each commit published
+automatically on every push: publication stays the owner's act (ADR-004, addendum on publication). The
+commit as build metadata (`0.9.4+48045c7`): ignored by NuGet for identity, as §1 already says.

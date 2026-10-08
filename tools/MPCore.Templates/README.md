@@ -4,7 +4,7 @@ Install this package from nuget.org, then use the `mpcore-backend` template dire
 `MPCore.Cli`, which checks that the template and the packages are of one version.
 
 ```bash
-dotnet new install MPCore.Templates::0.9.3
+dotnet new install MPCore.Templates::0.9.4
 ```
 
 Generated repositories reference an exact MP Core package version.

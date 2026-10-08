@@ -19,6 +19,14 @@ and document-only changes outside the package need no bump.
 While the major version is `0`, a minor version may change the public API. Say what changed and how to
 move, in `docs/releases/<version>.md`.
 
+A version names one commit (ADR-010, addendum of 2026-10-08). Once a version is published, the next change
+to shipped code moves `VersionPrefix` to the next unused version in the same change; continuous
+integration fails otherwise (`eng/check-version-moved.sh`). Every package records the commit it was built
+from, and the release gate checks it.
+
+A commit of `main` may also be published as a prerelease, `<declared>-main.<n>`, where `<n>` is
+`git rev-list --count HEAD` on that commit. It is the same procedure, run on `main` with that version.
+
 ## Steps
 
 1. Move the whole cohort together: runtime packages, `MPCore.Cli` and `MPCore.Templates`. The version is
@@ -32,11 +40,12 @@ move, in `docs/releases/<version>.md`.
 5. Run `release.yml` as a **rehearsal** (without "publish") on the commit that is to be released. It
    restores, builds, tests, packs, freezes and verifies on GitHub's runner. Artifacts packed anywhere else,
    a maintainer's machine included, are verification candidates, not publication artifacts.
-6. Freeze with SHA-256 once, then verify the frozen bytes:
+6. Freeze with SHA-256 once, then verify the frozen bytes, and that a consumer can pin their commit:
 
    ```bash
-   ./eng/verify-release-artifacts.sh <version>
+   MPCORE_EXPECTED_COMMIT=<commit> ./eng/verify-release-artifacts.sh <version>
    ./eng/verify-release-artifacts.sh --self-test <version>
+   ./eng/verify-consumer-pin.sh artifacts/release/<version> <version> <commit>
    ```
 
    Never regenerate an existing manifest; refreezing over substituted bytes defeats the gate.

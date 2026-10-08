@@ -81,11 +81,18 @@ jobs:
       MPCORE_TEST_KAFKA: localhost:9094
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The whole history: the version check reads the commit that published the declared version.
+          fetch-depth: 0
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
       - name: Restore the API-compatibility baseline from nuget.org
         run: ./eng/restore-api-baseline.sh
+      - name: A changed cohort moves its version (ADR-010)
+        run: |
+          ./eng/check-version-moved.sh --self-test
+          ./eng/check-version-moved.sh
       - name: Restore (locked)
         run: dotnet restore MPCore.sln --locked-mode
       - name: Build (warnings are errors)
@@ -94,6 +101,10 @@ jobs:
         run: dotnet test MPCore.sln --configuration Release --no-build --logger "trx;LogFileName=results.trx"
       - name: Pack (a verification candidate, never published from here)
         run: dotnet pack MPCore.sln --configuration Release --no-build --output artifacts/candidate -p:VersionSuffix=ci.${{ github.run_number }}
+      - name: A consumer can pin the commit the packages record
+        run: |
+          declared="$(sed -n 's/.*<VersionPrefix>\(.*\)<\/VersionPrefix>.*/\1/p' src/Directory.Build.props | head -1)"
+          ./eng/verify-consumer-pin.sh artifacts/candidate "$declared-ci.${{ github.run_number }}" "$(git rev-parse HEAD)"
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7

@@ -10,7 +10,7 @@ internal static partial class MPCoreCli
     // published version is never rebuilt with different bytes: a corrected build always takes the
     // next unused prerelease version, because a mutable version identity silently mixes a stale
     // template with current runtime packages and produces a consumer that cannot compile.
-    internal const string CohortVersionValue = "0.9.3";
+    internal const string CohortVersionValue = "0.9.4";
 
     private const string DefaultMPCoreVersion = CohortVersionValue;
 
