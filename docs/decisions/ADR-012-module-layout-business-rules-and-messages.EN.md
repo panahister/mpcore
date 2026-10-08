@@ -236,9 +236,9 @@ document or a skill states it and no test checks it.
 | 1.3 | The root `Domain` and `Application` projects are not generated for this shape | `TemplateContractTests.A_modular_monolith_composes_one_project_per_module_and_references_no_root_application` (every reference to them sits inside the service-only condition) |
 | 1.4 | A module references MP Core abstractions, its own Contracts and other modules' Contracts; never another module's main project or the host | the compiler in a generated repository; no test in this repository |
 | 1.5 | The boundary between layers inside a module is held by architecture tests on namespaces | the generated `ArchitectureTests` check the root layers only (`The_domain_and_the_application_name_no_provider`, `The_domain_knows_nothing_of_the_layers_around_it`, `The_application_knows_neither_the_adapters_nor_the_host`); not the folders inside a module |
-| 1.6 | Handlers, messages, ports and adapters stay `public`; project references are the module boundary | text only |
+| 1.6 | Handlers, messages, ports and adapters stay `public`; project references are the module boundary | convention, enforced by review; no automated check |
 | 2.1 | `Application/` holds `Commands/`, `Queries/`, `Views/`, `Ports/`, `Process/`, `Validators/`; namespaces follow folders | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from` (the guide names them); not checked in code |
-| 2.2 | A command or query record and its handler share one file | text only |
+| 2.2 | A command or query record and its handler share one file | convention, enforced by review; no automated check |
 | 2.3 | A query only reads: no `IUnitOfWork`, no publishing, a read-model port returning views; it is the only thing a `GET` sends | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from` (the guide states it), `The_read_side_vocabulary_exists_in_the_package_the_application_layer_already_references`; the rule itself is not checked |
 | 3.1 | `IBusinessRule` gains `ErrorDomain`, `MessageKey`, `MessageArguments`, with defaults so existing rules compile | `BusinessRuleTests.A_rule_carries_its_domain_code_key_and_arguments`, `A_rule_implemented_directly_gets_safe_defaults` |
 | 3.2 | `BusinessRule` validates its identifiers at construction, with the patterns of the failure model | `BusinessRuleTests.Malformed_identifiers_fail_when_the_rule_is_created`, `Arguments_are_bounded_like_the_failure_model`; `The_domain_package_accepts_exactly_the_message_keys_the_failure_model_accepts` |
@@ -261,9 +261,9 @@ document or a skill states it and no test checks it.
 | 6.1 | The template, its documents and its skills teach all of this; every host registers the catalog and the validators | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from`, `Every_host_renders_messages_and_validates_input_before_the_handler`, `The_shipped_skills_prescribe_the_execution_model_the_framework_actually_has` |
 | 7.1 | A module writes only its own data | no test in this repository; the Storefront sample's architecture tests hold it there |
 | 7.2 | Between modules the default is a message: outbox in the publisher's transaction, a durable local queue, an idempotent receiver | the mechanism: `OutboxTests`, `PortBasedTransactionTests`; the default itself is text only |
-| 7.3 | A call through Contracts that writes is a deliberate exception, with its reason written where the interface is declared | text only (module guide) |
-| 7.4 | A call through Contracts that reads is always acceptable | text only |
-| 7.5 | A module message carries a snapshot; what only the receiver can refuse is refused after the caller is answered; module messages are never routed to a broker | text only |
+| 7.3 | A call through Contracts that writes is a deliberate exception, with its reason written where the interface is declared | convention, enforced by review; no automated check (module guide) |
+| 7.4 | A call through Contracts that reads is always acceptable | convention, enforced by review; no automated check |
+| 7.5 | A module message carries a snapshot; what only the receiver can refuse is refused after the caller is answered; module messages are never routed to a broker | convention, enforced by review; no automated check |
 
 ### Open points
 
@@ -289,3 +289,9 @@ recorded the state of 2026-09-27; this amendment states today's, taken from the 
 | "The cohort declared in code is still `0.2.0-alpha.9`", and the changes ship in the next prerelease | the cohort declared in code is `0.10.0`, not yet published; the last published version is `0.9.3` (tag `v0.9.3`), the API baseline | `VersionPrefix` and `MPCoreBaselineVersion` in `src/Directory.Build.props` |
 
 The decisions of this record are unchanged by these facts.
+
+## Amendment 2026-10-08 — conventions accepted as conventions
+
+Approved by the repository owner on 2026-10-08 (open point G of the review above). Decisions 1.6, 2.2, 7.3,
+7.4 and 7.5 are accepted as conventions: they are enforced by review, and no automated check holds them. The
+review table labels each of them so.
