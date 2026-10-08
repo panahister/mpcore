@@ -3,12 +3,23 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" />
+    <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Grpc.StatusProto" />
+    <PackageReference Include="Grpc.Tools" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
     <ProjectReference Include="../../src/MPCore.Localization/MPCore.Localization.csproj" />
     <ProjectReference Include="../../src/MPCore.Localization.EntityFrameworkCore.PostgreSql/MPCore.Localization.EntityFrameworkCore.PostgreSql.csproj" />
     <ProjectReference Include="../../src/MPCore.Transport.Http/MPCore.Transport.Http.csproj" />
+    <!-- A product's own default culture, proved on both transports and on validation messages. -->
+    <ProjectReference Include="../../src/MPCore.Transport.Grpc/MPCore.Transport.Grpc.csproj" />
+    <ProjectReference Include="../../src/MPCore.Validation.FluentValidation/MPCore.Validation.FluentValidation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos/culture_probe.proto" GrpcServices="Both" />
   </ItemGroup>
   <ItemGroup>
     <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />

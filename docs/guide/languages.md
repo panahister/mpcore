@@ -65,7 +65,44 @@ In the product's repository, never in MP Core:
    `MPCore.Localization.EntityFrameworkCore.PostgreSql`, through the product's own commands; every
    instance serves a change within its refresh interval.
 
-The fixture cultures of MP Core's own tests (`en-GB`, `en-US-POSIX`) show these steps with English
+## Another language in English's place
+
+A product whose callers should never see English sets its own culture as the default, with no change to
+MP Core:
+
+```csharp
+builder.Services.Configure<HttpFailureOptions>(options =>
+{
+    options.SupportedCultures.Clear();
+    options.SupportedCultures.Add("<culture>");
+    options.DefaultCulture = "<culture>";
+});
+builder.Services.Configure<GrpcFailureOptions>(options =>
+{
+    options.SupportedCultures.Clear();
+    options.SupportedCultures.Add("<culture>");
+    options.DefaultCulture = "<culture>";
+});
+builder.Services.AddMPCoreMessageCatalog(
+    catalog => catalog.AddResources<<Product>Platform>(),
+    options => options.DefaultCulture = "<culture>");
+```
+
+Each setting has one job:
+
+- the transports' `DefaultCulture` and `SupportedCultures` decide the culture of a request that names no
+  language, or only languages the product does not serve, English included;
+- the catalog's `DefaultCulture` decides where a key falls back when the caller's culture has no text for
+  it: to the product's culture before MP Core's English. It matters once the product serves more than one
+  language.
+
+With the product's texts for MP Core's keys in `<culture>` (step 2 above), every MP Core message, the
+validation failure and each field, a business rule, an idempotency failure, a missing sign-in, reaches the
+caller in that culture over REST and over gRPC. A key the product does not translate falls back to MP Core's
+English rather than to no text. `ProductDefaultCultureTests` holds all of
+this, with the fixture culture `en-AU` in the product's place.
+
+The fixture cultures of MP Core's own tests (`en-GB`, `en-AU`, `en-US-POSIX`) show these steps with English
 texts marked as fixtures; they stand for any language.
 
 ## What stays English

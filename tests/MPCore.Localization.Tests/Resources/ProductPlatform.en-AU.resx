@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A test fixture, not a translation: a product's texts for MP Core's own keys in the culture it made its
+  default. The fixture culture en-AU stands for any language; its texts are English and marked as fixtures.
+-->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="mpcore.validation_failed" xml:space="preserve">
+    <value>en-AU fixture: some values are not right.</value>
+  </data>
+  <data name="validation.not_empty" xml:space="preserve">
+    <value>en-AU fixture: this value is needed.</value>
+  </data>
+  <data name="mpcore.business_rule_violation" xml:space="preserve">
+    <value>en-AU fixture: that breaks one of our rules.</value>
+  </data>
+  <data name="mpcore.idempotency.key_reused" xml:space="preserve">
+    <value>en-AU fixture: that key went with another request.</value>
+  </data>
+  <data name="mpcore.authentication_required" xml:space="preserve">
+    <value>en-AU fixture: sign in first.</value>
+  </data>
+</root>

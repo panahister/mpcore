@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "MPCore.Localization.Tests.Protos";
+
+package mpcore.culture_test.v1;
+
+// Fails with one of MP Core's own failures, named by mode.
+service CultureProbe {
+  rpc Fail (CultureProbeRequest) returns (CultureProbeReply);
+}
+
+message CultureProbeRequest {
+  string mode = 1;
+}
+
+message CultureProbeReply {
+  string value = 1;
+}

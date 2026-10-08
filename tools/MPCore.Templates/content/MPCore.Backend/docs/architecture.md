@@ -134,7 +134,11 @@ Three kinds of check, each in one place:
   - if MP Core's own messages (sign-in, permission, validation and the rest) should follow, a resource
     file of this product holding their keys in `<culture>`, registered with `catalog.AddResources<T>()`:
     at this product's precedence it wins over MP Core's English in that culture;
-  - the culture in `HttpFailureOptions.SupportedCultures` and `GrpcFailureOptions.SupportedCultures`.
+  - the culture in `HttpFailureOptions.SupportedCultures` and `GrpcFailureOptions.SupportedCultures`;
+  - to put it in English's place, the culture as `DefaultCulture` of both transports and of the catalog
+    (`AddMPCoreMessageCatalog(..., options => options.DefaultCulture = "<culture>")`), and English removed
+    from `SupportedCultures`. A request with no language, or one this product does not serve, then reads
+    every message in that culture.
 
   [MP Core's language guide](https://github.com/panahister/mpcore/blob/main/docs/guide/languages.md)
   lists MP Core's keys with their English texts and gives each step in full.
