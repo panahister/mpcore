@@ -328,3 +328,35 @@ Accepted by the repository owner on 2026-10-08, with the recommendation for ever
 Open points A, B, C, E and F are fixed by the tests named in the review; D is fixed by the amendment of the
 facts; G is accepted as conventions, of which 7.3 is since held by a test. The amendments above are part of
 this record.
+
+## Amendment 2026-10-08 — English is MP Core's only built-in language
+
+Decided by the repository owner on 2026-10-08. Section 5 and the verification list above say that MP Core's
+own texts ship in English and in a second language. That record is kept as written; this amendment
+replaces it from 0.10.0 on.
+
+- **MP Core considers no language but English.** English is its only built-in language and its default.
+  Its packages carry English texts only, in neutral resource files, and no satellite assembly; its source,
+  template, CLI, documentation and diagrams name no other language. Its tests show the language rules with
+  fixture cultures whose texts are English and marked as fixtures.
+- **Every product decides its own languages, in its own repository**: how many it adds beside English, or
+  which one it serves instead of English. It does so with its own resource files or catalog sources, its
+  translations of MP Core's own keys among them, the `SupportedCultures` and `DefaultCulture` of both
+  transports, and the catalog's `DefaultCulture`. MP Core's nature is never shaped by the language or the
+  business of a product that uses it.
+- **The capability is unchanged**: culture negotiation from `Accept-Language` (RFC 9110) and gRPC metadata,
+  the catalog with sources by precedence (MP Core's English at −100, the product at 0, overrides at 100),
+  the culture chain and its fallback, named placeholders, the missing-key metric and log, and stored
+  translations with their refresh.
+- **What stays English**: the problem `title` and the gRPC status message, which ADR-008 fixes as safe
+  phrases per category; log and exception messages.
+
+Held by `EnglishOnlyTests` (no culture-specific resource file in the source, the template or the
+documentation; no text outside the Latin script anywhere in the repository; no satellite assembly in the
+packed `MPCore.Localization`, each seen failing before the removal), the release gate's English-only check
+(self-test case 14), `ProductDefaultCultureTests` (a product's culture in English's place, over REST and gRPC,
+each part seen failing with the guarded code broken), `MessageCatalogTests.MP_Core_messages_ship_in_English_below_the_product`,
+`ValidationFailureConversionTests.Every_built_in_validator_has_an_English_default_text_that_a_product_can_translate`
+and `MPCoreMessagesCoverageTests`. The test the review table names for 5.2 is replaced by the
+`MessageCatalogTests` test above.
+[The language guide](../guide/languages.md) says how a product adds or substitutes its languages.
