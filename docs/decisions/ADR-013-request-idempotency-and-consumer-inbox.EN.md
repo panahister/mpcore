@@ -131,3 +131,52 @@ template does not generate the wiring; `docs/architecture.md` lists the five lin
   new operation; the purger; an integration event delivered three times is processed once; a published
   event carries its `EventId` as header; and the HTTP contract (400, 422, `Idempotency-Replayed`).
 - The inbox and header tests were seen failing with the inbox and the automatic header removed.
+
+## Review for the owner's acceptance, 2026-10-08
+
+The status above stays "Proposed; pending owner acceptance". It changes only on the owner's word, recorded
+here with the date and the approver; an amendment he makes is recorded in this document. Nothing in this
+section changes shipped behaviour.
+
+### Every decision, and what holds it
+
+"Held by" names a test of this repository that fails when the decision is broken; tests of
+`MPCore.Idempotency.Tests` run against PostgreSQL and a real Wolverine host. "Text only" means no test
+checks it.
+
+| # | Decision | Held by |
+|---|---|---|
+| 1.1 | Three guards: request idempotency and the consumer inbox are MP Core's; a business key is the product's | text only (the division of ownership) |
+| 2.1 | A command is sent through `IIdempotentExecutor`, neutral to transport and persistence | `IdempotentExecutorTests` |
+| 2.2 | No key is an ordinary execution, unless the endpoint requires one: then `mpcore.idempotency/KEY_REQUIRED` (400) | `IdempotentExecutorTests.Without_a_key_the_command_simply_runs`, `An_endpoint_that_requires_a_key_refuses_a_request_without_one`; `HttpIdempotencyTests.A_required_key_that_is_missing_is_a_400_problem`; `RequestIdempotencyTests.A_key_is_required_only_where_the_endpoint_says_so` |
+| 2.3 | A key is 1 to 255 visible ASCII characters | `IdempotentExecutorTests.A_key_outside_visible_ascii_is_refused`, `A_key_longer_than_255_characters_is_refused` |
+| 2.4 | The request identity is the caller's scope, the command's type, the key and the SHA-256 of the command | `IdempotentExecutorTests.The_same_key_with_a_different_request_is_refused`, `Another_caller_may_use_the_same_key` |
+| 2.5 | A stored entry with the same command and hash is replayed; the handler does not run | `IdempotentExecutorTests.A_repeat_with_the_same_key_and_request_receives_the_stored_result_and_runs_nothing`, `A_command_without_a_value_is_replayed_as_success`; `RequestIdempotencyTests.The_key_commits_with_the_change_and_a_repeat_replays_the_result` |
+| 2.6 | Another command or hash under the key is `KEY_REUSED` (422) | `HttpIdempotencyTests.The_same_key_with_another_body_is_a_422_problem`; `RequestIdempotencyTests.The_same_key_with_a_different_request_is_refused_and_changes_nothing` |
+| 2.7 | Key, hash and result are written in the save that commits the business change | `RequestIdempotencyTests.The_key_commits_with_the_change_and_a_repeat_replays_the_result`, `A_failure_after_a_mutation_leaves_neither_the_change_nor_the_key_and_a_retry_runs_again` |
+| 2.8 | No "in progress" state and no lock: of concurrent attempts one commits and all receive its answer | `RequestIdempotencyTests.Of_concurrent_attempts_with_one_key_exactly_one_commits_and_all_receive_its_answer`; `IdempotentExecutorTests.An_attempt_that_loses_to_a_concurrent_one_answers_with_the_winners_result` |
+| 2.9 | An answer belongs to the attempt that gave it (`IdempotencyContext.Forget`) | `RetryAfterFailedSaveTests` (all three) |
+| 2.10 | Only a committed outcome is remembered; a failure is evaluated again | `IdempotentExecutorTests.A_failure_changed_nothing_so_it_is_not_remembered_and_a_retry_runs_again`; `RequestIdempotencyTests.A_failure_after_a_mutation_leaves_neither_the_change_nor_the_key_and_a_retry_runs_again` |
+| 2.11 | A handler under a key does not call an external system inside its transaction | text only |
+| 2.12 | A success whose key was not recorded is an error that names the missing wiring | `IdempotentExecutorTests.A_success_whose_key_was_not_recorded_is_a_wiring_mistake_and_says_so` |
+| 2.13 | An exception with no completed key is not swallowed | `IdempotentExecutorTests.An_exception_with_no_completed_key_is_not_swallowed` |
+| 2.14 | Keys expire, 24 hours by default; an expired key starts a new operation; a purger deletes expired rows | `RequestIdempotencyTests.An_expired_key_starts_a_new_operation`, `Expired_keys_and_inbox_entries_are_purged`; the default of 24 hours is not asserted |
+| 2.15 | HTTP reads `Idempotency-Key`, treats two values as none, marks a replay with `Idempotency-Replayed: true` | `HttpIdempotencyTests.Two_keys_on_one_request_are_no_key`, `A_repeat_receives_the_same_response_marked_as_replayed` |
+| 2.16 | gRPC reads the same entry from the call's metadata | no test |
+| 3.1 | The inbox records a message in the consumer's own transaction; `UseMPCoreInbox()` applies it to every `IIntegrationEvent` handler; a second delivery stops before the handler | `MessageInboxTests.An_integration_event_delivered_twice_is_processed_once` (seen failing without the inbox), `Two_different_events_are_both_processed` |
+| 3.2 | Two racing deliveries both reach the handler; the primary key fails the second commit, and its redelivery then finds the entry | no test |
+| 4.1 | `IMessagePublisher.PublishAsync(message, MessageDeliveryContext)`, with a default implementation | `MessageInboxTests.Delivery_metadata_given_by_the_publisher_travels_as_headers` |
+| 4.2 | Correlation, causation, tenant and idempotency key travel as headers; an integration event carries its `EventId` as `x-idempotency-key` | `MessageInboxTests.A_published_integration_event_carries_its_event_id_as_the_idempotency_key` (seen failing without it), `Delivery_metadata_given_by_the_publisher_travels_as_headers` |
+| 4.3 | An integration event carries its contract version as `x-event-version` | no test |
+| 5.1 | One optional package holds the two tables, the interceptor, the store, the inbox and the purger, in the product's own context | `MPCore.Idempotency.Tests` (all) |
+| 5.2 | The template does not generate the wiring; `docs/architecture.md` lists the lines that add it | `TemplateContractTests.The_catalogue_and_the_architecture_document_describe_idempotency_as_it_is_implemented` |
+
+### Open points
+
+| # | Point |
+|---|---|
+| A | The gRPC key source (2.16), the race between two inbox deliveries (3.2) and `x-event-version` (4.3) have no test |
+| B | The rule that a handler under a key calls no external system inside its transaction (2.11) has no guard; a handler that does so repeats the external call on the losing attempt |
+| C | The default retention of 24 hours (2.14) is not asserted |
+| D | The template leaves the wiring to the product (5.2): the owner may prefer a generator choice, as business audit has |
+| E | Section 1 leaves the business key to the product; nothing in MP Core helps a product declare one |

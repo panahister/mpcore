@@ -217,3 +217,62 @@ its Contracts projects publish one interface, a read. A later use case will show
   them sits inside the service-only condition, every host registers the catalog and validators, and the
   module guide names its sources. Both shapes were generated from the changed template and built from
   MP Core source with zero errors.
+
+## Review for the owner's acceptance, 2026-10-08
+
+The status above stays "Proposed; pending owner acceptance". It changes only on the owner's word, recorded
+here with the date and the approver; an amendment he makes is recorded in this document. Nothing in this
+section changes shipped behaviour.
+
+### Every decision, and what holds it
+
+"Held by" names a test of this repository that fails when the decision is broken. "Text only" means a
+document or a skill states it and no test checks it.
+
+| # | Decision | Held by |
+|---|---|---|
+| 1.1 | For `shape=modular-monolith`, a bounded context is one project with `Domain/`, `Application/` and `Infrastructure/` folders | `TemplateContractTests.A_modular_monolith_composes_one_project_per_module_and_references_no_root_application` (handler assemblies name the module's project) |
+| 1.2 | A `Contracts` project exists only when other modules call the module | text only (module guide) |
+| 1.3 | The root `Domain` and `Application` projects are not generated for this shape | `TemplateContractTests.A_modular_monolith_composes_one_project_per_module_and_references_no_root_application` (every reference to them sits inside the service-only condition) |
+| 1.4 | A module references MP Core abstractions, its own Contracts and other modules' Contracts; never another module's main project or the host | the compiler in a generated repository; no test in this repository |
+| 1.5 | The boundary between layers inside a module is held by architecture tests on namespaces | the generated `ArchitectureTests` check the root layers only (`The_domain_and_the_application_name_no_provider`, `The_domain_knows_nothing_of_the_layers_around_it`, `The_application_knows_neither_the_adapters_nor_the_host`); not the folders inside a module |
+| 1.6 | Handlers, messages, ports and adapters stay `public`; project references are the module boundary | text only |
+| 2.1 | `Application/` holds `Commands/`, `Queries/`, `Views/`, `Ports/`, `Process/`, `Validators/`; namespaces follow folders | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from` (the guide names them); not checked in code |
+| 2.2 | A command or query record and its handler share one file | text only |
+| 2.3 | A query only reads: no `IUnitOfWork`, no publishing, a read-model port returning views; it is the only thing a `GET` sends | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from` (the guide states it), `The_read_side_vocabulary_exists_in_the_package_the_application_layer_already_references`; the rule itself is not checked |
+| 3.1 | `IBusinessRule` gains `ErrorDomain`, `MessageKey`, `MessageArguments`, with defaults so existing rules compile | `BusinessRuleTests.A_rule_carries_its_domain_code_key_and_arguments`, `A_rule_implemented_directly_gets_safe_defaults` |
+| 3.2 | `BusinessRule` validates its identifiers at construction, with the patterns of the failure model | `BusinessRuleTests.Malformed_identifiers_fail_when_the_rule_is_created`, `Arguments_are_bounded_like_the_failure_model`; `The_domain_package_accepts_exactly_the_message_keys_the_failure_model_accepts` |
+| 3.3 | `Entity<TId>.CheckRule(rule)` checks a rule inside the aggregate, which does not change on a broken rule | `BusinessRuleTests.An_aggregate_that_checks_a_broken_rule_does_not_change` |
+| 3.4 | Both transports map a broken rule to its own domain, code, key and arguments, category `BusinessRule` (REST 422, gRPC `FailedPrecondition`) | `A_broken_rule_keeps_its_own_identity_and_message_key` (REST); `A_broken_business_rule_keeps_its_identity_and_localized_message_on_the_wire` (gRPC) |
+| 3.5 | A rule with malformed identifiers maps to the generic identity, never to an exception in the transport | `A_rule_with_malformed_identifiers_still_produces_a_valid_problem` (REST); no gRPC test |
+| 3.6 | `UseMPCoreWolverine` dead-letters a broken rule before the product's own retry rules | `BusinessRuleRetryTests.A_queued_message_that_breaks_a_rule_is_attempted_once_and_dead_lettered` (seen failing with four attempts) |
+| 4.1 | Input validation is FluentValidation through Wolverine's middleware; an invalid message never reaches its handler | `WolverineValidationTests.An_invalid_message_is_refused_before_the_handler_runs`, `A_valid_message_reaches_the_handler`; `FluentValidationUnderFoundationTests.An_invalid_message_is_refused_before_the_handler_under_the_foundation` |
+| 4.2 | The failure is `mpcore.validation` / `VALIDATION_FAILED`, one `FieldViolation` per failure, snake_case paths, rule codes, message keys, limits but never the caller's value | `ValidationFailureConversionTests` (all five) |
+| 4.3 | `AddMPCoreValidators(assembly)`; the template registers validators for every handler assembly | `TemplateContractTests.Every_host_renders_messages_and_validates_input_before_the_handler` |
+| 4.4 | A validator checks shape; a check that needs state is a business rule, and the Application project cannot reach the database | `TemplateContractTests.The_application_layer_declares_ports_and_stays_provider_neutral`; the division itself is text only |
+| 5.1 | `IFailureMessageLocalizer` is the neutral port; the transport localizers delegate to it when registered and render nothing otherwise | `MessageCatalogTests.The_catalog_is_the_transport_neutral_localizer`; `HttpLocalizationTests.Without_a_catalog_the_detail_is_omitted_as_before` |
+| 5.2 | `MPCore.Localization` is a catalog over sources by precedence: MP Core (−100), the product (0), overrides (100) | `MessageCatalogTests.MP_Core_messages_ship_in_English_and_Persian_below_the_product`, `An_override_source_beats_the_resource_file_only_in_its_culture` |
+| 5.3 | Rendering walks the culture, its parents, the default culture and the neutral text | `MessageCatalogTests.A_key_is_rendered_through_the_culture_chain`, `A_key_translated_nowhere_falls_back_to_the_default_text`; the transports' full parent chain: `A_region_two_steps_from_what_is_supported_still_resolves` |
+| 5.4 | Named placeholders, which a translator may reorder | `MessageCatalogTests.Named_placeholders_are_substituted_and_unknown_ones_stay` |
+| 5.5 | A key with no template renders nothing, increments `mpcore.localization.missing` and is logged once | `MessageCatalogTests.A_missing_key_renders_nothing_is_counted_and_is_logged_once` |
+| 5.6 | `IsKnownKey`: an administrator translates only keys the code uses | `MessageCatalogTests.Known_keys_are_those_with_a_default_text` |
+| 5.7 | Observability exports every `MPCore.*` meter | `WolverineMetricsTests` (`mpcore.localization.missing` is exported) |
+| 5.8 | Stored translations: a table in the product's context, a store that commits in the handler's transaction, a refresher that reloads on every instance | `StoredTranslationTests` (all four, against PostgreSQL), among them `A_change_that_is_not_committed_is_never_served`; the refresh is proved on one instance |
+| 6.1 | The template, its documents and its skills teach all of this; every host registers the catalog and the validators | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from`, `Every_host_renders_messages_and_validates_input_before_the_handler`, `The_shipped_skills_prescribe_the_execution_model_the_framework_actually_has` |
+| 7.1 | A module writes only its own data | no test in this repository; the Storefront sample's architecture tests hold it there |
+| 7.2 | Between modules the default is a message: outbox in the publisher's transaction, a durable local queue, an idempotent receiver | the mechanism: `OutboxTests`, `PortBasedTransactionTests`; the default itself is text only |
+| 7.3 | A call through Contracts that writes is a deliberate exception, with its reason written where the interface is declared | text only (module guide) |
+| 7.4 | A call through Contracts that reads is always acceptable | text only |
+| 7.5 | A module message carries a snapshot; what only the receiver can refuse is refused after the caller is answered; module messages are never routed to a broker | text only |
+
+### Open points
+
+| # | Point |
+|---|---|
+| A | Section 7 is held only in the Storefront sample: no test in the template or in MP Core fails when a module writes another module's table, a handler takes another module's repository, or a Contracts project publishes a writing interface without its reason |
+| B | Section 2's "a query only reads" is not checked by any test or analyzer |
+| C | The layer boundary inside a module (1.5) is not checked: the generated architecture tests cover the root layers, and MP Core's own tests read the template as text without building a generated backend |
+| D | The consequences name 27 runtime packages and the cohort `0.2.0-alpha.9`; MP Core now ships 28 runtime packages and the `0.9.x` versions. They are the facts of 2026-09-27 |
+| E | The first consequence says the three new packages are reported as new in the cohort (`NEW_IN_COHORT`). They are on nuget.org since `0.9.0`, but `eng/package-ids.sh` still lists them, with `MPCore.Idempotency.EntityFrameworkCore.PostgreSql`, so their API is never compared with a baseline; since the version moved past the baseline, the build says so for each |
+| F | Decision 3.5 has a REST test only; the stored-translation refresh (5.8) is proved on one instance, not across two |
+| G | Decisions 1.6, 2.2, 7.3, 7.4 and 7.5 are conventions with no check; the owner may accept them as such |
