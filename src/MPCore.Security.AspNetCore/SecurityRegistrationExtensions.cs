@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +30,16 @@ public static class SecurityRegistrationExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configure);
 
+        var scheme = new MPCoreBearerOptions();
+        configure(scheme);
+        var schemeName = string.IsNullOrWhiteSpace(scheme.AuthenticationScheme)
+            ? JwtBearerDefaults.AuthenticationScheme
+            : scheme.AuthenticationScheme;
+
+        // A second call used to register a second scheme that kept no authority and no issuer, while the
+        // audiences of both calls accumulated on the first. Several issuers have an API of their own.
+        MPCoreBearerIssuerRegistry.GetOrAdd(services).AddSingle(schemeName);
+
         services.AddOptions<MPCoreBearerOptions>().Configure(configure).ValidateOnStart();
         services.AddOptions<ActorClaimMappingOptions>();
         services.TryAddEnumerable(
@@ -36,17 +47,93 @@ public static class SecurityRegistrationExtensions
 
         services.AddMPCoreCurrentActor();
 
-        var scheme = new MPCoreBearerOptions();
-        configure(scheme);
-        var schemeName = string.IsNullOrWhiteSpace(scheme.AuthenticationScheme)
-            ? JwtBearerDefaults.AuthenticationScheme
-            : scheme.AuthenticationScheme;
-
         services.AddAuthentication(schemeName).AddJwtBearer(schemeName, _ => { });
+        AddBearerServices(services);
+        return services;
+    }
+
+    /// <summary>
+    /// Registers one JWT bearer scheme per issuer, each with its own authority or metadata, issuer, audiences
+    /// and key set and every ADR-007 token-validation guarantee, behind one default scheme that picks the
+    /// issuer a token names. Use it instead of <see cref="AddMPCoreBearerAuthentication"/>, once, with every
+    /// issuer the host accepts.
+    /// </summary>
+    /// <remarks>
+    /// The default scheme reads the unvalidated <c>iss</c> only to pick a scheme; the picked scheme validates
+    /// the token against that issuer's keys alone, so a token signed with another configured issuer's key is
+    /// refused (RFC 8725, section 3.8). A token that names no configured issuer is refused with <c>401</c>.
+    /// Startup fails when an issuer is configured twice, or when any issuer fails the single-issuer checks.
+    /// <see cref="IMPCoreBearerTokenValidator"/> validates a second token of any of these issuers.
+    /// </remarks>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configure">Adds the issuers.</param>
+    public static IServiceCollection AddMPCoreBearerIssuers(
+        this IServiceCollection services,
+        Action<MPCoreBearerIssuerSet> configure)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configure);
+
+        var set = new MPCoreBearerIssuerSet();
+        configure(set);
+        if (set.Issuers.Count == 0)
+        {
+            throw new ArgumentException("At least one issuer is required.", nameof(configure));
+        }
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(set.SelectorScheme, nameof(configure));
+        foreach (var (scheme, _) in set.Issuers)
+        {
+            if (string.Equals(scheme, set.SelectorScheme, StringComparison.Ordinal) ||
+                string.Equals(scheme, MPCoreBearerIssuerSelector.UnmatchedScheme, StringComparison.Ordinal))
+            {
+                throw new ArgumentException(
+                    $"The issuer scheme '{scheme}' is reserved: it names the scheme that selects the issuer.",
+                    nameof(configure));
+            }
+        }
+
+        MPCoreBearerIssuerRegistry.GetOrAdd(services).AddMulti(set.Issuers.Select(static issuer => issuer.Scheme));
+
+        services.AddOptions<ActorClaimMappingOptions>();
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IValidateOptions<MPCoreBearerOptions>, MPCoreBearerOptionsValidator>());
+        services.AddMPCoreCurrentActor();
+
+        var authentication = services.AddAuthentication(set.SelectorScheme);
+        foreach (var (scheme, configureIssuer) in set.Issuers)
+        {
+            var issuerScheme = scheme;
+            services.AddOptions<MPCoreBearerOptions>(issuerScheme)
+                .Configure(configureIssuer)
+                .Configure(options => options.AuthenticationScheme = issuerScheme)
+                .ValidateOnStart();
+            authentication.AddJwtBearer(issuerScheme, _ => { });
+        }
+
+        authentication.AddScheme<AuthenticationSchemeOptions, UnmatchedIssuerHandler>(
+            MPCoreBearerIssuerSelector.UnmatchedScheme,
+            null,
+            _ => { });
+        authentication.AddPolicyScheme(set.SelectorScheme, null, _ => { });
+        var selectorScheme = set.SelectorScheme;
+        services.AddSingleton<IConfigureOptions<PolicySchemeOptions>>(provider =>
+            new MPCoreBearerSelectorConfiguration(provider.GetRequiredService<MPCoreBearerIssuerSelector>(), selectorScheme));
+
+        AddBearerServices(services);
+        return services;
+    }
+
+    private static void AddBearerServices(IServiceCollection services)
+    {
         services.TryAddEnumerable(ServiceDescriptor.Singleton<
             IConfigureOptions<JwtBearerOptions>,
             MPCoreJwtBearerConfiguration>());
-        return services;
+        services.TryAddSingleton<MPCoreBearerIssuerSelector>();
+        services.TryAddSingleton<IMPCoreBearerTokenValidator, MPCoreBearerTokenValidator>();
+        services.AddOptions<MPCoreBearerIssuerCheck>().ValidateOnStart();
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IValidateOptions<MPCoreBearerIssuerCheck>, MPCoreBearerIssuerCheckValidator>());
     }
 
     /// <summary>
@@ -147,7 +234,8 @@ public static class SecurityRegistrationExtensions
 }
 
 internal sealed class MPCoreJwtBearerConfiguration(
-    IOptions<MPCoreBearerOptions> bearerOptions,
+    IOptionsMonitor<MPCoreBearerOptions> bearerOptions,
+    MPCoreBearerIssuerRegistry registry,
     IOptions<ActorClaimMappingOptions> claimOptions,
     ActorRoleExtractor roleExtractor,
     ILogger<MPCoreJwtBearerConfiguration> logger) : IConfigureNamedOptions<JwtBearerOptions>
@@ -157,7 +245,15 @@ internal sealed class MPCoreJwtBearerConfiguration(
     public void Configure(string? name, JwtBearerOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
-        var bearer = bearerOptions.Value;
+
+        // Each scheme reads the options of its own issuer: the unnamed options of a single-issuer host, or
+        // the options named after the scheme on a host with several issuers.
+        if (!registry.TryGetOptionsName(name, out var optionsName))
+        {
+            return;
+        }
+
+        var bearer = bearerOptions.Get(optionsName);
         if (!string.Equals(name, bearer.AuthenticationScheme, StringComparison.Ordinal))
         {
             return;

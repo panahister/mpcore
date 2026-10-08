@@ -21,11 +21,21 @@ internal sealed class TestIdentityProvider : IDisposable
     private readonly JsonWebTokenHandler _handler = new();
 
     public TestIdentityProvider()
+        : this(Issuer, "mpcore-local-test-key")
     {
-        SigningKey = new RsaSecurityKey(_rsa) { KeyId = "mpcore-local-test-key" };
-        Configuration = new OpenIdConnectConfiguration { Issuer = Issuer };
+    }
+
+    /// <summary>A provider of its own issuer and key, for a host that accepts several issuers.</summary>
+    public TestIdentityProvider(string issuer, string keyId)
+    {
+        IssuerName = issuer;
+        SigningKey = new RsaSecurityKey(_rsa) { KeyId = keyId };
+        Configuration = new OpenIdConnectConfiguration { Issuer = issuer };
         Configuration.SigningKeys.Add(SigningKey);
     }
+
+    /// <summary>The issuer this provider writes into its tokens.</summary>
+    public string IssuerName { get; }
 
     public RsaSecurityKey SigningKey { get; }
 
@@ -43,7 +53,7 @@ internal sealed class TestIdentityProvider : IDisposable
         var now = DateTime.UtcNow;
         var descriptor = new SecurityTokenDescriptor
         {
-            Issuer = issuer ?? Issuer,
+            Issuer = issuer ?? IssuerName,
             Audience = audience ?? Audience,
             NotBefore = notBefore ?? now.AddMinutes(-1),
             IssuedAt = now.AddMinutes(-1),
@@ -59,17 +69,17 @@ internal sealed class TestIdentityProvider : IDisposable
     /// Mints an <c>HS256</c> token keyed on the published RSA modulus: the classic algorithm-confusion
     /// attack that an asymmetric-only allowlist must refuse.
     /// </summary>
-    public string CreateSymmetricConfusionToken()
+    public string CreateSymmetricConfusionToken(string? audience = null)
     {
         var publicModulus = _rsa.ExportParameters(false).Modulus!;
         var descriptor = new SecurityTokenDescriptor
         {
-            Issuer = Issuer,
-            Audience = Audience,
+            Issuer = IssuerName,
+            Audience = audience ?? Audience,
             NotBefore = DateTime.UtcNow.AddMinutes(-1),
             Expires = DateTime.UtcNow.AddMinutes(10),
             SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(publicModulus) { KeyId = "mpcore-local-test-key" },
+                new SymmetricSecurityKey(publicModulus) { KeyId = SigningKey.KeyId },
                 SecurityAlgorithms.HmacSha256),
             Claims = BuildClaims("8f2b3c1d-0000-4000-8000-000000000002", null)
         };
@@ -78,14 +88,14 @@ internal sealed class TestIdentityProvider : IDisposable
     }
 
     /// <summary>Mints an unsigned <c>alg=none</c> token, which must never be accepted.</summary>
-    public static string CreateUnsignedToken()
+    public static string CreateUnsignedToken(string? issuer = null, string? audience = null)
     {
         var now = DateTimeOffset.UtcNow;
         var header = Encode("""{"alg":"none","typ":"JWT"}""");
         var payload = Encode(JsonSerializer.Serialize(new Dictionary<string, object>
         {
-            ["iss"] = Issuer,
-            ["aud"] = Audience,
+            ["iss"] = issuer ?? Issuer,
+            ["aud"] = audience ?? Audience,
             ["sub"] = "8f2b3c1d-0000-4000-8000-000000000003",
             ["nbf"] = now.AddMinutes(-1).ToUnixTimeSeconds(),
             ["exp"] = now.AddMinutes(10).ToUnixTimeSeconds()
@@ -113,6 +123,25 @@ internal sealed class TestIdentityProvider : IDisposable
         };
 
         return new JsonWebTokenHandler().CreateToken(descriptor);
+    }
+
+    /// <summary>
+    /// Mints a correctly signed token with no <c>exp</c> claim at all, which a resource server that
+    /// requires an expiration time must refuse.
+    /// </summary>
+    public string CreateTokenWithoutExpiry(string? audience = null)
+    {
+        var handler = new JsonWebTokenHandler { SetDefaultTimesOnTokenCreation = false };
+        var descriptor = new SecurityTokenDescriptor
+        {
+            Issuer = IssuerName,
+            Audience = audience ?? Audience,
+            NotBefore = DateTime.UtcNow.AddMinutes(-1),
+            SigningCredentials = new SigningCredentials(SigningKey, SecurityAlgorithms.RsaSha256),
+            Claims = BuildClaims("8f2b3c1d-0000-4000-8000-000000000005", null)
+        };
+
+        return handler.CreateToken(descriptor);
     }
 
     public void Dispose() => _rsa.Dispose();

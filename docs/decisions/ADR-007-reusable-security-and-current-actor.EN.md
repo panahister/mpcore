@@ -241,3 +241,11 @@ ADR-011 addendum of the same date.
 
 **Evidence.** `AmbientAccessorLifetimeTests`, `AuditInterceptorLifetimeTests`; both observed failing
 before the change.
+
+## Addendum 2026-10-08 — several issuers (proposed; pending owner acceptance)
+
+Section 6 configures a single bearer scheme. A host that accepts tokens from several issuers registers one
+scheme per issuer, each configured with every rule of section 6, behind a default scheme that picks the
+issuer a token names; and a second token of any configured issuer can be validated with that issuer's own
+parameters without becoming the current actor. The decision, its tests and the alternatives are in
+[ADR-016](ADR-016-several-token-issuers-in-one-resource-server.EN.md). A host with one issuer is unchanged.

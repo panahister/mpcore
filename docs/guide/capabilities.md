@@ -92,6 +92,8 @@ live backends on every change. A line with neither says so.
 | A bearer-only resource server: it validates tokens and hosts no login | `MPCore.Security.AspNetCore` | Tests: `MPCore.Security.Tests` |
 | Signature, issuer, lifetime and audience, on every request | the same | Tests; sample S18, S21 |
 | Asymmetric algorithms only: `none` and `HS*` are refused | the same | Tests |
+| Several token issuers in one backend, each with its own metadata, issuer, audiences and keys; a token is checked only against the keys of the issuer it names (next version, not yet released; ADR-016) | the same (`AddMPCoreBearerIssuers`) | Tests: `MultipleIssuerTests`, seen failing |
+| A second token, carried as evidence beside the caller's, validated with its issuer's own parameters and never made the current actor (next version, not yet released; ADR-016) | the same (`IMPCoreBearerTokenValidator`) | Tests: `MultipleIssuerTests` |
 | Deny by default: an endpoint without a policy requires a token | the same | Tests; sample S11 |
 | The current actor from the validated token: a user, a service, or the system | `MPCore.Security.Abstractions` | Tests |
 | Roles from Keycloak: realm roles, client roles, service accounts | `MPCore.Security.AspNetCore` | Tests; every scenario of the sample |
