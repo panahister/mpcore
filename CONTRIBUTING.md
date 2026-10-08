@@ -5,6 +5,8 @@ That is why the bar is a test and a reason, not a preference.
 
 ## Before you write code
 
+- Read [Backend engineering conventions](docs/BACKEND-CONVENTIONS.md) before deciding layer, bounded-context,
+  contract, or framework ownership.
 - **A defect:** open an issue with the smallest code that shows it, what you expected, and what happened.
 - **A new capability or a changed convention:** open an issue first. Every convention in MP Core is an
   architecture decision record in [docs/decisions](docs/decisions) that names where the convention comes
