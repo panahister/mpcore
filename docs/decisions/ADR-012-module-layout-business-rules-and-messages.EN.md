@@ -1,6 +1,6 @@
 # ADR-012 — One project per module; business rules, input validation and messages as first-class model
 
-- Status: Proposed; pending owner acceptance
+- Status: Accepted, 2026-10-08, approved by the repository owner
 - Date: 2026-09-27
 - Extends: ADR-006 (transport-neutral failures), ADR-009 (generation topology), ADR-011 (application execution model)
 
@@ -220,31 +220,35 @@ its Contracts projects publish one interface, a read. A later use case will show
 
 ## Review for the owner's acceptance, 2026-10-08
 
-The status above stays "Proposed; pending owner acceptance". It changes only on the owner's word, recorded
-here with the date and the approver; an amendment he makes is recorded in this document. Nothing in this
-section changes shipped behaviour.
+The repository owner accepted this record on 2026-10-08, together with the recommendation for every open
+point below. The tables show the state at acceptance: each open point is closed by a test or accepted as a
+convention or a decision, and the amendments after this section record what he decided.
 
 ### Every decision, and what holds it
 
-"Held by" names a test of this repository that fails when the decision is broken. "Text only" means a
-document or a skill states it and no test checks it.
+"Held by" names a test of this repository that fails when the decision is broken. A test of the generated
+backend (`ModuleRulesTests`, `ArchitectureTests`) is run by `GeneratedBackendTests`, which generates a backend
+from the template, builds it against this repository's source and runs its tests twice: as generated, when
+every rule passes, and with one violation seeded per rule, when each rule fails and names its seed. "Text
+only" means a document or a skill states it and no test checks it; "convention" means the owner accepted it
+as enforced by review.
 
 | # | Decision | Held by |
 |---|---|---|
 | 1.1 | For `shape=modular-monolith`, a bounded context is one project with `Domain/`, `Application/` and `Infrastructure/` folders | `TemplateContractTests.A_modular_monolith_composes_one_project_per_module_and_references_no_root_application` (handler assemblies name the module's project) |
 | 1.2 | A `Contracts` project exists only when other modules call the module | text only (module guide) |
 | 1.3 | The root `Domain` and `Application` projects are not generated for this shape | `TemplateContractTests.A_modular_monolith_composes_one_project_per_module_and_references_no_root_application` (every reference to them sits inside the service-only condition) |
-| 1.4 | A module references MP Core abstractions, its own Contracts and other modules' Contracts; never another module's main project or the host | the compiler in a generated repository; no test in this repository |
-| 1.5 | The boundary between layers inside a module is held by architecture tests on namespaces | the generated `ArchitectureTests` check the root layers only (`The_domain_and_the_application_name_no_provider`, `The_domain_knows_nothing_of_the_layers_around_it`, `The_application_knows_neither_the_adapters_nor_the_host`); not the folders inside a module |
+| 1.4 | A module references MP Core abstractions, its own Contracts and other modules' Contracts; never another module's main project or the host | the compiler in a generated repository, and the generated `ModuleRulesTests.No_module_references_another_modules_main_project`, run by `GeneratedBackendTests.A_modular_monolith_holds_its_module_rules_and_each_rule_fails_on_its_seeded_violation` (seen failing on a seeded reference to another module's main project) |
+| 1.5 | The boundary between layers inside a module is held by architecture tests on namespaces | inside a module, the generated `ModuleRulesTests.Each_modules_domain_knows_neither_its_other_layers_nor_a_provider` and `Each_modules_application_knows_neither_its_infrastructure_nor_a_provider`, run by `GeneratedBackendTests.A_modular_monolith_holds_its_module_rules_and_each_rule_fails_on_its_seeded_violation` (each seen failing on its seeded violation); the root layers of a service, the generated `ArchitectureTests` (`The_domain_and_the_application_name_no_provider`, `The_domain_knows_nothing_of_the_layers_around_it`, `The_application_knows_neither_the_adapters_nor_the_host`) |
 | 1.6 | Handlers, messages, ports and adapters stay `public`; project references are the module boundary | convention, enforced by review; no automated check |
 | 2.1 | `Application/` holds `Commands/`, `Queries/`, `Views/`, `Ports/`, `Process/`, `Validators/`; namespaces follow folders | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from` (the guide names them); not checked in code |
 | 2.2 | A command or query record and its handler share one file | convention, enforced by review; no automated check |
-| 2.3 | A query only reads: no `IUnitOfWork`, no publishing, a read-model port returning views; it is the only thing a `GET` sends | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from` (the guide states it), `The_read_side_vocabulary_exists_in_the_package_the_application_layer_already_references`; the rule itself is not checked |
+| 2.3 | A query only reads: no `IUnitOfWork`, no publishing, a read-model port returning views; it is the only thing a `GET` sends | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from` (the guide states it), `The_read_side_vocabulary_exists_in_the_package_the_application_layer_already_references`; the rule itself: the generated `A_query_handler_takes_no_unit_of_work_and_publishes_nothing` (`ModuleRulesTests` and `ArchitectureTests`), run by `GeneratedBackendTests` in both shapes, seen failing on a seeded query handler that takes `IUnitOfWork` and on one that takes `IMessagePublisher` |
 | 3.1 | `IBusinessRule` gains `ErrorDomain`, `MessageKey`, `MessageArguments`, with defaults so existing rules compile | `BusinessRuleTests.A_rule_carries_its_domain_code_key_and_arguments`, `A_rule_implemented_directly_gets_safe_defaults` |
 | 3.2 | `BusinessRule` validates its identifiers at construction, with the patterns of the failure model | `BusinessRuleTests.Malformed_identifiers_fail_when_the_rule_is_created`, `Arguments_are_bounded_like_the_failure_model`; `The_domain_package_accepts_exactly_the_message_keys_the_failure_model_accepts` |
 | 3.3 | `Entity<TId>.CheckRule(rule)` checks a rule inside the aggregate, which does not change on a broken rule | `BusinessRuleTests.An_aggregate_that_checks_a_broken_rule_does_not_change` |
 | 3.4 | Both transports map a broken rule to its own domain, code, key and arguments, category `BusinessRule` (REST 422, gRPC `FailedPrecondition`) | `A_broken_rule_keeps_its_own_identity_and_message_key` (REST); `A_broken_business_rule_keeps_its_identity_and_localized_message_on_the_wire` (gRPC) |
-| 3.5 | A rule with malformed identifiers maps to the generic identity, never to an exception in the transport | `A_rule_with_malformed_identifiers_still_produces_a_valid_problem` (REST); no gRPC test |
+| 3.5 | A rule with malformed identifiers maps to the generic identity, never to an exception in the transport | `A_rule_with_malformed_identifiers_still_produces_a_valid_problem` (REST); `GrpcFailureWireTests.A_rule_with_malformed_identifiers_maps_to_the_generic_identity_and_never_to_an_internal_error` (gRPC; seen failing with the domain check removed from `BusinessRuleFailure`) |
 | 3.6 | `UseMPCoreWolverine` dead-letters a broken rule before the product's own retry rules | `BusinessRuleRetryTests.A_queued_message_that_breaks_a_rule_is_attempted_once_and_dead_lettered` (seen failing with four attempts) |
 | 4.1 | Input validation is FluentValidation through Wolverine's middleware; an invalid message never reaches its handler | `WolverineValidationTests.An_invalid_message_is_refused_before_the_handler_runs`, `A_valid_message_reaches_the_handler`; `FluentValidationUnderFoundationTests.An_invalid_message_is_refused_before_the_handler_under_the_foundation` |
 | 4.2 | The failure is `mpcore.validation` / `VALIDATION_FAILED`, one `FieldViolation` per failure, snake_case paths, rule codes, message keys, limits but never the caller's value | `ValidationFailureConversionTests` (all five) |
@@ -257,25 +261,25 @@ document or a skill states it and no test checks it.
 | 5.5 | A key with no template renders nothing, increments `mpcore.localization.missing` and is logged once | `MessageCatalogTests.A_missing_key_renders_nothing_is_counted_and_is_logged_once` |
 | 5.6 | `IsKnownKey`: an administrator translates only keys the code uses | `MessageCatalogTests.Known_keys_are_those_with_a_default_text` |
 | 5.7 | Observability exports every `MPCore.*` meter | `WolverineMetricsTests` (`mpcore.localization.missing` is exported) |
-| 5.8 | Stored translations: a table in the product's context, a store that commits in the handler's transaction, a refresher that reloads on every instance | `StoredTranslationTests` (all four, against PostgreSQL), among them `A_change_that_is_not_committed_is_never_served`; the refresh is proved on one instance |
+| 5.8 | Stored translations: a table in the product's context, a store that commits in the handler's transaction, a refresher that reloads on every instance | `StoredTranslationTests` (all four, against PostgreSQL), among them `A_change_that_is_not_committed_is_never_served`; across two instances, `A_change_made_on_one_instance_is_served_by_another_within_its_refresh_interval` (two hosts on one database; seen failing with the refresher's change detection disabled) |
 | 6.1 | The template, its documents and its skills teach all of this; every host registers the catalog and the validators | `TemplateContractTests.The_module_guide_explains_the_layout_and_names_where_each_convention_comes_from`, `Every_host_renders_messages_and_validates_input_before_the_handler`, `The_shipped_skills_prescribe_the_execution_model_the_framework_actually_has` |
-| 7.1 | A module writes only its own data | no test in this repository; the Storefront sample's architecture tests hold it there |
+| 7.1 | A module writes only its own data | the generated `ModuleRulesTests.Each_module_maps_to_its_own_schema`, `No_foreign_key_crosses_a_schema` (read from the Entity Framework model) and `A_handler_takes_only_its_own_modules_repositories`, run by `GeneratedBackendTests.A_modular_monolith_holds_its_module_rules_and_each_rule_fails_on_its_seeded_violation` (each seen failing on its seeded violation) |
 | 7.2 | Between modules the default is a message: outbox in the publisher's transaction, a durable local queue, an idempotent receiver | the mechanism: `OutboxTests`, `PortBasedTransactionTests`; the default itself is text only |
-| 7.3 | A call through Contracts that writes is a deliberate exception, with its reason written where the interface is declared | convention, enforced by review; no automated check (module guide) |
+| 7.3 | A call through Contracts that writes is a deliberate exception, with its reason written where the interface is declared | the generated `ModuleRulesTests.A_contracts_interface_that_writes_declares_its_reason`, with `CrossModuleWriteAttribute(reason)` of `MPCore.Application`, run by `GeneratedBackendTests.A_modular_monolith_holds_its_module_rules_and_each_rule_fails_on_its_seeded_violation` (seen failing on a seeded writing interface without a reason; passes on one that declares it); `CrossModuleWriteAttributeTests` |
 | 7.4 | A call through Contracts that reads is always acceptable | convention, enforced by review; no automated check |
 | 7.5 | A module message carries a snapshot; what only the receiver can refuse is refused after the caller is answered; module messages are never routed to a broker | convention, enforced by review; no automated check |
 
 ### Open points
 
-| # | Point |
-|---|---|
-| A | Section 7 is held only in the Storefront sample: no test in the template or in MP Core fails when a module writes another module's table, a handler takes another module's repository, or a Contracts project publishes a writing interface without its reason |
-| B | Section 2's "a query only reads" is not checked by any test or analyzer |
-| C | The layer boundary inside a module (1.5) is not checked: the generated architecture tests cover the root layers, and MP Core's own tests read the template as text without building a generated backend |
-| D | The consequences name 27 runtime packages and the cohort `0.2.0-alpha.9`; MP Core now ships 28 runtime packages and the `0.9.x` versions. They are the facts of 2026-09-27 |
-| E | The first consequence says the three new packages are reported as new in the cohort (`NEW_IN_COHORT`). They are on nuget.org since `0.9.0`, but `eng/package-ids.sh` still lists them, with `MPCore.Idempotency.EntityFrameworkCore.PostgreSql`, so their API is never compared with a baseline; since the version moved past the baseline, the build says so for each |
-| F | Decision 3.5 has a REST test only; the stored-translation refresh (5.8) is proved on one instance, not across two |
-| G | Decisions 1.6, 2.2, 7.3, 7.4 and 7.5 are conventions with no check; the owner may accept them as such |
+| # | Point | Final state |
+|---|---|---|
+| A | Section 7 is held only in the Storefront sample: no test in the template or in MP Core fails when a module writes another module's table, a handler takes another module's repository, or a Contracts project publishes a writing interface without its reason | Fixed. The generated `ModuleRulesTests` hold section 7: `Each_module_maps_to_its_own_schema`, `No_foreign_key_crosses_a_schema` (from the Entity Framework model), `A_contracts_interface_that_writes_declares_its_reason` and `A_handler_takes_only_its_own_modules_repositories`; `GeneratedBackendTests.A_modular_monolith_holds_its_module_rules_and_each_rule_fails_on_its_seeded_violation` saw each fail on its seeded violation |
+| B | Section 2's "a query only reads" is not checked by any test or analyzer | Fixed. The generated `A_query_handler_takes_no_unit_of_work_and_publishes_nothing`, in both shapes; `GeneratedBackendTests` saw it fail on a seeded query handler in each shape |
+| C | The layer boundary inside a module (1.5) is not checked: the generated architecture tests cover the root layers, and MP Core's own tests read the template as text without building a generated backend | Fixed. The generated `ModuleRulesTests` check the layers of every module, and `GeneratedBackendTests.A_modular_monolith_holds_its_module_rules_and_each_rule_fails_on_its_seeded_violation` generates, builds and runs a modular monolith, with each rule seen failing on its seeded violation |
+| D | The consequences name 27 runtime packages and the cohort `0.2.0-alpha.9`; MP Core now ships 28 runtime packages and the `0.9.x` versions. They are the facts of 2026-09-27 | Fixed by the amendment "the facts of the consequences, as they are now" |
+| E | The first consequence says the three new packages are reported as new in the cohort (`NEW_IN_COHORT`). They are on nuget.org since `0.9.0`, but `eng/package-ids.sh` still lists them, with `MPCore.Idempotency.EntityFrameworkCore.PostgreSql`, so their API is never compared with a baseline; since the version moved past the baseline, the build says so for each | Fixed as a defect. `NEW_IN_COHORT` is empty, every runtime package is validated against `0.9.3`, and `eng/restore-api-baseline.sh` fails while a package listed as new is published at the baseline version (seen failing, exit 1, before the list was emptied) |
+| F | Decision 3.5 has a REST test only; the stored-translation refresh (5.8) is proved on one instance, not across two | Fixed. `GrpcFailureWireTests.A_rule_with_malformed_identifiers_maps_to_the_generic_identity_and_never_to_an_internal_error` and `StoredTranslationTests.A_change_made_on_one_instance_is_served_by_another_within_its_refresh_interval`, each seen failing with the guarded code broken |
+| G | Decisions 1.6, 2.2, 7.3, 7.4 and 7.5 are conventions with no check; the owner may accept them as such | Accepted as conventions, by the amendment "conventions accepted as conventions": 1.6, 2.2, 7.4 and 7.5 stay conventions. 7.3 is since held by a test (open point A) |
 
 ## Amendment 2026-10-08 — the facts of the consequences, as they are now
 
@@ -295,3 +299,32 @@ The decisions of this record are unchanged by these facts.
 Approved by the repository owner on 2026-10-08 (open point G of the review above). Decisions 1.6, 2.2, 7.3,
 7.4 and 7.5 are accepted as conventions: they are enforced by review, and no automated check holds them. The
 review table labels each of them so.
+
+## Amendment 2026-10-08 — what a module owns, held by tests
+
+Approved by the repository owner on 2026-10-08 (open point A of the review above, with the recommended
+check: a test that reads the Entity Framework model). Section 7 is unchanged in substance and gains what
+makes it checkable in a generated modular monolith:
+
+- **Each module maps its tables into one schema of its own**, named after the module, which no other
+  module and not the host uses. Kamil Grzybek's *Modular Monolith with DDD* gives each module a schema of
+  its own.
+- **No foreign key crosses a schema.** A module refers to another module's row by its identifier only. Sam
+  Newman's *Monolith to Microservices* (2019) describes what such a key costs when a module is taken out
+  ("move foreign-key relationship to code").
+- **A Contracts interface that writes declares its reason** with `CrossModuleWriteAttribute(reason)` from
+  `MPCore.Application`, where section 7 asked for the reason to be written. A method reads when it is a
+  getter, or returns a value and its name starts with a reading verb; any other method is taken to write.
+- **A handler takes only its own module's repositories**, a repository published in another module's
+  Contracts and an `IRepository<T, TId>` of another module's aggregate included.
+
+The generated `ModuleRulesTests` hold the four; the generated module guide gives, as a checklist, what
+moving a module to a service costs. Decision 7.3, accepted as a convention under open point G, is since held
+by `A_contracts_interface_that_writes_declares_its_reason`; decisions 1.6, 2.2, 7.4 and 7.5 stay conventions.
+
+## Acceptance 2026-10-08
+
+Accepted by the repository owner on 2026-10-08, with the recommendation for every open point (A to G).
+Open points A, B, C, E and F are fixed by the tests named in the review; D is fixed by the amendment of the
+facts; G is accepted as conventions, of which 7.3 is since held by a test. The amendments above are part of
+this record.

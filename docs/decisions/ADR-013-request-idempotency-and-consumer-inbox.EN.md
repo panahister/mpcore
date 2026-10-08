@@ -1,6 +1,6 @@
 # ADR-013 — Request idempotency and the consumer inbox
 
-- Status: Proposed; pending owner acceptance
+- Status: Accepted, 2026-10-08, approved by the repository owner
 - Date: 2026-09-27
 - Extends: ADR-003 (Wolverine transport), ADR-008 (HTTP transport), ADR-011 (application execution model)
 
@@ -134,19 +134,20 @@ template does not generate the wiring; `docs/architecture.md` lists the five lin
 
 ## Review for the owner's acceptance, 2026-10-08
 
-The status above stays "Proposed; pending owner acceptance". It changes only on the owner's word, recorded
-here with the date and the approver; an amendment he makes is recorded in this document. Nothing in this
-section changes shipped behaviour.
+The repository owner accepted this record on 2026-10-08, together with the recommendation for every open
+point below. The tables show the state at acceptance: each open point is closed by a test or accepted as a
+convention or a decision, and the amendments after this section record what he decided.
 
 ### Every decision, and what holds it
 
 "Held by" names a test of this repository that fails when the decision is broken; tests of
 `MPCore.Idempotency.Tests` run against PostgreSQL and a real Wolverine host. "Text only" means no test
-checks it.
+checks it; "convention" means the owner accepted it as enforced by review; "decision" names an amendment
+below.
 
 | # | Decision | Held by |
 |---|---|---|
-| 1.1 | Three guards: request idempotency and the consumer inbox are MP Core's; a business key is the product's | text only (the division of ownership) |
+| 1.1 | Three guards: request idempotency and the consumer inbox are MP Core's; a business key is the product's | decision: the business key stays the product's (amendment below); the division of ownership is text only |
 | 2.1 | A command is sent through `IIdempotentExecutor`, neutral to transport and persistence | `IdempotentExecutorTests` |
 | 2.2 | No key is an ordinary execution, unless the endpoint requires one: then `mpcore.idempotency/KEY_REQUIRED` (400) | `IdempotentExecutorTests.Without_a_key_the_command_simply_runs`, `An_endpoint_that_requires_a_key_refuses_a_request_without_one`; `HttpIdempotencyTests.A_required_key_that_is_missing_is_a_400_problem`; `RequestIdempotencyTests.A_key_is_required_only_where_the_endpoint_says_so` |
 | 2.3 | A key is 1 to 255 visible ASCII characters | `IdempotentExecutorTests.A_key_outside_visible_ascii_is_refused`, `A_key_longer_than_255_characters_is_refused` |
@@ -157,29 +158,29 @@ checks it.
 | 2.8 | No "in progress" state and no lock: of concurrent attempts one commits and all receive its answer | `RequestIdempotencyTests.Of_concurrent_attempts_with_one_key_exactly_one_commits_and_all_receive_its_answer`; `IdempotentExecutorTests.An_attempt_that_loses_to_a_concurrent_one_answers_with_the_winners_result` |
 | 2.9 | An answer belongs to the attempt that gave it (`IdempotencyContext.Forget`) | `RetryAfterFailedSaveTests` (all three) |
 | 2.10 | Only a committed outcome is remembered; a failure is evaluated again | `IdempotentExecutorTests.A_failure_changed_nothing_so_it_is_not_remembered_and_a_retry_runs_again`; `RequestIdempotencyTests.A_failure_after_a_mutation_leaves_neither_the_change_nor_the_key_and_a_retry_runs_again` |
-| 2.11 | A handler under a key does not call an external system inside its transaction | text only |
+| 2.11 | A handler under a key does not call an external system inside its transaction | convention, enforced by review; no automated check. The generated `docs/architecture.md` and the vertical-slice skill warn that the attempt that loses has already made the external call, so it happens twice |
 | 2.12 | A success whose key was not recorded is an error that names the missing wiring | `IdempotentExecutorTests.A_success_whose_key_was_not_recorded_is_a_wiring_mistake_and_says_so` |
 | 2.13 | An exception with no completed key is not swallowed | `IdempotentExecutorTests.An_exception_with_no_completed_key_is_not_swallowed` |
-| 2.14 | Keys expire, 24 hours by default; an expired key starts a new operation; a purger deletes expired rows | `RequestIdempotencyTests.An_expired_key_starts_a_new_operation`, `Expired_keys_and_inbox_entries_are_purged`; the default of 24 hours is not asserted |
+| 2.14 | Keys expire, 24 hours by default; an expired key starts a new operation; a purger deletes expired rows | `RequestIdempotencyTests.An_expired_key_starts_a_new_operation`, `Expired_keys_and_inbox_entries_are_purged`; the default of 24 hours: `IdempotentExecutorTests.A_used_key_is_remembered_for_24_hours_by_default`, `RequestIdempotencyTests.With_the_default_retention_a_key_is_remembered_for_24_hours_and_not_longer` (both seen failing with the default at 12 hours) |
 | 2.15 | HTTP reads `Idempotency-Key`, treats two values as none, marks a replay with `Idempotency-Replayed: true` | `HttpIdempotencyTests.Two_keys_on_one_request_are_no_key`, `A_repeat_receives_the_same_response_marked_as_replayed` |
-| 2.16 | gRPC reads the same entry from the call's metadata | no test |
+| 2.16 | gRPC reads the same entry from the call's metadata | `GrpcIdempotencyKeyTests.The_key_is_read_from_the_metadata_and_the_method_requires_one`, `A_replay_is_announced_in_the_response_metadata` (seen failing with the key source reading nothing) |
 | 3.1 | The inbox records a message in the consumer's own transaction; `UseMPCoreInbox()` applies it to every `IIntegrationEvent` handler; a second delivery stops before the handler | `MessageInboxTests.An_integration_event_delivered_twice_is_processed_once` (seen failing without the inbox), `Two_different_events_are_both_processed` |
-| 3.2 | Two racing deliveries both reach the handler; the primary key fails the second commit, and its redelivery then finds the entry | no test |
+| 3.2 | Two racing deliveries both reach the handler; the primary key fails the second commit, and its redelivery then finds the entry | `MessageInboxTests.Two_deliveries_racing_each_other_commit_once_and_the_redelivery_finds_the_entry` (both deliveries held inside their transactions until both are there; seen failing with the inbox recording nothing) |
 | 4.1 | `IMessagePublisher.PublishAsync(message, MessageDeliveryContext)`, with a default implementation | `MessageInboxTests.Delivery_metadata_given_by_the_publisher_travels_as_headers` |
 | 4.2 | Correlation, causation, tenant and idempotency key travel as headers; an integration event carries its `EventId` as `x-idempotency-key` | `MessageInboxTests.A_published_integration_event_carries_its_event_id_as_the_idempotency_key` (seen failing without it), `Delivery_metadata_given_by_the_publisher_travels_as_headers` |
-| 4.3 | An integration event carries its contract version as `x-event-version` | no test |
+| 4.3 | An integration event carries its contract version as `x-event-version` | `MessageInboxTests.A_published_integration_event_carries_its_contract_version` (seen failing without the header) |
 | 5.1 | One optional package holds the two tables, the interceptor, the store, the inbox and the purger, in the product's own context | `MPCore.Idempotency.Tests` (all) |
-| 5.2 | The template does not generate the wiring; `docs/architecture.md` lists the lines that add it | `TemplateContractTests.The_catalogue_and_the_architecture_document_describe_idempotency_as_it_is_implemented` |
+| 5.2 | The template does not generate the wiring; `docs/architecture.md` lists the lines that add it | decision: the wiring stays by hand (amendment below); `TemplateContractTests.The_catalogue_and_the_architecture_document_describe_idempotency_as_it_is_implemented` |
 
 ### Open points
 
-| # | Point |
-|---|---|
-| A | The gRPC key source (2.16), the race between two inbox deliveries (3.2) and `x-event-version` (4.3) have no test |
-| B | The rule that a handler under a key calls no external system inside its transaction (2.11) has no guard; a handler that does so repeats the external call on the losing attempt |
-| C | The default retention of 24 hours (2.14) is not asserted |
-| D | The template leaves the wiring to the product (5.2): the owner may prefer a generator choice, as business audit has |
-| E | Section 1 leaves the business key to the product; nothing in MP Core helps a product declare one |
+| # | Point | Final state |
+|---|---|---|
+| A | The gRPC key source (2.16), the race between two inbox deliveries (3.2) and `x-event-version` (4.3) have no test | Fixed. `GrpcIdempotencyKeyTests` (2.16); `MessageInboxTests.Two_deliveries_racing_each_other_commit_once_and_the_redelivery_finds_the_entry`, against PostgreSQL (3.2); `MessageInboxTests.A_published_integration_event_carries_its_contract_version` (4.3). Each was seen failing with the guarded code broken |
+| B | The rule that a handler under a key calls no external system inside its transaction (2.11) has no guard; a handler that does so repeats the external call on the losing attempt | Accepted as a convention, enforced by review. The generated `docs/architecture.md` and the vertical-slice skill state why it matters and what to do instead: publish a message, which the outbox sends after the commit |
+| C | The default retention of 24 hours (2.14) is not asserted | Fixed. `IdempotentExecutorTests.A_used_key_is_remembered_for_24_hours_by_default` and, against PostgreSQL, `RequestIdempotencyTests.With_the_default_retention_a_key_is_remembered_for_24_hours_and_not_longer`; both seen failing with the default at 12 hours |
+| D | The template leaves the wiring to the product (5.2): the owner may prefer a generator choice, as business audit has | Decided: the wiring stays by hand (amendment "the wiring stays by hand") |
+| E | Section 1 leaves the business key to the product; nothing in MP Core helps a product declare one | Decided: the business key stays the product's (amendment "the business key stays the product's") |
 
 ## Amendment 2026-10-08 — the wiring stays by hand
 
@@ -195,3 +196,17 @@ Accepted by the repository owner on 2026-10-08 (open point E of the review above
 section 1, a business key on the aggregate, stays the product's: whether two entries are the same business
 fact is a rule of the product's domain, and MP Core stays business-neutral. MP Core offers no helper to declare
 one; the module guide says how a product keys an aggregate by the thing it decides about.
+
+## Amendment 2026-10-08 — no external call under a key, a convention
+
+Accepted by the repository owner on 2026-10-08 (open point B of the review above). Decision 2.11 is a
+convention, enforced by review; no automated check holds it. Of two attempts with one key both handlers
+run and one commits, so an external call made by the attempt that loses has already happened and happens
+twice. The generated `docs/architecture.md` and the vertical-slice skill say so and name the alternative: a
+message published in the transaction, which the outbox sends after the commit.
+
+## Acceptance 2026-10-08
+
+Accepted by the repository owner on 2026-10-08, with the recommendation for every open point (A to E). Open
+points A and C are fixed by the tests named in the review; B is accepted as a convention; D and E are
+decisions recorded in the amendments above, which are part of this record.
