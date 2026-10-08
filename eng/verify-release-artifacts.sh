@@ -166,6 +166,19 @@ verify_release() {
   fi
   [ "$bad_commit" -eq 0 ] && ok "all $EXPECTED_NUPKG packages record commit $cohort_commit, and every assembly carries +$cohort_commit"
 
+  head_ "every package: English only"
+  # English is MP Core's only built-in language (ADR-012, amendment of 2026-10-08). A product adds its own
+  # languages in its own repository, so no package carries a satellite assembly, and the template carries no
+  # culture-specific resource file a generated backend would inherit.
+  local satellites bad_lang=0
+  for id in "${RUNTIME_IDS[@]}" "${TOOL_IDS[@]}"; do
+    satellites="$(unzip -Z1 "$D/$id.$V.nupkg" 2>/dev/null | grep -E '\.resources\.dll$' || true)"
+    [ -z "$satellites" ] || { bad "$id carries a satellite assembly:"; printf '%s\n' "$satellites" | sed 's/^/        /'; bad_lang=1; }
+  done
+  satellites="$(unzip -Z1 "$D/MPCore.Templates.$V.nupkg" 2>/dev/null | grep -E '\.[a-z]{2,3}(-[A-Za-z0-9]{2,8})*\.(resx|restext)$' || true)"
+  [ -z "$satellites" ] || { bad "MPCore.Templates carries a culture-specific resource file:"; printf '%s\n' "$satellites" | sed 's/^/        /'; bad_lang=1; }
+  [ "$bad_lang" -eq 0 ] && ok "no package carries a satellite assembly, and the template no culture-specific resource file"
+
   # ---------------- packed template ----------------
   local T; T="$(mktemp -d)"
   unzip -qo "$D/MPCore.Templates.$V.nupkg" -d "$T" 2>/dev/null || bad "MPCore.Templates package is not readable"
@@ -540,9 +553,19 @@ self_test() {
   ( cd "$S/case13" && eval "$refreeze" )
   assert_case "case 13 (one package records another source commit)" "$S/case13" "$V" "records commit" || failed=1
 
+  # 14: a runtime package that carries a satellite assembly, hashes refrozen. MP Core ships English only;
+  # a culture's texts belong to the product that serves it.
+  cp -R "$D" "$S/case14"; local W14="$S/work14"; mkdir -p "$W14/lib/$TFM/en-GB"
+  ( cd "$W14" && unzip -qo "$S/case14/MPCore.Localization.$V.nupkg" )
+  printf 'MZ' > "$W14/lib/$TFM/en-GB/MPCore.Localization.resources.dll"
+  rm -f "$S/case14/MPCore.Localization.$V.nupkg"
+  ( cd "$W14" && zip -qr "$S/case14/MPCore.Localization.$V.nupkg" . )
+  ( cd "$S/case14" && eval "$refreeze" )
+  assert_case "case 14 (a package carries a satellite assembly)" "$S/case14" "$V" "carries a satellite assembly" || failed=1
+
   rm -rf "$S"
   printf '\n'
-  [ "$failed" -eq 0 ] && { printf 'self-test PASSED: all thirteen bad artifacts rejected by the expected assertions\n'; return 0; }
+  [ "$failed" -eq 0 ] && { printf 'self-test PASSED: all fourteen bad artifacts rejected by the expected assertions\n'; return 0; }
   printf 'self-test FAILED\n'; return 1
 }
 

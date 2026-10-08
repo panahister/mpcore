@@ -44,8 +44,9 @@ public static class MessageCatalogServiceCollectionExtensions
     /// <summary>
     /// Registers the message catalog as the transport-neutral <see cref="IFailureMessageLocalizer"/>, so
     /// REST <c>detail</c> and gRPC <c>LocalizedMessage</c> are rendered in the caller's negotiated culture.
-    /// MP Core's own messages (authentication, permission, validation and so on) are included in English
-    /// and Persian; add the product's resource files through <paramref name="configure"/>.
+    /// MP Core's own messages (authentication, permission, validation and so on) are included in English,
+    /// its only built-in language. A product adds its resource files through <paramref name="configure"/>,
+    /// with the languages it chooses and, if it wants them, its translations of MP Core's own keys.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configure">Adds resource files.</param>

@@ -75,9 +75,9 @@ builder.Services.AddApplication();
 // See src/Modules/README.md.
 // #endif
 
-// Failures reach the caller as message keys, rendered here in the caller's language: MP Core's own
-// messages ship in English and Persian, and each module adds its resource file. See
-// docs/architecture.md, "Business rules, validation and messages".
+// Failures reach the caller as message keys, rendered here in the caller's language. MP Core's own
+// messages ship in English, its only built-in language; this repository adds the languages it serves,
+// each module with its resource file. See docs/architecture.md, "Business rules, validation and messages".
 builder.Services.AddMPCoreMessageCatalog();
 // Input validators (FluentValidation) of every handler assembly. They run before the handler.
 foreach (var assembly in HandlerAssemblies.All)

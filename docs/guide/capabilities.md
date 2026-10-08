@@ -124,7 +124,7 @@ live backends on every change. A line with neither says so.
 | A message catalog: a key and named arguments become a text | `MPCore.Localization` | Tests: `MPCore.Localization.Tests` |
 | The caller's language, from `Accept-Language`, over REST and over gRPC | `MPCore.Transport.Http`, `MPCore.Transport.Grpc` | Tests; sample S13, S19 |
 | A chain of fallback: the culture, its parents, the default | `MPCore.Localization` | Tests |
-| Several sources with a precedence: resource files of the product, MP Core's own texts in English and Persian | the same | Tests; sample: `MessageCatalogTests` |
+| Several sources with a precedence: resource files of the product, MP Core's own texts in English, the only language MP Core carries | the same | Tests: `MessageCatalogTests`, `EnglishOnlyTests` |
 | A text that exists nowhere is counted on a metric and logged once | the same | Tests |
 | Translations stored in the backend's database, edited while it runs, seen by every instance | `MPCore.Localization.EntityFrameworkCore.PostgreSql` | Tests against PostgreSQL; sample S13 |
 

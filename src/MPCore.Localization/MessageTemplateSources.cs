@@ -28,8 +28,8 @@ public interface IMessageTemplateSource
 
 /// <summary>
 /// Reads templates from a .resx resource file, the .NET standard for localized text. The neutral file
-/// (for example <c>Messages.resx</c>) holds the default language, and each culture file (for example
-/// <c>Messages.fa.resx</c>) holds one translation.
+/// (for example <c>Messages.resx</c>) holds the default language, and each culture file
+/// (<c>Messages.&lt;culture&gt;.resx</c>) holds one translation.
 /// </summary>
 /// <param name="resources">The resource manager for the file.</param>
 /// <param name="precedence">The precedence; resource files default to 0.</param>
@@ -47,8 +47,8 @@ public sealed class ResourceMessageTemplateSource(ResourceManager resources, int
         ResourceSet? set;
         try
         {
-            // tryParents: false. The catalog walks the culture chain itself, so that an override for
-            // "fa" is found before the resource file's default text.
+            // tryParents: false. The catalog walks the culture chain itself, so that an override for a
+            // culture is found before the resource file's default text.
             set = _resources.GetResourceSet(culture, createIfNotExists: true, tryParents: false);
         }
         catch (MissingManifestResourceException)
@@ -63,7 +63,7 @@ public sealed class ResourceMessageTemplateSource(ResourceManager resources, int
 
 /// <summary>One stored translation, as an administrator sees it.</summary>
 /// <param name="Key">The message key.</param>
-/// <param name="Culture">The culture name, for example <c>fa</c>.</param>
+/// <param name="Culture">The culture name, for example <c>en-GB</c>.</param>
 /// <param name="Text">The template, with named placeholders.</param>
 /// <param name="ModifiedOnUtc">When it was last written.</param>
 public sealed record MessageTranslationEntry(string Key, string Culture, string Text, DateTimeOffset ModifiedOnUtc);

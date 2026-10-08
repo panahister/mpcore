@@ -22,7 +22,7 @@ infrastructure configured before the host will run.
 | Named business rules with error domain, code and message key (`BusinessRule`, `CheckRule`) | Supported | always |
 | Value objects and child entities (`ValueObject`, `Entity<TId>`) | Supported | always |
 | Input validation with FluentValidation, run before the handler | Supported | always — `UseMPCoreFluentValidation`, `AddMPCoreValidators` |
-| Failure messages rendered in the caller's language from resource files | Supported | always — `AddMPCoreMessageCatalog`; MP Core's own messages in English and Persian |
+| Failure messages rendered in the caller's language from resource files | Supported | always — `AddMPCoreMessageCatalog`; MP Core's own messages in English, the languages of this product added here |
 | Translations edited at run time by an administrator | Supported | optional package `MPCore.Localization.EntityFrameworkCore.PostgreSql` |
 | Validators that read the database | **Not available** | — a check that needs state is a business rule in the aggregate |
 | Request idempotency: `Idempotency-Key`, key and result committed with the change, replay of the stored result | Supported | optional package `MPCore.Idempotency.EntityFrameworkCore.PostgreSql`; `IIdempotentExecutor`, `RequireIdempotencyKey()` |

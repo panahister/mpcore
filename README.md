@@ -210,16 +210,16 @@ In MP Core **no sentence is written in code**. A rule, a validator and a failure
 | You need | MP Core gives you |
 |---|---|
 | The caller's language | `Accept-Language`, over REST and over gRPC, with the same result |
-| A second language | A resource file next to the first. MP Core's own messages ship in English and Persian |
-| A fallback | `zh-CN`, then `zh-Hans`, then `zh`, then the default language. A text that exists nowhere is counted on a metric and logged once, never invented |
+| Your languages | English is MP Core's only built-in language, and the default. Your repository adds the others, or puts one in English's place: a resource file per culture, MP Core's own keys included. [The language guide](docs/guide/languages.md) |
+| A fallback | A culture, then its parents (`en-US-POSIX`, `en-US`, `en`), then the default. A text that exists nowhere is counted on a metric and logged once, never invented |
 | Numbers in the sentence | Named placeholders: `{max_move_percent}`, filled from the rule's arguments |
 | A text changed without a release | Stored translations: support edits a text, and every instance shows it within its refresh interval |
 | A client that acts on the failure | The code and the error domain never change with the language; the text is for people |
 
-In Storefront, scenario S13 has a member of staff store a Simplified Chinese text over the Basket's
-resource file while the backend runs; the next refusal reads that stored text when the caller asks for
-`zh-CN`, and the resource file's own English text otherwise. The same scenario asks for `zh-CN` and
-receives the rule of the picture above in Simplified Chinese, from the Catalog's `zh-Hans` resource file.
+In Storefront, scenario S13 has a member of staff store a translation over the Basket's resource file
+while the backend runs; the next refusal reads that stored text when the caller asks for the
+translation's culture, and the resource file's own English text otherwise. The sample's languages are the
+sample's own, in its own repository; MP Core carries none of them.
 
 ## Built for AI coding agents
 
@@ -378,6 +378,7 @@ All packages share one version and ship together.
 | [Reference architecture](docs/architecture/reference-architecture.md) | See the whole platform, part by part |
 | [Concepts](docs/guide/concepts.md) | Understand the execution model, the failure model, the three kinds of message, and what is guaranteed |
 | [Packages](docs/guide/packages.md) | Choose what to reference |
+| [Languages](docs/guide/languages.md) | Serve your own languages beside English, or one in its place, from your repository |
 | [Decisions](docs/decisions) | Learn why: every convention, with its sources and its cost |
 | [Release notes](docs/releases/0.9.3.md) | See what changed, [0.9.2](docs/releases/0.9.2.md), [0.9.1](docs/releases/0.9.1.md) and [0.9.0](docs/releases/0.9.0.md) included |
 

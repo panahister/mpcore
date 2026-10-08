@@ -28,12 +28,12 @@
 <circle cx="347" cy="170" r="9" fill="#2dd4bf"/>
 <text x="347" y="174" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#0d1117" text-anchor="middle">2</text>
 <text x="364" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#f3f7fc" text-anchor="start">Your module&#x27;s resource files</text>
-<text x="364" y="181" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="10.3" font-weight="400" fill="#9aa9bc" text-anchor="start">.resx, one per language</text>
+<text x="364" y="181" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="10.3" font-weight="400" fill="#9aa9bc" text-anchor="start">.resx, one per culture you add</text>
 <rect x="330" y="194" width="272" height="34" rx="8" fill="#08111f" stroke="#293a50" stroke-width="1"/>
 <circle cx="347" cy="211" r="9" fill="#2dd4bf"/>
 <text x="347" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#0d1117" text-anchor="middle">3</text>
 <text x="364" y="209" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#f3f7fc" text-anchor="start">MP Core&#x27;s own texts</text>
-<text x="364" y="222" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="10.3" font-weight="400" fill="#9aa9bc" text-anchor="start">English and Persian</text>
+<text x="364" y="222" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="10.3" font-weight="400" fill="#9aa9bc" text-anchor="start">English, the default</text>
 <path d="M 618 140 L 646 120" fill="none" stroke="#66788d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M 642.6 126.1 L 646 120 L 639.1 121.2" fill="none" stroke="#66788d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M 618 194 L 646 214" fill="none" stroke="#66788d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -43,16 +43,16 @@
 <text x="664" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#f3f7fc" text-anchor="start">A price may move by at most 50% in one</text>
 <text x="664" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#f3f7fc" text-anchor="start">step (from 485.00 to 4850.00).</text>
 <rect x="650" y="174" width="278" height="68" rx="10" fill="#0e1a36" stroke="#315fe8" stroke-width="1.25" filter="url(#shadow)"/>
-<text x="664" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#6888ff" text-anchor="start" letter-spacing="0.8">ACCEPT-LANGUAGE: ZH-CN</text>
-<text x="664" y="214" font-family="'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif" font-size="12" fill="#f3f7fc">价格单次最多只能变动 50%</text>
-<text x="664" y="231" font-family="'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif" font-size="12" fill="#f3f7fc">（从 485.00 到 4850.00）。</text>
+<text x="664" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#6888ff" text-anchor="start" letter-spacing="0.8">ACCEPT-LANGUAGE: YOUR CULTURE</text>
+<text x="664" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#f3f7fc" text-anchor="start">The same rule, in a language your</text>
+<text x="664" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#f3f7fc" text-anchor="start">product adds in its own repository.</text>
 <rect x="32" y="262" width="292" height="82" rx="10" fill="#072d2b" stroke="#14b8a6" stroke-width="1.25" filter="url(#shadow)"/>
 <text x="48" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#99f6e4" text-anchor="start">The same on both transports</text>
 <text x="48" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#9aa9bc" text-anchor="start">Problem Details over REST, a rich gRPC status:</text>
 <text x="48" y="323" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#9aa9bc" text-anchor="start">one key, one text, one code for the client.</text>
 <rect x="334" y="262" width="292" height="82" rx="10" fill="#072d2b" stroke="#14b8a6" stroke-width="1.25" filter="url(#shadow)"/>
-<text x="350" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#99f6e4" text-anchor="start">A language falls back</text>
-<text x="350" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#9aa9bc" text-anchor="start">zh-CN, then zh-Hans, then zh, then the default.</text>
+<text x="350" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#99f6e4" text-anchor="start">A culture falls back</text>
+<text x="350" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#9aa9bc" text-anchor="start">A region, then its language, then the default.</text>
 <text x="350" y="323" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.2" font-weight="400" fill="#9aa9bc" text-anchor="start">A text found nowhere is logged, never invented.</text>
 <rect x="636" y="262" width="292" height="82" rx="10" fill="#072d2b" stroke="#14b8a6" stroke-width="1.25" filter="url(#shadow)"/>
 <text x="652" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.8" font-weight="700" fill="#99f6e4" text-anchor="start">Support edits a text, live</text>

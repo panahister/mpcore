@@ -9,7 +9,7 @@ public sealed class MessageTranslationRecord
     /// <summary>Gets or sets the message key.</summary>
     public string Key { get; set; } = string.Empty;
 
-    /// <summary>Gets or sets the culture name, for example <c>fa</c> or <c>fa-IR</c>.</summary>
+    /// <summary>Gets or sets the culture name, a language such as <c>en</c> or a region such as <c>en-GB</c>.</summary>
     public string Culture { get; set; } = string.Empty;
 
     /// <summary>Gets or sets the template.</summary>

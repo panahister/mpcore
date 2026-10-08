@@ -127,8 +127,17 @@ Three kinds of check, each in one place:
   rule goes to the dead-letter queue at once: retrying would replay the same verdict.
 - **No sentence is written in code.** A rule, a validator and a returned failure carry a message key and
   arguments. `AddMPCoreMessageCatalog()` renders the key in the language the caller negotiated
-  (`Accept-Language`), from MP Core's own texts (English and Persian) and each module's resource file.
-  Add a language to `HttpFailureOptions.SupportedCultures` (and the gRPC equivalent) to serve it.
+  (`Accept-Language`), from each module's resource file and MP Core's own texts, which are English.
+- **The languages are this product's.** MP Core's only built-in language is English, and it is the
+  default. This repository adds the others, or puts one in English's place:
+  - a culture file beside each module's resource file, `Resources/<Context>Messages.<culture>.resx`;
+  - if MP Core's own messages (sign-in, permission, validation and the rest) should follow, a resource
+    file of this product holding their keys in `<culture>`, registered with `catalog.AddResources<T>()`:
+    at this product's precedence it wins over MP Core's English in that culture;
+  - the culture in `HttpFailureOptions.SupportedCultures` and `GrpcFailureOptions.SupportedCultures`.
+
+  [MP Core's language guide](https://github.com/panahister/mpcore/blob/main/docs/guide/languages.md)
+  lists MP Core's keys with their English texts and gives each step in full.
 - **Translations an administrator edits** come from the optional package
   `MPCore.Localization.EntityFrameworkCore.PostgreSql`: a table in this project's own database, changed
   through the product's own commands, and visible on every instance within its refresh interval.

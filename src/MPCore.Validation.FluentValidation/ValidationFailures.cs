@@ -19,7 +19,8 @@ namespace MPCore.Validation.FluentValidation;
 /// <item><b>Rule code:</b> the code set with <c>WithErrorCode("PHONE_FORMAT")</c>; otherwise the validator's
 /// name, so <c>NotEmptyValidator</c> becomes <c>NOT_EMPTY</c>.</item>
 /// <item><b>Message key:</b> the key set with <c>WithMessage("ordering.phone_format")</c>; otherwise
-/// <c>validation.</c> and the lower-cased rule code, for which MP Core ships English and Persian texts.</item>
+/// <c>validation.</c> and the lower-cased rule code, for which MP Core ships an English text that a product
+/// may translate.</item>
 /// <item><b>Arguments:</b> <c>field</c>, and the rule's own limits (<c>max_length</c>, <c>min_length</c>,
 /// <c>from</c>, <c>to</c>, <c>comparison_value</c>, <c>precision</c>, <c>scale</c>). The value the caller
 /// sent is never included: it may be personal data.</item>

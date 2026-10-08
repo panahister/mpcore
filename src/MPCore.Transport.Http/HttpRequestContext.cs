@@ -63,10 +63,9 @@ internal sealed class HttpRequestContextFactory(IOptions<HttpFailureOptions> opt
                 continue;
             }
 
-            // The requested culture's own parent chain, not one step of it: a script-disambiguated
-            // language such as Chinese has three levels (zh-CN, its parent zh-Hans, its parent zh), and
-            // a product that supports only the top one must still be reachable from a region two steps
-            // below it.
+            // The requested culture's own parent chain, not one step of it: a culture can sit three
+            // levels deep (a region, its script, its language), and a product that supports only the top
+            // one must still be reachable from a culture two steps below it.
             for (var culture = requested; culture.Name.Length > 0; culture = culture.Parent)
             {
                 var match = supported.FirstOrDefault(item =>
