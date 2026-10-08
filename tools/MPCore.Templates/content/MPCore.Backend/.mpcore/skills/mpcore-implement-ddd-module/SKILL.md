@@ -24,7 +24,9 @@ Use when the plan is agreed and the module needs its structure, before business 
    `MPCore.Security.Abstractions`, `MPCore.Tenancy.Abstractions` — never Entity Framework, Wolverine or a
    broker. It returns the transport-neutral failure model rather than throwing for expected outcomes.
 4. `Infrastructure/` implements the ports: EF Core configuration, repositories, external clients, and the
-   module's `AddXModule<TContext>` registration. `Resources/<Context>Messages.resx` holds the module's
+   module's `AddXModule<TContext>` registration. Every table of the module goes into a schema of its own,
+   named after the module (`builder.ToTable("shipments", "shipping")`), and no foreign key points at
+   another module's table: refer to its rows by identifier only. `Resources/<Context>Messages.resx` holds the module's
    message texts, one culture file per language.
 5. Register the module explicitly, in four places: its services through `AddXModule<TContext>` called
    from the host; its `AssemblyReference` in `Hosting/HandlerAssemblies.cs`, so its handlers and
@@ -39,15 +41,17 @@ Use when the plan is agreed and the module needs its structure, before business 
    makes `IUnitOfWork` ambiguous and Wolverine refuses the handlers. A context of its own means a
    separate service, which is a decision for the owner, not a module detail.
 7. Keep dependencies pointing inward. Nothing in a module references the host, and no module references
-   another module's main project: only its Contracts project.
+   another module's main project: only its Contracts project. A handler takes its own module's
+   repositories only. An interface of a Contracts project that writes is a deliberate exception and
+   carries `[CrossModuleWrite("<why the two modules must change together>")]`; prefer a message.
 8. Handlers, messages, ports and the adapters Wolverine builds stay `public`, because Wolverine generates
    the handler code in another assembly. The module boundary comes from project references, not from
    `internal`.
 
 ## Verification
 
-Build the solution and report the real result. A module skeleton with no behaviour still has to
-compile and register cleanly.
+Build the solution, run `ModuleRulesTests`, and report the real result. A module skeleton with no
+behaviour still has to compile, register cleanly and hold the module rules.
 
 ## Project configuration is authoritative
 

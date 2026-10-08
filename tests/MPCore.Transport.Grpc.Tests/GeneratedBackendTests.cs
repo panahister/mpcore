@@ -153,6 +153,90 @@ public sealed partial class GeneratedBackendTests
                     }
                     """);
             }),
+        new(
+            "Each_module_maps_to_its_own_schema",
+            "Acme.Ledger.Modules.Shipping maps into billing, the schema of Acme.Ledger.Modules.Billing",
+            static workspace => workspace.Write("src/Modules/Shipping/Acme.Ledger.Modules.Shipping/Infrastructure/ShipmentNoteConfiguration.cs", """
+                using Microsoft.EntityFrameworkCore;
+                using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+                namespace Acme.Ledger.Modules.Shipping.Infrastructure;
+
+                public sealed class ShipmentNote
+                {
+                    public Guid Id { get; set; }
+
+                    public string Text { get; set; } = string.Empty;
+                }
+
+                // Seeded violation: a module's table in another module's schema.
+                public sealed class ShipmentNoteConfiguration : IEntityTypeConfiguration<ShipmentNote>
+                {
+                    public void Configure(EntityTypeBuilder<ShipmentNote> builder)
+                    {
+                        ArgumentNullException.ThrowIfNull(builder);
+                        builder.ToTable("shipment_notes", "billing");
+                        builder.HasKey(static note => note.Id);
+                    }
+                }
+                """)),
+        new(
+            "No_foreign_key_crosses_a_schema",
+            "Shipment (shipping) -> Invoice (billing)",
+            static workspace => workspace.Write("src/Acme.Ledger.Infrastructure/Persistence/ShipmentInvoiceKey.cs", """
+                using Acme.Ledger.Modules.Billing.Domain;
+                using Acme.Ledger.Modules.Shipping.Domain;
+                using Microsoft.EntityFrameworkCore;
+                using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+                namespace Acme.Ledger.Infrastructure.Persistence;
+
+                // Seeded violation: the host, which sees both modules, ties their tables with a foreign key.
+                public sealed class ShipmentInvoiceKey : IEntityTypeConfiguration<Shipment>
+                {
+                    public void Configure(EntityTypeBuilder<Shipment> builder)
+                    {
+                        ArgumentNullException.ThrowIfNull(builder);
+                        builder.HasOne<Invoice>().WithMany().HasForeignKey(static shipment => shipment.InvoiceId);
+                    }
+                }
+                """)),
+        new(
+            "A_contracts_interface_that_writes_declares_its_reason",
+            "Acme.Ledger.Modules.Billing.Contracts.IInvoiceVoiding",
+            static workspace => workspace.Write("src/Modules/Billing/Acme.Ledger.Modules.Billing.Contracts/IInvoiceVoiding.cs", """
+                namespace Acme.Ledger.Modules.Billing.Contracts;
+
+                // Seeded violation: a call that writes, published without its reason.
+                public interface IInvoiceVoiding
+                {
+                    Task VoidAsync(Guid invoiceId, CancellationToken cancellationToken);
+                }
+                """)),
+        new(
+            "A_handler_takes_only_its_own_modules_repositories",
+            "Acme.Ledger.Modules.Shipping.Application.Commands.RecallShipmentHandler takes IInvoiceRepository of Acme.Ledger.Modules.Billing",
+            static workspace =>
+            {
+                workspace.AddProjectReference(
+                    "src/Modules/Shipping/Acme.Ledger.Modules.Shipping/Acme.Ledger.Modules.Shipping.csproj",
+                    "../../Billing/Acme.Ledger.Modules.Billing/Acme.Ledger.Modules.Billing.csproj");
+                workspace.Write("src/Modules/Shipping/Acme.Ledger.Modules.Shipping/Application/Commands/RecallShipment.cs", """
+                    using Acme.Ledger.Modules.Billing.Application.Ports;
+                    using MPCore.Application.Messaging;
+
+                    namespace Acme.Ledger.Modules.Shipping.Application.Commands;
+
+                    public sealed record RecallShipment(Guid ShipmentId) : ICommand;
+
+                    // Seeded violation: a handler that changes another module's aggregates.
+                    public static class RecallShipmentHandler
+                    {
+                        public static void Handle(RecallShipment command, IInvoiceRepository invoices) =>
+                            ArgumentNullException.ThrowIfNull(invoices);
+                    }
+                    """);
+            }),
     ];
 
     /// <summary>A generated backend in a directory of its own, with a template home of its own.</summary>
@@ -160,6 +244,7 @@ public sealed partial class GeneratedBackendTests
     {
         private readonly string _root;
         private readonly Dictionary<string, string?> _environment;
+        private readonly HashSet<(string Project, string Reference)> _references = [];
 
         private Workspace(string root)
         {
@@ -215,6 +300,12 @@ public sealed partial class GeneratedBackendTests
 
         public void AddProjectReference(string project, string reference)
         {
+            // Two seeded violations may need the same reference; it is added once.
+            if (!_references.Add((project, reference)))
+            {
+                return;
+            }
+
             var path = Path.Combine(Backend, project);
             var text = File.ReadAllText(path);
             File.WriteAllText(path, text.Replace(

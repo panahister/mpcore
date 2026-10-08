@@ -2,8 +2,9 @@ namespace MPCore.Transport.Grpc.Tests;
 
 /// <summary>
 /// Two small modules written the way the generated module guide prescribes: Billing, which publishes a
-/// Contracts project with one reading interface, and Shipping, which reads Billing only through it. Every
-/// rule of the generated tests holds for them; each seeded violation breaks one rule.
+/// Contracts project with a reading interface and a writing one that declares its reason, and Shipping, which
+/// reads Billing only through it. Each maps its tables into a schema of its own. Every rule of the generated
+/// tests holds for them; each seeded violation breaks one rule.
 /// </summary>
 internal static class SeededModules
 {
@@ -40,6 +41,19 @@ internal static class SeededModules
             public interface IInvoiceLookup
             {
                 Task<decimal?> GetAmountAsync(Guid invoiceId, CancellationToken cancellationToken);
+            }
+            """,
+
+        [$"{BillingContracts}/IInvoiceSettlement.cs"] = """
+            using MPCore.Application.Modules;
+
+            namespace Acme.Ledger.Modules.Billing.Contracts;
+
+            /// <summary>A call that writes, with the reason it is not a message.</summary>
+            [CrossModuleWrite("A shipment and the settlement of its invoice must change together, and both modules stay in one deployment.")]
+            public interface IInvoiceSettlement
+            {
+                Task SettleAsync(Guid invoiceId, CancellationToken cancellationToken);
             }
             """,
 

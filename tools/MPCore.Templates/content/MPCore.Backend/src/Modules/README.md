@@ -76,8 +76,11 @@ divided into Domain, Application and Infrastructure projects. Nothing else has t
 `HandlerAssemblies`: a module's `Domain` folder depends on neither its `Application` nor its
 `Infrastructure` folder nor on a provider (Entity Framework, Npgsql, Wolverine, a broker, ASP.NET, gRPC);
 its `Application` folder depends on neither its `Infrastructure` folder nor on a provider; a query handler
-takes no unit of work and no publisher; and no module references another module's main project. A module that is not listed in `HandlerAssemblies` is not
-checked, and has no handlers either.
+takes no unit of work and no publisher; and no module references another module's main project. Four more
+hold what a module owns: each module maps its tables into one schema of its own; no foreign key crosses a
+schema, read from the Entity Framework model; an interface of a Contracts project that writes declares its
+reason; and a handler takes only its own module's repositories. A module that is not listed in
+`HandlerAssemblies` is not checked, and has no handlers either.
 
 **What `internal` can and cannot hide.** Wolverine generates each handler's code in its own assembly and
 constructs the handler's dependencies there. Handlers, messages, ports and the adapters Wolverine
@@ -144,7 +147,22 @@ the answers and chooses the next step is the process manager in `Process/`.
 
 **Use a call that writes only when** the two modules must change together **and** are meant to stay in
 one deployment. Write that reason where the interface is declared, so the next reader knows it was a
-decision.
+decision:
+
+```csharp
+using MPCore.Application.Modules;
+
+[CrossModuleWrite("A shipment and the settlement of its invoice must change together; both stay in one deployment.")]
+public interface IInvoiceSettlement
+{
+    Task SettleAsync(Guid invoiceId, CancellationToken cancellationToken);
+}
+```
+
+A test holds it (`A_contracts_interface_that_writes_declares_its_reason`). A method reads when it is a
+property getter, or returns a value and its name starts with a reading verb: `Get`, `Find`, `List`, `Read`,
+`Count`, `Exists`, `Is`, `Has`, `Search`, `Query`, `Load`, `Lookup`, `TryGet`, `TryFind`. Any other method is
+taken to write, so a verb the list does not know asks for a reason rather than slipping through.
 
 **A call that reads is always fine.** It couples nothing a cache or a local copy could not replace.
 
@@ -197,8 +215,44 @@ When you publish a message for another module:
    no validators, however complete its code looks: Wolverine discovers handlers only in the assemblies the
    host names.
 3. **Mappings.** Apply the module's EF configurations in the host's `AppDbContext`, with
-   `ApplyConfigurationsFromAssembly(<Product>.Modules.<Context>.AssemblyReference.Assembly)`.
+   `ApplyConfigurationsFromAssembly(<Product>.Modules.<Context>.AssemblyReference.Assembly)`. Map every
+   table of the module into a schema of its own, named after the module: `builder.ToTable("shipments",
+   "shipping")`. Refer to another module's row by its identifier only, never with a foreign key: the key
+   would tie the two modules' tables together where no project reference shows it. Kamil Grzybek's
+   *Modular Monolith with DDD* gives each module its own schema for the same reason; Sam Newman's
+   *Monolith to Microservices* (2019) shows what a foreign key across the line costs when a service is
+   taken out: his pattern "move foreign-key relationship to code". Two tests hold it: `Each_module_maps_to_its_own_schema`
+   and `No_foreign_key_crosses_a_schema`. They read the model, which needs no database.
 4. **Messages.** Add the module's resource file to the message catalog in `Program.cs`.
+
+## Moving a module to a service: what it costs
+
+A module is built so that it can leave the monolith; leaving still costs work. Count each line before
+the decision, which is the owner's. The list follows Sam Newman's *Monolith to Microservices* (2019),
+which splits the database and the code of an extracted service as separate steps.
+
+- [ ] **Its schema becomes a database of its own.** The tests above keep the module in one schema with no
+  foreign key across it, so the tables move whole. Its migrations leave the monolith's `AppDbContext` for a
+  context of the new service, and the data is copied once.
+- [ ] **Every Contracts interface marked `[CrossModuleWrite]` is redesigned.** The shared transaction is
+  gone: the call becomes a message and a compensation, driven by a process manager. This is the expensive
+  line; count the interfaces.
+- [ ] **Every Contracts interface that reads becomes a remote call or a local copy.** A remote call needs a
+  timeout, a retry policy and an answer for "unavailable" in every caller; a local copy is fed by events
+  and is stale by design.
+- [ ] **Every module message it sends or receives becomes an integration event.** It gets a route on a
+  broker, a version, and a contract test (Ian Robinson's consumer-driven contracts). A module message may
+  carry what an integration event must not, such as a payment token: remove it first.
+- [ ] **Receivers stay idempotent by a business key.** They already are, because a module message can
+  arrive twice; the new service needs its own outbox and inbox tables.
+- [ ] **The service gets a host of its own:** `Program.cs`, its own `AppDbContext` and unit of work, its
+  token audience and resource keys, a service identity for the calls it makes, health checks, telemetry,
+  a deployment and an owner on call.
+- [ ] **Reports and read models that read both schemas** are rebuilt from events or from both services'
+  interfaces; no query joins across the line any more.
+
+Nothing on this list is done by MP Core; the tests only keep the list from growing while the module is
+still inside.
 
 ### Two rules Wolverine enforces at run time, not at compile time
 
