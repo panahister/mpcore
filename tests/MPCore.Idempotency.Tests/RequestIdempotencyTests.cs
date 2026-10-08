@@ -112,6 +112,23 @@ public sealed class RequestIdempotencyTests
     }
 
     [PostgreSqlFact]
+    public async Task With_the_default_retention_a_key_is_remembered_for_24_hours_and_not_longer()
+    {
+        await using var host = await IdempotencyHost.StartAsync();
+        var key = Guid.NewGuid().ToString();
+        await host.SendAsync(new MakeDeposit(Account, 100m), key);
+
+        host.Clock.Now += TimeSpan.FromHours(24) - TimeSpan.FromMinutes(1);
+        var withinADay = await host.SendAsync(new MakeDeposit(Account, 100m), key);
+        host.Clock.Now += TimeSpan.FromMinutes(2);
+        var afterADay = await host.SendAsync(new MakeDeposit(Account, 100m), key);
+
+        Assert.True(withinADay.Replayed);
+        Assert.False(afterADay.Replayed);
+        Assert.Equal(2, await host.CountAsync("idem_test_deposits"));
+    }
+
+    [PostgreSqlFact]
     public async Task Expired_keys_and_inbox_entries_are_purged()
     {
         await using var host = await IdempotencyHost.StartAsync();

@@ -67,6 +67,15 @@ public sealed class IdempotentExecutorTests
     private static readonly Pay Command = new(Guid.Parse("11111111-1111-1111-1111-111111111111"), 100m);
 
     [Fact]
+    public void A_used_key_is_remembered_for_24_hours_by_default()
+    {
+        var options = new IdempotencyOptions();
+
+        Assert.Equal(TimeSpan.FromHours(24), options.Retention);
+        Assert.Equal("Idempotency-Key", options.HeaderName);
+    }
+
+    [Fact]
     public async Task Without_a_key_the_command_simply_runs()
     {
         var result = await Run(Command, new Keys(null));
