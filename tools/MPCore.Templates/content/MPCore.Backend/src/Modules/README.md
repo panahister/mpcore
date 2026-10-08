@@ -75,8 +75,8 @@ divided into Domain, Application and Infrastructure projects. Nothing else has t
 **The rules are tests.** `tests/<Product>.Tests/ModuleRulesTests.cs` checks every module listed in
 `HandlerAssemblies`: a module's `Domain` folder depends on neither its `Application` nor its
 `Infrastructure` folder nor on a provider (Entity Framework, Npgsql, Wolverine, a broker, ASP.NET, gRPC);
-its `Application` folder depends on neither its `Infrastructure` folder nor on a provider; and no module
-references another module's main project. A module that is not listed in `HandlerAssemblies` is not
+its `Application` folder depends on neither its `Infrastructure` folder nor on a provider; a query handler
+takes no unit of work and no publisher; and no module references another module's main project. A module that is not listed in `HandlerAssemblies` is not
 checked, and has no handlers either.
 
 **What `internal` can and cannot hide.** Wolverine generates each handler's code in its own assembly and
@@ -100,7 +100,9 @@ not from `internal`.
   aggregates. It is the only thing an HTTP `GET` sends: RFC 9110 requires `GET` to be safe, so a retry, a
   browser prefetch or a cache must never change anything. When reading has a consequence, such as marking
   something as seen, that consequence is a command of its own. This is Meyer's command-query separation
-  applied to messages; Young's CQRS adds that the read side has its own model.
+  applied to messages; Young's CQRS adds that the read side has its own model. A test holds it: a handler
+  whose first parameter is an `IQuery<T>` takes no `IUnitOfWork` and no publisher, in its method or in its
+  class's constructor (`QueryRules`).
 - **`Views/`.** A view is the data a query or command returns to its caller: a read model, in CQRS terms,
   and a data transfer object (DTO) in general terms. "View" names its role more precisely than "DTO",
   because a command and an integration event are DTOs too. eShop calls the same types view models.

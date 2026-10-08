@@ -37,6 +37,14 @@ public sealed class ArchitectureTests
     }
 
     [Fact]
+    public void A_query_handler_takes_no_unit_of_work_and_publishes_nothing()
+    {
+        var violations = QueryRules.Violations(Application).ToList();
+
+        Assert.True(violations.Count == 0, "Query handlers that could change state: " + string.Join(", ", violations));
+    }
+
+    [Fact]
     public void The_application_knows_neither_the_adapters_nor_the_host()
     {
         var result = Types.InAssembly(Application).ShouldNot()

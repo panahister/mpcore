@@ -52,6 +52,39 @@ public sealed partial class GeneratedBackendTests
         }
     }
 
+    [Fact]
+    public async Task A_service_holds_its_query_rule_and_the_rule_fails_on_a_query_that_publishes()
+    {
+        using var workspace = await Workspace.GenerateAsync("service");
+        const string Rule = "A_query_handler_takes_no_unit_of_work_and_publishes_nothing";
+
+        var clean = await workspace.TestAsync("clean");
+
+        Assert.True(clean.ExitCode == 0, "The generated tests fail as generated:\n" + clean.Output);
+        Assert.Equal("Passed", clean.Outcome(Rule));
+
+        workspace.Write("src/Acme.Ledger.Application/Queries/ListRecent.cs", """
+            using MPCore.Application.Messaging;
+            using MPCore.Messaging.Abstractions;
+
+            namespace Acme.Ledger.Application.Queries;
+
+            public sealed record ListRecent : IQuery<int>;
+
+            // Seeded violation: a query whose handler can publish.
+            public sealed class ListRecentHandler(IMessagePublisher publisher)
+            {
+                public IMessagePublisher Publisher { get; } = publisher;
+
+                public int Handle(ListRecent query) => 0;
+            }
+            """);
+        var seeded = await workspace.TestAsync("seeded");
+
+        Assert.Equal("Failed", seeded.Outcome(Rule));
+        Assert.Contains("ListRecentHandler.Handle takes IMessagePublisher", seeded.Message(Rule), StringComparison.Ordinal);
+    }
+
     /// <summary>A rule of the generated tests, the violation that must break it, and what its failure names.</summary>
     private sealed record Rule(string Test, string Evidence, Action<Workspace> Seed);
 
@@ -83,6 +116,23 @@ public sealed partial class GeneratedBackendTests
                 public sealed class InvoiceMappingProbe
                 {
                     public InvoiceConfiguration Configuration { get; } = new();
+                }
+                """)),
+        new(
+            "A_query_handler_takes_no_unit_of_work_and_publishes_nothing",
+            "CountShipmentsHandler.Handle takes IUnitOfWork",
+            static workspace => workspace.Write("src/Modules/Shipping/Acme.Ledger.Modules.Shipping/Application/Queries/CountShipments.cs", """
+                using MPCore.Application.Messaging;
+                using MPCore.Persistence.Abstractions;
+
+                namespace Acme.Ledger.Modules.Shipping.Application.Queries;
+
+                public sealed record CountShipments : IQuery<int>;
+
+                // Seeded violation: a query that declares a unit of work could change state.
+                public static class CountShipmentsHandler
+                {
+                    public static int Handle(CountShipments query, IUnitOfWork unitOfWork) => 0;
                 }
                 """)),
         new(

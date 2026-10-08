@@ -51,6 +51,14 @@ public sealed class ModuleRulesTests
     }
 
     [Fact]
+    public void A_query_handler_takes_no_unit_of_work_and_publishes_nothing()
+    {
+        var violations = Modules.SelectMany(QueryRules.Violations).ToList();
+
+        Assert.True(violations.Count == 0, "Query handlers that could change state: " + string.Join(", ", violations));
+    }
+
+    [Fact]
     public void No_module_references_another_modules_main_project()
     {
         var names = Modules.Select(static module => module.GetName().Name!).ToHashSet(StringComparer.Ordinal);
