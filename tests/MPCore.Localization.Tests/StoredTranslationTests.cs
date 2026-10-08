@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MPCore.Application.Time;
 using MPCore.Localization.EntityFrameworkCore;
 using MPCore.Localization.Tests.Resources;
@@ -113,6 +114,68 @@ public sealed class StoredTranslationTests : IAsyncLifetime
         await InTransactionAsync(async store => Assert.True(await store.RemoveAsync("orders.limit_exceeded", "fa", CancellationToken.None)));
         Assert.True(await RefreshAsync());
         Assert.Equal("سقف 5 رد شد.", Render(Persian));
+    }
+
+    [PostgreSqlFact]
+    public async Task A_change_made_on_one_instance_is_served_by_another_within_its_refresh_interval()
+    {
+        // Two hosts of one backend, one database, each with its own background refresher.
+        using var editor = await StartInstanceAsync();
+        using var reader = await StartInstanceAsync();
+        var readerCatalog = reader.Services.GetRequiredService<IMessageCatalog>();
+        string? Read() => readerCatalog.Render("orders.limit_exceeded", Limit, Persian);
+        async Task ChangeAsync(Func<IMessageTranslationStore, Task> change)
+        {
+            await using var scope = editor.Services.CreateAsyncScope();
+            await change(scope.ServiceProvider.GetRequiredService<IMessageTranslationStore>());
+            await scope.ServiceProvider.GetRequiredService<TranslationTestContext>().SaveChangesAsync();
+        }
+
+        Assert.Equal("سقف 5 رد شد.", Read());
+
+        await ChangeAsync(store => store.SetAsync("orders.limit_exceeded", "fa", "بیش از {limit} عدد مجاز نیست.", CancellationToken.None));
+        Assert.True(await EventuallyAsync(() => Read() == "بیش از 5 عدد مجاز نیست."), "an added translation reached the other instance");
+
+        await ChangeAsync(store => store.SetAsync("orders.limit_exceeded", "fa", "حداکثر {limit} عدد.", CancellationToken.None));
+        Assert.True(await EventuallyAsync(() => Read() == "حداکثر 5 عدد."), "a changed translation reached the other instance");
+
+        await ChangeAsync(async store => Assert.True(await store.RemoveAsync("orders.limit_exceeded", "fa", CancellationToken.None)));
+        Assert.True(await EventuallyAsync(() => Read() == "سقف 5 رد شد."), "a removed translation left the other instance");
+
+        await editor.StopAsync();
+        await reader.StopAsync();
+    }
+
+    private static async Task<Microsoft.Extensions.Hosting.IHost> StartInstanceAsync()
+    {
+        var host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
+            .ConfigureLogging(static logging => logging.ClearProviders())
+            .ConfigureServices(static services =>
+            {
+                services.AddSingleton<IClock, SteppingClock>();
+                services.AddDbContext<TranslationTestContext>(options => options.UseNpgsql(ConnectionString));
+                services.AddMPCoreMessageCatalog(catalog => catalog.AddResources<TestMessages>());
+                services.AddMPCoreMessageTranslations<TranslationTestContext>(options => options.RefreshInterval = TimeSpan.FromMilliseconds(200));
+            })
+            .Build();
+        await host.StartAsync();
+        return host;
+    }
+
+    private static async Task<bool> EventuallyAsync(Func<bool> condition)
+    {
+        var deadline = DateTime.UtcNow.AddSeconds(10);
+        while (DateTime.UtcNow < deadline)
+        {
+            if (condition())
+            {
+                return true;
+            }
+
+            await Task.Delay(50);
+        }
+
+        return condition();
     }
 
     [PostgreSqlFact]

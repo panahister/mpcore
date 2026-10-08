@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MPCore.Application.Results;
+using MPCore.Domain.Rules;
 
 namespace MPCore.Transport.Grpc.Tests;
 
@@ -99,6 +100,26 @@ public sealed class GrpcFailureWireTests
         Assert.Equal("LIMIT_EXCEEDED", violation.Type);
         Assert.Equal("BUSINESS_RULE:orders", violation.Subject);
         Assert.Equal("سقف 5 عدد رد شد.", violation.Description);
+    }
+
+    [Fact]
+    public async Task A_rule_with_malformed_identifiers_maps_to_the_generic_identity_and_never_to_an_internal_error()
+    {
+        await using var fixture = await GrpcFixture.CreateAsync();
+
+        var exception = await Assert.ThrowsAsync<RpcException>(async () =>
+            await fixture.Client.FailAsync(new FailureRequest { Mode = "malformed-rule" }));
+
+        Assert.Equal(StatusCode.FailedPrecondition, exception.StatusCode);
+        var status = exception.GetRpcStatus();
+        Assert.NotNull(status);
+        var errorInfo = status.GetDetail<ErrorInfo>();
+        Assert.Equal(BusinessRule.DefaultErrorDomain, errorInfo?.Domain);
+        Assert.Equal("SOME_RULE", errorInfo?.Reason);
+        var violation = Assert.Single(status.GetDetail<PreconditionFailure>()!.Violations);
+        Assert.Equal($"BUSINESS_RULE:{BusinessRule.DefaultErrorDomain}", violation.Subject);
+        Assert.DoesNotContain("developer text", exception.ToString(), StringComparison.Ordinal);
+        Assert.DoesNotContain("Not A Domain", exception.ToString(), StringComparison.Ordinal);
     }
 
     [Fact]

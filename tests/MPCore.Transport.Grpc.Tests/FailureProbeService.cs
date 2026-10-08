@@ -18,6 +18,11 @@ internal sealed class FailureProbeService : FailureProbe.FailureProbeBase
             BusinessRules.Check(new LimitRule());
         }
 
+        if (request.Mode == "malformed-rule")
+        {
+            throw new BusinessRuleValidationException(new MalformedRule());
+        }
+
         CreateResult(request.Mode).ThrowIfFailure();
         return Task.FromResult(new FailureReply { Value = "unexpected" });
     }
@@ -82,6 +87,20 @@ internal sealed class FailureProbeService : FailureProbe.FailureProbeBase
                 ])
             ]))
     };
+
+    /// <summary>A rule that implements the interface directly, with identifiers the failure model refuses.</summary>
+    private sealed class MalformedRule : IBusinessRule
+    {
+        public string Code => "SOME_RULE";
+
+        public string Message => "developer text";
+
+        public string ErrorDomain => "Not A Domain";
+
+        public string MessageKey => "Not a key";
+
+        public bool IsBroken() => true;
+    }
 
     private sealed class LimitRule() : BusinessRule(
         "orders", "LIMIT_EXCEEDED", "orders.limit_exceeded", new Dictionary<string, string> { ["limit"] = "5" })
