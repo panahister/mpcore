@@ -384,7 +384,7 @@ verify_release() {
     local new=0
     for id in "${RUNTIME_IDS[@]}"; do
       if [ -f "$ROOT/artifacts/packages/$id.$BASE_V.nupkg" ]; then present=$((present+1))
-      elif printf '%s\n' "${NEW_IN_COHORT[@]}" | grep -qx "$id"; then info "new in this cohort, no $BASE_V baseline exists: $id"; new=$((new+1))
+      elif printf '%s\n' ${NEW_IN_COHORT[@]+"${NEW_IN_COHORT[@]}"} | grep -qx "$id"; then info "new in this cohort, no $BASE_V baseline exists: $id"; new=$((new+1))
       else bad "baseline missing: $id.$BASE_V.nupkg"; missing=1; fi
     done
     [ "$missing" -eq 0 ] && ok "$present runtime baselines present at $BASE_V, $new new in this cohort (validation had a baseline wherever one can exist)"

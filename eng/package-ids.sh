@@ -14,5 +14,6 @@ RUNTIME_IDS=(
 TOOL_IDS=(MPCore.Cli MPCore.Templates)
 # Packages that first ship in this cohort. They have no baseline at MPCoreBaselineVersion by
 # definition, so their absence from the baseline store is expected, not a skipped validation.
-# Empty this list when the next cohort is frozen and these packages have a baseline of their own.
-NEW_IN_COHORT=(MPCore.Idempotency.EntityFrameworkCore.PostgreSql MPCore.Localization MPCore.Localization.EntityFrameworkCore.PostgreSql MPCore.Validation.FluentValidation)
+# Empty this list when the next cohort is frozen and these packages have a baseline of their own:
+# eng/restore-api-baseline.sh fails while a package listed here is published at the baseline version.
+NEW_IN_COHORT=()
