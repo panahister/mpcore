@@ -156,8 +156,12 @@ them: reference the package, call `ApplyMPCoreIdempotency()` in the context's mo
 - **Only a committed outcome is remembered.** A failure changed nothing, so a retry is evaluated again.
   An attempt whose save failed is cleared before the host runs the handler again: what it published is
   discarded and its answer is forgotten, so nothing leaves without the change that caused it.
-- **A handler that runs under a key calls no external system inside its transaction.** It publishes a
-  message instead; the outbox sends it after the commit.
+- **Warning: a handler that runs under a key calls no external system inside its transaction.** Of two
+  concurrent attempts with one key, both handlers run and only one commits. A payment, an e-mail or a call
+  to another service made by the attempt that loses has already happened and cannot be rolled back with
+  its transaction: it happens twice, and the caller is answered as if once. Nothing in the build or the
+  tests catches it; it is held by review. Publish a message instead: the outbox sends it only after the
+  commit, and the losing attempt's message is discarded with its transaction.
 
 HTTP itself makes only `GET`, `PUT` and `DELETE` idempotent (RFC 9110). The `Idempotency-Key` header is an
 IETF draft of the HTTPAPI working group, made common by Stripe; Brandur Leach described its implementation

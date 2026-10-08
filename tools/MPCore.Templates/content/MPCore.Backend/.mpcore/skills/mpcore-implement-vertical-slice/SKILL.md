@@ -47,7 +47,10 @@ found. Ask about them. Proceeding on a guess produces work that has to be delete
 Concurrency control when two actors can change the same aggregate. Idempotency when a caller can
 retry a state change — key it on a caller-supplied identifier, not on payload equality: send the command
 through `IIdempotentExecutor` and mark the endpoint `RequireIdempotencyKey()`; a consumer of integration
-events relies on `UseMPCoreInbox()`; an internal message relies on a business key. Audit masking
+events relies on `UseMPCoreInbox()`; an internal message relies on a business key. A handler that runs
+under a key never calls an external system (a payment, an e-mail, another service) inside its
+transaction: two attempts with one key both run, and the one that loses has already made the call. It
+publishes a message, which the outbox sends after the commit. No check catches this; refuse it in review. Audit masking
 whenever a value could carry a national id, token, card number or KYC evidence. Retry and dead-letter
 handling only for real external integrations. A read-only query needs none of this; adding it anyway
 is cost without protection.
