@@ -39,7 +39,7 @@ internal sealed class ProblemDetailsFixture : IAsyncDisposable
         {
             options.SupportedCultures.Clear();
             options.SupportedCultures.Add("en");
-            options.SupportedCultures.Add("fa");
+            options.SupportedCultures.Add("en-GB");
             options.DefaultCulture = "en";
             configure?.Invoke(options);
         });
@@ -98,13 +98,14 @@ internal sealed class ProblemDetailsFixture : IAsyncDisposable
         await _application.DisposeAsync();
     }
 
+    /// <summary>A product's texts: for the fixture culture en-GB, English and marked as fixtures.</summary>
     private sealed class TestLocalizer : IHttpFailureLocalizer
     {
         public string? Localize(FailureMessageDescriptor message, CultureInfo culture) =>
-            culture.TwoLetterISOLanguageName switch
+            culture.Name switch
             {
-                "fa" when message.Key == "catalog.customer_invalid" => "ورودی نامعتبر است.",
-                "fa" when message.Key == "validation.required" => "این مقدار الزامی است.",
+                "en-GB" when message.Key == "catalog.customer_invalid" => "en-GB fixture: the input is not valid.",
+                "en-GB" when message.Key == "validation.required" => "en-GB fixture: this value is required.",
                 "en" when message.Key == "catalog.customer_invalid" => new string('d', 600),
                 "en" when message.Key == "validation.required" => new string('v', 400),
                 _ => null

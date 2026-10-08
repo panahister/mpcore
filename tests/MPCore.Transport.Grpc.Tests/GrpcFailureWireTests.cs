@@ -33,7 +33,7 @@ public sealed class GrpcFailureWireTests
         var headers = new Metadata
         {
             { "x-request-id", "request-12345678" },
-            { "accept-language", "fa-IR, en;q=0.5" }
+            { "accept-language", "en-GB, en;q=0.5" }
         };
 
         using var call = fixture.Client.FailAsync(new FailureRequest(), headers);
@@ -52,39 +52,40 @@ public sealed class GrpcFailureWireTests
         Assert.Equal("REQUIRED", fieldViolation.Reason);
         Assert.Equal("request-12345678", status.GetDetail<RequestInfo>()?.RequestId);
         Assert.Equal("request-12345678", responseHeaders.GetValue("x-request-id"));
-        Assert.Equal("fa", status.GetDetail<LocalizedMessage>()?.Locale);
-        Assert.Equal("ورودی نامعتبر است.", status.GetDetail<LocalizedMessage>()?.Message);
+        Assert.Equal("en-GB", status.GetDetail<LocalizedMessage>()?.Locale);
+        Assert.Equal("en-GB fixture: the input is not valid.", status.GetDetail<LocalizedMessage>()?.Message);
     }
 
     [Fact]
     public async Task A_region_two_steps_from_what_is_supported_still_resolves()
     {
-        // Chinese has three levels (zh-CN, its parent zh-Hans, its parent zh). A product that supports
-        // only the top one must still be reachable from a caller two steps below it, not only one. Both
-        // transports resolve culture with the same rules; this is the gRPC side of that proof.
+        // A culture can sit three levels deep: en-US-POSIX, its parent en-US, its parent en. A product that
+        // supports only the top one must still be reachable from a caller two steps below it, not only one;
+        // the default is another culture, so a match is told apart from a fallback. Both transports resolve
+        // culture with the same rules; this is the gRPC side of that proof.
         await using var fixture = await GrpcFixture.CreateAsync(
             configure: options =>
             {
                 options.SupportedCultures.Clear();
+                options.SupportedCultures.Add("en-GB");
                 options.SupportedCultures.Add("en");
-                options.SupportedCultures.Add("zh");
-                options.DefaultCulture = "en";
+                options.DefaultCulture = "en-GB";
             },
             localizer: new CultureNameLocalizer());
-        var headers = new Metadata { { "accept-language", "zh-CN" } };
+        var headers = new Metadata { { "accept-language", "en-US-POSIX" } };
 
         var exception = await Assert.ThrowsAsync<RpcException>(async () =>
             await fixture.Client.FailAsync(new FailureRequest(), headers));
 
         var status = exception.GetRpcStatus();
-        Assert.Equal("zh", status?.GetDetail<LocalizedMessage>()?.Locale);
+        Assert.Equal("en", status?.GetDetail<LocalizedMessage>()?.Locale);
     }
 
     [Fact]
     public async Task A_broken_business_rule_keeps_its_identity_and_localized_message_on_the_wire()
     {
         await using var fixture = await GrpcFixture.CreateAsync();
-        var headers = new Metadata { { "accept-language", "fa" } };
+        var headers = new Metadata { { "accept-language", "en-GB" } };
 
         var exception = await Assert.ThrowsAsync<RpcException>(async () =>
             await fixture.Client.FailAsync(new FailureRequest { Mode = "rule" }, headers));
@@ -95,11 +96,11 @@ public sealed class GrpcFailureWireTests
         var errorInfo = status.GetDetail<ErrorInfo>();
         Assert.Equal("orders", errorInfo?.Domain);
         Assert.Equal("LIMIT_EXCEEDED", errorInfo?.Reason);
-        Assert.Equal("سقف 5 عدد رد شد.", status.GetDetail<LocalizedMessage>()?.Message);
+        Assert.Equal("en-GB fixture: the limit of 5 has been passed.", status.GetDetail<LocalizedMessage>()?.Message);
         var violation = Assert.Single(status.GetDetail<PreconditionFailure>()!.Violations);
         Assert.Equal("LIMIT_EXCEEDED", violation.Type);
         Assert.Equal("BUSINESS_RULE:orders", violation.Subject);
-        Assert.Equal("سقف 5 عدد رد شد.", violation.Description);
+        Assert.Equal("en-GB fixture: the limit of 5 has been passed.", violation.Description);
     }
 
     [Fact]
@@ -233,7 +234,7 @@ public sealed class GrpcFailureWireTests
             {
                 options.SupportedCultures.Clear();
                 options.SupportedCultures.Add("en");
-                options.SupportedCultures.Add("fa");
+                options.SupportedCultures.Add("en-GB");
                 options.DefaultCulture = "en";
                 configure?.Invoke(options);
             });
@@ -261,15 +262,16 @@ public sealed class GrpcFailureWireTests
             culture.Name;
     }
 
+    /// <summary>A product's texts for the fixture culture en-GB: English, and marked as fixtures.</summary>
     private sealed class TestLocalizer : IGrpcFailureLocalizer
     {
         public string? Localize(FailureMessageDescriptor message, System.Globalization.CultureInfo culture) =>
-            culture.TwoLetterISOLanguageName == "fa" && message.Key == "orders.limit_exceeded"
-                ? $"سقف {message.Arguments["limit"]} عدد رد شد."
-                : culture.TwoLetterISOLanguageName == "fa" && message.Key == "catalog.customer_invalid"
-                ? "ورودی نامعتبر است."
-                : culture.TwoLetterISOLanguageName == "fa" && message.Key == "validation.required"
-                    ? "این مقدار الزامی است."
+            culture.Name == "en-GB" && message.Key == "orders.limit_exceeded"
+                ? $"en-GB fixture: the limit of {message.Arguments["limit"]} has been passed."
+                : culture.Name == "en-GB" && message.Key == "catalog.customer_invalid"
+                ? "en-GB fixture: the input is not valid."
+                : culture.Name == "en-GB" && message.Key == "validation.required"
+                    ? "en-GB fixture: this value is required."
                     : null;
     }
 

@@ -37,7 +37,7 @@ public sealed class HttpLocalizationTests
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = Environments.Production });
         builder.Logging.ClearProviders();
         builder.WebHost.UseUrls($"http://localhost:{port}");
-        builder.Services.AddMPCoreHttpFailureHandling(options => options.SupportedCultures.Add("fa"));
+        builder.Services.AddMPCoreHttpFailureHandling(options => options.SupportedCultures.Add("en-GB"));
         if (withCatalog)
         {
             builder.Services.AddMPCoreMessageCatalog(catalog => catalog.AddResources<TestMessages>());
@@ -60,7 +60,7 @@ public sealed class HttpLocalizationTests
     }
 
     [Theory]
-    [InlineData("fa-IR", "سقف 5 رد شد.")]
+    [InlineData("en-GB", "en-GB fixture: the limit of 5 has been passed.")]
     [InlineData("en-US", "The limit of 5 was exceeded.")]
     public async Task The_detail_is_the_message_in_the_negotiated_language(string language, string expected)
     {
@@ -73,7 +73,7 @@ public sealed class HttpLocalizationTests
     [Fact]
     public async Task Without_a_catalog_the_detail_is_omitted_as_before()
     {
-        var problem = await CallAsync(withCatalog: false, "fa");
+        var problem = await CallAsync(withCatalog: false, "en-GB");
 
         Assert.False(problem.TryGetProperty("detail", out _));
         Assert.Equal("LIMIT_EXCEEDED", problem.GetProperty("errorCode").GetString());

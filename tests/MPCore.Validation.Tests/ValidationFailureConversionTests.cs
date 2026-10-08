@@ -147,7 +147,7 @@ public sealed class ValidationFailureConversionTests
     }
 
     [Fact]
-    public void Every_built_in_validator_has_a_default_text_in_English_and_Persian()
+    public void Every_built_in_validator_has_an_English_default_text_that_a_product_can_translate()
     {
         var input = new Everything(
             null, "", "x", "x", "abcd", "a", "ab", "abc", 1, 1, 1, 1, 1, 1, 1, 5, "abc", "not-an-email", "1234",
@@ -155,20 +155,46 @@ public sealed class ValidationFailureConversionTests
         var failures = new EverythingValidator().Validate(input).Errors;
         var keys = failures.Select(ValidationFailures.ToViolation).Select(static v => v.Message.Key).ToHashSet();
 
-        var services = new ServiceCollection();
-        services.AddLogging();
-        services.AddMPCoreMessageCatalog();
-        using var provider = services.BuildServiceProvider();
-        var catalog = provider.GetRequiredService<IMessageCatalog>();
+        IMessageCatalog Catalog(bool translated)
+        {
+            var services = new ServiceCollection();
+            services.AddLogging();
+            if (translated)
+            {
+                services.AddSingleton<IMessageTemplateSource>(new FixtureTranslation("en-GB", keys));
+            }
+
+            services.AddMPCoreMessageCatalog();
+            return services.BuildServiceProvider().GetRequiredService<IMessageCatalog>();
+        }
+
+        var catalog = Catalog(translated: false);
+        var product = Catalog(translated: true);
 
         Assert.Equal(23, failures.Count);
         foreach (var key in keys)
         {
+            var english = catalog.Render(key, null, CultureInfo.GetCultureInfo("en"));
             Assert.True(catalog.IsKnownKey(key), $"no default text for {key}");
-            Assert.NotNull(catalog.Render(key, null, CultureInfo.GetCultureInfo("fa")));
-            Assert.NotEqual(
-                catalog.Render(key, null, CultureInfo.GetCultureInfo("en")),
-                catalog.Render(key, null, CultureInfo.GetCultureInfo("fa")));
+            Assert.False(string.IsNullOrWhiteSpace(english), $"no English text for {key}");
+            Assert.Equal(english, catalog.Render(key, null, CultureInfo.GetCultureInfo("en-GB")));
+            Assert.Equal($"en-GB fixture: {key}", product.Render(key, null, CultureInfo.GetCultureInfo("en-GB")));
+            Assert.Equal(english, product.Render(key, null, CultureInfo.GetCultureInfo("en")));
+        }
+    }
+
+    /// <summary>
+    /// A product's translation of MP Core's validation keys into a language it adds, at the product's
+    /// precedence. The fixture culture en-GB stands for any language; its texts are marked as fixtures.
+    /// </summary>
+    private sealed class FixtureTranslation(string culture, IReadOnlySet<string> keys) : IMessageTemplateSource
+    {
+        public int Precedence => 0;
+
+        public bool TryGetTemplate(string key, CultureInfo requested, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? template)
+        {
+            template = requested.Name == culture && keys.Contains(key) ? $"{culture} fixture: {key}" : null;
+            return template is not null;
         }
     }
 }

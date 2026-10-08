@@ -8,11 +8,15 @@ using MPCore.Localization.Tests.Resources;
 
 namespace MPCore.Localization.Tests;
 
+/// <summary>
+/// The catalog's rules, shown with fixture cultures: <c>en-GB</c> and <c>en-US</c> stand for any language a
+/// product adds. Their texts are English and marked as fixtures, because MP Core carries no other language.
+/// </summary>
 public sealed class MessageCatalogTests
 {
-    private sealed class OverrideSource(string culture, string key, string text) : IMessageTemplateSource
+    private sealed class OverrideSource(string culture, string key, string text, int precedence = 100) : IMessageTemplateSource
     {
-        public int Precedence => 100;
+        public int Precedence => precedence;
 
         public bool TryGetTemplate(string requestedKey, CultureInfo requestedCulture, [NotNullWhen(true)] out string? template)
         {
@@ -65,12 +69,15 @@ public sealed class MessageCatalogTests
 
     [Theory]
     [InlineData("en", "The limit of 5 was exceeded.")]
-    [InlineData("fa", "سقف 5 رد شد.")]
-    [InlineData("fa-IR", "سقف 5 رد شد.")]
-    [InlineData("de", "The limit of 5 was exceeded.")]
+    [InlineData("en-GB", "en-GB fixture: the limit of 5 has been passed.")]
+    [InlineData("en-US", "en-US fixture: no more than 5.")]
+    [InlineData("en-US-POSIX", "en-US fixture: no more than 5.")]
+    [InlineData("en-AU", "The limit of 5 was exceeded.")]
     public void A_key_is_rendered_through_the_culture_chain(string culture, string expected)
     {
-        var (catalog, _) = Build();
+        // en-GB from a culture resource file; en-US from another source; en-US-POSIX through its parent en-US;
+        // en-AU, which nothing translates, from the neutral default text.
+        var (catalog, _) = Build(new OverrideSource("en-US", "orders.limit_exceeded", "en-US fixture: no more than {limit}."));
 
         Assert.Equal(expected, catalog.Render("orders.limit_exceeded", Limit, CultureInfo.GetCultureInfo(culture)));
     }
@@ -80,7 +87,7 @@ public sealed class MessageCatalogTests
     {
         var (catalog, _) = Build();
 
-        Assert.Equal("Only in the default language.", catalog.Render("orders.only_default", null, CultureInfo.GetCultureInfo("fa")));
+        Assert.Equal("Only in the default language.", catalog.Render("orders.only_default", null, CultureInfo.GetCultureInfo("en-GB")));
     }
 
     [Fact]
@@ -96,9 +103,9 @@ public sealed class MessageCatalogTests
     [Fact]
     public void An_override_source_beats_the_resource_file_only_in_its_culture()
     {
-        var (catalog, _) = Build(new OverrideSource("fa", "orders.limit_exceeded", "حداکثر {limit} عدد مجاز است."));
+        var (catalog, _) = Build(new OverrideSource("en-GB", "orders.limit_exceeded", "en-GB fixture, overridden: at most {limit}."));
 
-        Assert.Equal("حداکثر 5 عدد مجاز است.", catalog.Render("orders.limit_exceeded", Limit, CultureInfo.GetCultureInfo("fa")));
+        Assert.Equal("en-GB fixture, overridden: at most 5.", catalog.Render("orders.limit_exceeded", Limit, CultureInfo.GetCultureInfo("en-GB")));
         Assert.Equal("The limit of 5 was exceeded.", catalog.Render("orders.limit_exceeded", Limit, CultureInfo.GetCultureInfo("en")));
     }
 
@@ -127,8 +134,8 @@ public sealed class MessageCatalogTests
         });
         listener.Start();
 
-        Assert.Null(catalog.Render("orders.nowhere", null, CultureInfo.GetCultureInfo("fa")));
-        Assert.Null(catalog.Render("orders.nowhere", null, CultureInfo.GetCultureInfo("fa")));
+        Assert.Null(catalog.Render("orders.nowhere", null, CultureInfo.GetCultureInfo("en-GB")));
+        Assert.Null(catalog.Render("orders.nowhere", null, CultureInfo.GetCultureInfo("en-GB")));
 
         Assert.Equal(2, Interlocked.Read(ref counted));
         Assert.Single(logs.Entries, entry => entry.Level == LogLevel.Warning && entry.Message.Contains("orders.nowhere", StringComparison.Ordinal));
@@ -137,7 +144,7 @@ public sealed class MessageCatalogTests
     [Fact]
     public void Known_keys_are_those_with_a_default_text()
     {
-        var (catalog, _) = Build(new OverrideSource("fa", "orders.invented", "ساختگی"));
+        var (catalog, _) = Build(new OverrideSource("en-GB", "orders.invented", "en-GB fixture: invented"));
 
         Assert.True(catalog.IsKnownKey("orders.limit_exceeded"));
         Assert.True(catalog.IsKnownKey("mpcore.permission_denied"));
@@ -146,12 +153,17 @@ public sealed class MessageCatalogTests
     }
 
     [Fact]
-    public void MP_Core_messages_ship_in_English_and_Persian_below_the_product()
+    public void MP_Core_messages_ship_in_English_below_the_product()
     {
         var (catalog, _) = Build();
+        var (translated, _) = Build(new OverrideSource("en-GB", "mpcore.permission_denied", "en-GB fixture: not allowed.", precedence: 0));
 
+        // MP Core's own text is English, and it is what every language falls back to until a product
+        // translates the key; a product's text, at the product's precedence, wins in its culture.
         Assert.Equal("You do not have permission to do this.", catalog.Render("mpcore.permission_denied", null, CultureInfo.GetCultureInfo("en")));
-        Assert.Equal("شما اجازه‌ی انجام این کار را ندارید.", catalog.Render("mpcore.permission_denied", null, CultureInfo.GetCultureInfo("fa")));
+        Assert.Equal("You do not have permission to do this.", catalog.Render("mpcore.permission_denied", null, CultureInfo.GetCultureInfo("en-GB")));
+        Assert.Equal("en-GB fixture: not allowed.", translated.Render("mpcore.permission_denied", null, CultureInfo.GetCultureInfo("en-GB")));
+        Assert.Equal("You do not have permission to do this.", translated.Render("mpcore.permission_denied", null, CultureInfo.GetCultureInfo("en")));
     }
 
     [Fact]
@@ -165,6 +177,6 @@ public sealed class MessageCatalogTests
         var localizer = provider.GetRequiredService<IFailureMessageLocalizer>();
 
         Assert.Same(provider.GetRequiredService<IMessageCatalog>(), localizer);
-        Assert.Equal("سقف 5 رد شد.", localizer.Localize(new FailureMessageDescriptor("orders.limit_exceeded", Limit), CultureInfo.GetCultureInfo("fa")));
+        Assert.Equal("en-GB fixture: the limit of 5 has been passed.", localizer.Localize(new FailureMessageDescriptor("orders.limit_exceeded", Limit), CultureInfo.GetCultureInfo("en-GB")));
     }
 }

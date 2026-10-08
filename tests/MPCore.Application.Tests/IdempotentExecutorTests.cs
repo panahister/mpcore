@@ -98,7 +98,8 @@ public sealed class IdempotentExecutorTests
     [Theory]
     [InlineData("has space")]
     [InlineData("tab\tinside")]
-    [InlineData("کلید")]
+    [InlineData("key\u00A0with-a-no-break-space")]
+    [InlineData("key\u2014with-an-em-dash")]
     public async Task A_key_outside_visible_ascii_is_refused(string key)
     {
         var result = await Run(Command, new Keys(key));

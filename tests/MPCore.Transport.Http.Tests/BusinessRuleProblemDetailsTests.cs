@@ -60,7 +60,7 @@ public sealed class BusinessRuleProblemDetailsTests
         builder.Services.AddSingleton<IHttpFailureLocalizer, KeyEchoLocalizer>();
         builder.Services.AddMPCoreHttpFailureHandling(options =>
         {
-            options.SupportedCultures.Add("fa");
+            options.SupportedCultures.Add("en-GB");
         });
 
         await using var application = builder.Build();
@@ -73,7 +73,7 @@ public sealed class BusinessRuleProblemDetailsTests
         await application.StartAsync();
         using var client = new HttpClient { BaseAddress = new Uri($"http://localhost:{port}") };
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(path, UriKind.Relative));
-        request.Headers.AcceptLanguage.ParseAdd("fa");
+        request.Headers.AcceptLanguage.ParseAdd("en-GB");
         var response = await client.SendAsync(request);
         var body = await response.Content.ReadAsStringAsync();
         await application.StopAsync();
@@ -89,7 +89,7 @@ public sealed class BusinessRuleProblemDetailsTests
         Assert.Equal("orders", problem.GetProperty("errorDomain").GetString());
         Assert.Equal("LIMIT_EXCEEDED", problem.GetProperty("errorCode").GetString());
         Assert.Equal("BusinessRule", problem.GetProperty("category").GetString());
-        Assert.Equal("fa:orders.limit_exceeded:limit=5", problem.GetProperty("detail").GetString());
+        Assert.Equal("en-GB:orders.limit_exceeded:limit=5", problem.GetProperty("detail").GetString());
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public sealed class BusinessRuleProblemDetailsTests
         Assert.Equal(HttpStatusCode.UnprocessableEntity, status);
         Assert.Equal(BusinessRule.DefaultErrorDomain, problem.GetProperty("errorDomain").GetString());
         Assert.Equal("SOME_RULE", problem.GetProperty("errorCode").GetString());
-        Assert.Equal("fa:mpcore.business_rule_violation:", problem.GetProperty("detail").GetString());
+        Assert.Equal("en-GB:mpcore.business_rule_violation:", problem.GetProperty("detail").GetString());
         Assert.DoesNotContain("developer text", problem.ToString(), StringComparison.Ordinal);
     }
 

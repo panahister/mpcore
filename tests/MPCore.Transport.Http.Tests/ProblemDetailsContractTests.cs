@@ -132,13 +132,13 @@ public sealed class ProblemDetailsContractTests
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
             new Uri("/fail?category=Validation", UriKind.Relative));
-        request.Headers.TryAddWithoutValidation("accept-language", "fa-IR, en;q=0.5");
+        request.Headers.TryAddWithoutValidation("accept-language", "en-GB, en;q=0.5");
         var response = await fixture.Client.SendAsync(request);
         var root = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
 
-        Assert.Equal("ورودی نامعتبر است.", root.GetProperty("detail").GetString());
+        Assert.Equal("en-GB fixture: the input is not valid.", root.GetProperty("detail").GetString());
         Assert.Equal(
-            "این مقدار الزامی است.",
+            "en-GB fixture: this value is required.",
             root.GetProperty("violations").EnumerateArray().Single().GetProperty("message").GetString());
         Assert.Equal("Request validation failed.", root.GetProperty("title").GetString());
     }
@@ -146,15 +146,16 @@ public sealed class ProblemDetailsContractTests
     [Fact]
     public async Task A_region_two_steps_from_what_is_supported_still_resolves()
     {
-        // Chinese has three levels (zh-CN, its parent zh-Hans, its parent zh). A product that supports
-        // only the top one must still be reachable from a caller two steps below it, not only one.
+        // A culture can sit three levels deep: en-US-POSIX, its parent en-US, its parent en. A product that
+        // supports only the top one must still be reachable from a caller two steps below it, not only one;
+        // the default is another culture, so a match is told apart from a fallback.
         await using var fixture = await ProblemDetailsFixture.CreateAsync(
             configure: options =>
             {
                 options.SupportedCultures.Clear();
+                options.SupportedCultures.Add("en-GB");
                 options.SupportedCultures.Add("en");
-                options.SupportedCultures.Add("zh");
-                options.DefaultCulture = "en";
+                options.DefaultCulture = "en-GB";
             },
             configureServices: services =>
                 services.AddSingleton<IHttpFailureLocalizer>(new CultureNameLocalizer()));
@@ -162,11 +163,11 @@ public sealed class ProblemDetailsContractTests
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
             new Uri("/fail?category=Validation", UriKind.Relative));
-        request.Headers.TryAddWithoutValidation("accept-language", "zh-CN");
+        request.Headers.TryAddWithoutValidation("accept-language", "en-US-POSIX");
         var response = await fixture.Client.SendAsync(request);
         var root = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
 
-        Assert.Equal("zh", root.GetProperty("detail").GetString());
+        Assert.Equal("en", root.GetProperty("detail").GetString());
     }
 
     private sealed class CultureNameLocalizer : IHttpFailureLocalizer

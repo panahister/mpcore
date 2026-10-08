@@ -42,7 +42,8 @@ public sealed class StoredTranslationTests : IAsyncLifetime
 {
     private static readonly string? ConnectionString = Environment.GetEnvironmentVariable("MPCORE_TEST_POSTGRESQL");
     private static readonly Dictionary<string, string> Limit = new() { ["limit"] = "5" };
-    private static readonly CultureInfo Persian = CultureInfo.GetCultureInfo("fa");
+    // A fixture culture: any language a product adds. Its texts are English and marked as fixtures.
+    private static readonly CultureInfo Fixture = CultureInfo.GetCultureInfo("en-GB");
     private ServiceProvider _provider = null!;
 
     public async Task InitializeAsync()
@@ -98,22 +99,22 @@ public sealed class StoredTranslationTests : IAsyncLifetime
     public async Task A_stored_translation_overrides_the_resource_file_until_it_is_removed()
     {
         await RefreshAsync();
-        Assert.Equal("سقف 5 رد شد.", Render(Persian));
+        Assert.Equal("en-GB fixture: the limit of 5 has been passed.", Render(Fixture));
 
-        await InTransactionAsync(store => store.SetAsync("orders.limit_exceeded", "fa", "بیش از {limit} عدد مجاز نیست.", CancellationToken.None));
+        await InTransactionAsync(store => store.SetAsync("orders.limit_exceeded", "en-GB", "en-GB fixture, stored: no more than {limit}.", CancellationToken.None));
         Assert.True(await RefreshAsync());
-        Assert.Equal("بیش از 5 عدد مجاز نیست.", Render(Persian));
+        Assert.Equal("en-GB fixture, stored: no more than 5.", Render(Fixture));
         Assert.Equal("The limit of 5 was exceeded.", Render(CultureInfo.GetCultureInfo("en")));
 
         Assert.False(await RefreshAsync());
 
-        await InTransactionAsync(store => store.SetAsync("orders.limit_exceeded", "fa", "حداکثر {limit} عدد.", CancellationToken.None));
+        await InTransactionAsync(store => store.SetAsync("orders.limit_exceeded", "en-GB", "en-GB fixture, stored again: at most {limit}.", CancellationToken.None));
         Assert.True(await RefreshAsync());
-        Assert.Equal("حداکثر 5 عدد.", Render(Persian));
+        Assert.Equal("en-GB fixture, stored again: at most 5.", Render(Fixture));
 
-        await InTransactionAsync(async store => Assert.True(await store.RemoveAsync("orders.limit_exceeded", "fa", CancellationToken.None)));
+        await InTransactionAsync(async store => Assert.True(await store.RemoveAsync("orders.limit_exceeded", "en-GB", CancellationToken.None)));
         Assert.True(await RefreshAsync());
-        Assert.Equal("سقف 5 رد شد.", Render(Persian));
+        Assert.Equal("en-GB fixture: the limit of 5 has been passed.", Render(Fixture));
     }
 
     [PostgreSqlFact]
@@ -123,7 +124,7 @@ public sealed class StoredTranslationTests : IAsyncLifetime
         using var editor = await StartInstanceAsync();
         using var reader = await StartInstanceAsync();
         var readerCatalog = reader.Services.GetRequiredService<IMessageCatalog>();
-        string? Read() => readerCatalog.Render("orders.limit_exceeded", Limit, Persian);
+        string? Read() => readerCatalog.Render("orders.limit_exceeded", Limit, Fixture);
         async Task ChangeAsync(Func<IMessageTranslationStore, Task> change)
         {
             await using var scope = editor.Services.CreateAsyncScope();
@@ -131,16 +132,16 @@ public sealed class StoredTranslationTests : IAsyncLifetime
             await scope.ServiceProvider.GetRequiredService<TranslationTestContext>().SaveChangesAsync();
         }
 
-        Assert.Equal("سقف 5 رد شد.", Read());
+        Assert.Equal("en-GB fixture: the limit of 5 has been passed.", Read());
 
-        await ChangeAsync(store => store.SetAsync("orders.limit_exceeded", "fa", "بیش از {limit} عدد مجاز نیست.", CancellationToken.None));
-        Assert.True(await EventuallyAsync(() => Read() == "بیش از 5 عدد مجاز نیست."), "an added translation reached the other instance");
+        await ChangeAsync(store => store.SetAsync("orders.limit_exceeded", "en-GB", "en-GB fixture, stored: no more than {limit}.", CancellationToken.None));
+        Assert.True(await EventuallyAsync(() => Read() == "en-GB fixture, stored: no more than 5."), "an added translation reached the other instance");
 
-        await ChangeAsync(store => store.SetAsync("orders.limit_exceeded", "fa", "حداکثر {limit} عدد.", CancellationToken.None));
-        Assert.True(await EventuallyAsync(() => Read() == "حداکثر 5 عدد."), "a changed translation reached the other instance");
+        await ChangeAsync(store => store.SetAsync("orders.limit_exceeded", "en-GB", "en-GB fixture, stored again: at most {limit}.", CancellationToken.None));
+        Assert.True(await EventuallyAsync(() => Read() == "en-GB fixture, stored again: at most 5."), "a changed translation reached the other instance");
 
-        await ChangeAsync(async store => Assert.True(await store.RemoveAsync("orders.limit_exceeded", "fa", CancellationToken.None)));
-        Assert.True(await EventuallyAsync(() => Read() == "سقف 5 رد شد."), "a removed translation left the other instance");
+        await ChangeAsync(async store => Assert.True(await store.RemoveAsync("orders.limit_exceeded", "en-GB", CancellationToken.None)));
+        Assert.True(await EventuallyAsync(() => Read() == "en-GB fixture: the limit of 5 has been passed."), "a removed translation left the other instance");
 
         await editor.StopAsync();
         await reader.StopAsync();
@@ -184,11 +185,11 @@ public sealed class StoredTranslationTests : IAsyncLifetime
         await using (var scope = _provider.CreateAsyncScope())
         {
             await scope.ServiceProvider.GetRequiredService<IMessageTranslationStore>()
-                .SetAsync("orders.limit_exceeded", "fa", "هرگز ذخیره نشد.", CancellationToken.None);
+                .SetAsync("orders.limit_exceeded", "en-GB", "en-GB fixture: never committed.", CancellationToken.None);
         }
 
         await RefreshAsync();
-        Assert.Equal("سقف 5 رد شد.", Render(Persian));
+        Assert.Equal("en-GB fixture: the limit of 5 has been passed.", Render(Fixture));
     }
 
     [PostgreSqlFact]
@@ -196,16 +197,17 @@ public sealed class StoredTranslationTests : IAsyncLifetime
     {
         await InTransactionAsync(async store =>
         {
-            await store.SetAsync("orders.only_default", "fa", "فقط این.", CancellationToken.None);
-            await store.SetAsync("orders.limit_exceeded", "fa-IR", "برای ایران.", CancellationToken.None);
-            await store.SetAsync("orders.limit_exceeded", "fa", "برای فارسی.", CancellationToken.None);
+            // A culture and its parent are listed apart: "en" lists neither entry of "en-GB".
+            await store.SetAsync("orders.only_default", "en", "en fixture: only this.", CancellationToken.None);
+            await store.SetAsync("orders.limit_exceeded", "en-GB", "en-GB fixture: for the region.", CancellationToken.None);
+            await store.SetAsync("orders.limit_exceeded", "en", "en fixture: for the language.", CancellationToken.None);
         });
 
         await using var scope = _provider.CreateAsyncScope();
         var store = scope.ServiceProvider.GetRequiredService<IMessageTranslationStore>();
-        var persian = await store.ListAsync("fa", CancellationToken.None);
+        var language = await store.ListAsync("en", CancellationToken.None);
 
-        Assert.Equal(["orders.limit_exceeded", "orders.only_default"], persian.Select(static entry => entry.Key));
+        Assert.Equal(["orders.limit_exceeded", "orders.only_default"], language.Select(static entry => entry.Key));
         Assert.Equal(3, (await store.ListAsync(null, CancellationToken.None)).Count);
     }
 
@@ -215,11 +217,11 @@ public sealed class StoredTranslationTests : IAsyncLifetime
         await using var scope = _provider.CreateAsyncScope();
         var store = scope.ServiceProvider.GetRequiredService<IMessageTranslationStore>();
 
-        await Assert.ThrowsAsync<ArgumentException>(() => store.SetAsync("Orders Limit", "fa", "x", CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentException>(() => store.SetAsync("Orders Limit", "en-GB", "x", CancellationToken.None));
         await Assert.ThrowsAsync<ArgumentException>(() => store.SetAsync("orders.limit_exceeded", "xx-not-a-culture", "x", CancellationToken.None));
         await Assert.ThrowsAsync<ArgumentException>(() => store.SetAsync("orders.limit_exceeded", "", "x", CancellationToken.None));
-        await Assert.ThrowsAsync<ArgumentException>(() => store.SetAsync("orders.limit_exceeded", "fa", " ", CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentException>(() => store.SetAsync("orders.limit_exceeded", "en-GB", " ", CancellationToken.None));
         await Assert.ThrowsAsync<ArgumentException>(() => store.SetAsync(
-            "orders.limit_exceeded", "fa", new string('x', LocalizationModelBuilderExtensions.MaximumTextLength + 1), CancellationToken.None));
+            "orders.limit_exceeded", "en-GB", new string('x', LocalizationModelBuilderExtensions.MaximumTextLength + 1), CancellationToken.None));
     }
 }

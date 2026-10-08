@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  A test fixture, not a translation: the culture file a product would add for one of its languages. The texts
+  are English and marked "en-GB fixture", so a test can tell them from the neutral file's default texts.
+-->
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -13,9 +17,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="orders.limit_exceeded" xml:space="preserve">
-    <value>سقف {limit} رد شد.</value>
+    <value>en-GB fixture: the limit of {limit} has been passed.</value>
   </data>
   <data name="orders.placeholders" xml:space="preserve">
-    <value>سلام {name}، {other} می‌ماند.</value>
+    <value>en-GB fixture: hello {name}, {other} stays.</value>
   </data>
 </root>
