@@ -4,7 +4,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>mpcore</ToolCommandName>
     <PackageId>MPCore.Cli</PackageId>
-    <VersionPrefix>0.9.4</VersionPrefix>
+    <VersionPrefix>0.10.0</VersionPrefix>
     <Authors>Mehdi Panahi</Authors>
     <Copyright>Copyright (c) The MP Core contributors</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

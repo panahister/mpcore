@@ -146,7 +146,9 @@ public static class SecurityRegistrationExtensions
         Action<ActorClaimMappingOptions>? configure = null)
     {
         ArgumentNullException.ThrowIfNull(services);
-        services.AddOptions<ActorClaimMappingOptions>();
+        services.AddOptions<ActorClaimMappingOptions>().ValidateOnStart();
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IValidateOptions<ActorClaimMappingOptions>, ActorClaimMappingOptionsValidator>());
         if (configure is not null)
         {
             services.Configure(configure);
@@ -400,5 +402,26 @@ internal sealed class MPCoreJwtBearerConfiguration(
                 context.Response.Headers.Remove("WWW-Authenticate");
             }
         };
+    }
+}
+
+/// <summary>Fails startup when the allowlist of additional claims exceeds the actor's bound.</summary>
+internal sealed class ActorClaimMappingOptionsValidator : IValidateOptions<ActorClaimMappingOptions>
+{
+    public ValidateOptionsResult Validate(string? name, ActorClaimMappingOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        var failures = new List<string>();
+        if (options.AdditionalClaims.Count > CurrentActor.MaximumAdditionalClaimCount)
+        {
+            failures.Add($"Security:ClaimMapping:AdditionalClaims may list at most {CurrentActor.MaximumAdditionalClaimCount} claim types.");
+        }
+
+        if (options.AdditionalClaims.Any(static type => string.IsNullOrWhiteSpace(type) || type.Length > CurrentActor.MaximumMemberLength))
+        {
+            failures.Add($"Security:ClaimMapping:AdditionalClaims entries must be non-empty and at most {CurrentActor.MaximumMemberLength} characters.");
+        }
+
+        return failures.Count == 0 ? ValidateOptionsResult.Success : ValidateOptionsResult.Fail(failures);
     }
 }

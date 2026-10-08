@@ -143,7 +143,7 @@ After restore, every project that resolves an `MPCore.*` package reads the commi
 stops on the first one that names another:
 
 ```text
-error : MP Core: MPCore.Security.AspNetCore 0.9.4-main.25 records commit '48045c7...', not the pinned 0123456....
+error : MP Core: MPCore.Security.AspNetCore 0.10.0-main.25 records commit '48045c7...', not the pinned 0123456....
 ```
 
 A short or malformed commit is refused; without `MPCorePinnedCommit` the check does nothing. It lives in the

@@ -249,3 +249,29 @@ scheme per issuer, each configured with every rule of section 6, behind a defaul
 issuer a token names; and a second token of any configured issuer can be validated with that issuer's own
 parameters without becoming the current actor. The decision, its tests and the alternatives are in
 [ADR-016](ADR-016-several-token-issuers-in-one-resource-server.EN.md). A host with one issuer is unchanged.
+
+## Addendum 2026-10-08 — the authentication time, and claims MP Core does not map (proposed; pending owner acceptance)
+
+**What changes.** Section 3 lists `AuthenticatedAt` among the members of `CurrentActor`, and its
+documentation called it "the authentication instant asserted by the provider". The mapper read it from
+`auth_time`, else from `iat`. A token refreshed long after the person signed in carries a new `iat` and,
+from some providers, no `auth_time`: it looked freshly authenticated. OpenID Connect Core 1.0, section 2,
+defines `auth_time` as the time the person authenticated and `iat` as the time the token was issued; a
+freshness check (`max_age`, section 3.1.2.1) needs the first.
+
+| Member | Now |
+|---|---|
+| `AuthenticatedAt` | from `auth_time` only; null without it. A behaviour change, so it ships in a new minor version (`0.10.0`) with a migration note |
+| `IssuedAt` | new: from `iat` |
+| `IsAuthenticationFresh(maximumAge, now)` | new: true only when `AuthenticatedAt` is known, no older than `maximumAge`, and not more than thirty seconds after `now`. Null is never fresh |
+| `AdditionalClaims` | new: a read-only map of the claims the host allowlists in `ActorClaimMappingOptions.AdditionalClaims`, for a claim MP Core does not map, such as `acr`. At most 16 entries of at most 256 characters, the bounds of section 3. A claim is exposed only when the token carries it exactly once, with a value within the bound; anything else is left out, never truncated. Startup fails on more than 16 |
+
+Section 3's sentence "Product code that needs an unmapped claim configures an additional mapping" now has
+that configuration. The model still exposes no raw token and no claim bag: only the claims a host names.
+
+The option of keeping the fallback and adding a strict member beside it was not taken: the member's own
+documentation already promised the authentication time, so the fallback was a defect, and a second member
+would leave the wrong one as the obvious choice.
+
+**Evidence.** `AuthenticationTimeAndClaimsTests`, 12 tests; 8 were seen failing against stubs, among them
+`A_token_without_auth_time_has_no_authentication_time_and_is_never_fresh`, which failed on the old mapping.

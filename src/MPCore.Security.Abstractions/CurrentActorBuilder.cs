@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 namespace MPCore.Security;
 
 /// <summary>
@@ -55,11 +57,21 @@ public sealed class CurrentActorBuilder
     /// <summary>Gets or sets the token issuer.</summary>
     public string? Issuer { get; set; }
 
-    /// <summary>Gets or sets the authentication instant.</summary>
+    /// <summary>Gets or sets when the person authenticated (<c>auth_time</c>); null when the provider did not say.</summary>
     public DateTimeOffset? AuthenticatedAt { get; set; }
 
     /// <summary>Gets or sets the credential expiry.</summary>
     public DateTimeOffset? ExpiresAt { get; set; }
+
+    /// <summary>Gets or sets when the credential was issued (<c>iat</c>).</summary>
+    public DateTimeOffset? IssuedAt { get; set; }
+
+    /// <summary>
+    /// Gets the mutable map of additional claims. Bounds are enforced by <see cref="Build"/>: at most
+    /// <see cref="CurrentActor.MaximumAdditionalClaimCount"/> entries, each key and value non-empty and at most
+    /// <see cref="CurrentActor.MaximumMemberLength"/> characters.
+    /// </summary>
+    public IDictionary<string, string> AdditionalClaims { get; } = new Dictionary<string, string>(StringComparer.Ordinal);
 
     /// <summary>Gets the mutable scope list. Bounds are enforced by <see cref="Build"/>.</summary>
     public IList<string> Scopes => _scopes;
@@ -134,7 +146,32 @@ public sealed class CurrentActorBuilder
             AuthenticatedAt,
             ExpiresAt,
             scopes,
-            roles);
+            roles,
+            IssuedAt,
+            Claims(AdditionalClaims));
+    }
+
+    private static ReadOnlyDictionary<string, string> Claims(IDictionary<string, string> claims)
+    {
+        if (claims.Count > CurrentActor.MaximumAdditionalClaimCount)
+        {
+            throw new ArgumentException(
+                $"{nameof(AdditionalClaims)} cannot contain more than {CurrentActor.MaximumAdditionalClaimCount} entries.",
+                nameof(AdditionalClaims));
+        }
+
+        var copy = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var (type, value) in claims)
+        {
+            if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException($"{nameof(AdditionalClaims)} entries need a type and a value.", nameof(AdditionalClaims));
+            }
+
+            copy[Bounded(type, nameof(AdditionalClaims))!] = Bounded(value, nameof(AdditionalClaims))!;
+        }
+
+        return new ReadOnlyDictionary<string, string>(copy);
     }
 
     private static string? Bounded(string? value, string memberName)

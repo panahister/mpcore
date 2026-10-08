@@ -54,9 +54,27 @@ internal sealed class ClaimsPrincipalActorMapper(
             SessionId = Truncate(First(principal, mapping.SessionIdClaim)),
             ClientId = Truncate(First(principal, mapping.ClientIdClaim) ?? serviceClientId),
             Issuer = Truncate(First(principal, "iss")),
-            AuthenticatedAt = UnixTime(principal, "auth_time") ?? UnixTime(principal, "iat"),
+            // When the person authenticated, and only that (OpenID Connect Core 1.0, section 2). A token
+            // refreshed later carries a newer iat; reading iat here made it look freshly authenticated.
+            AuthenticatedAt = UnixTime(principal, "auth_time"),
+            IssuedAt = UnixTime(principal, "iat"),
             ExpiresAt = UnixTime(principal, "exp")
         };
+
+        foreach (var type in mapping.AdditionalClaims.Take(CurrentActor.MaximumAdditionalClaimCount))
+        {
+            if (string.IsNullOrWhiteSpace(type) || type.Length > CurrentActor.MaximumMemberLength)
+            {
+                continue;
+            }
+
+            // Exactly one value, of a bounded length: an ambiguous or over-long claim is left out, never cut.
+            var values = principal.FindAll(type).Take(2).ToArray();
+            if (values is [{ Value: { Length: > 0 and <= CurrentActor.MaximumMemberLength } value }] && !string.IsNullOrWhiteSpace(value))
+            {
+                builder.AdditionalClaims[type] = value;
+            }
+        }
 
         foreach (var scope in ReadScopes(principal, mapping.ScopeClaim))
         {

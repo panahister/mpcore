@@ -230,8 +230,8 @@ the packed `docs/nuget` README, `Directory.Build.props` and `Directory.Packages.
 the packages still needs no new version (§1).
 
 **Sources.** *Semantic Versioning 2.0.0* (Tom Preston-Werner), items 9 and 11: a prerelease version ranks
-below its release, and numeric identifiers compare as numbers, so `0.9.4-main.25` ranks below
-`0.9.4-main.26` and both below `0.9.4`; item 10: build metadata is ignored for precedence, which is why the
+below its release, and numeric identifiers compare as numbers, so `0.10.0-main.25` ranks below
+`0.10.0-main.26` and both below `0.10.0`; item 10: build metadata is ignored for precedence, which is why the
 commit is not the version. Microsoft Learn, "Package versioning" (NuGet): NuGet follows SemVer 2.0.0
 prerelease labels and treats a published version as immutable. The .NET Foundation's Source Link
 (`dotnet/sourcelink`): the repository commit in the nuspec and the `+<commit>` informational version.
@@ -239,4 +239,4 @@ prerelease labels and treats a published version as immutable. The .NET Foundati
 **Alternatives that were not taken.** Releases only, with a consumer building MP Core from the commit: one
 artifact per commit stops being something a consumer can restore. A prerelease for each commit published
 automatically on every push: publication stays the owner's act (ADR-004, addendum on publication). The
-commit as build metadata (`0.9.4+48045c7`): ignored by NuGet for identity, as §1 already says.
+commit as build metadata (`0.10.0+48045c7`): ignored by NuGet for identity, as §1 already says.

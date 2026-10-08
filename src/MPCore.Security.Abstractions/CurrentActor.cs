@@ -34,6 +34,15 @@ public sealed record CurrentActor
     /// <summary>Maximum length of a single role entry.</summary>
     public const int MaximumRoleLength = 128;
 
+    /// <summary>Maximum number of additional claims carried by one actor.</summary>
+    public const int MaximumAdditionalClaimCount = 16;
+
+    private static readonly TimeSpan AuthenticationClockSkew = TimeSpan.FromSeconds(30);
+
+    // Declared before Anonymous: static fields are initialized in the order they are written.
+    private static readonly IReadOnlyDictionary<string, string> EmptyClaims =
+        new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(StringComparer.Ordinal));
+
     private readonly HashSet<string> _scopeIndex;
     private readonly HashSet<string> _roleIndex;
 
@@ -52,7 +61,9 @@ public sealed record CurrentActor
         DateTimeOffset? authenticatedAt,
         DateTimeOffset? expiresAt,
         string[] scopes,
-        string[] roles)
+        string[] roles,
+        DateTimeOffset? issuedAt = null,
+        IReadOnlyDictionary<string, string>? additionalClaims = null)
     {
         Kind = kind;
         SubjectId = subjectId;
@@ -71,6 +82,8 @@ public sealed record CurrentActor
         Roles = new ReadOnlyCollection<string>(roles);
         _scopeIndex = new HashSet<string>(scopes, StringComparer.Ordinal);
         _roleIndex = new HashSet<string>(roles, StringComparer.Ordinal);
+        IssuedAt = issuedAt;
+        AdditionalClaims = additionalClaims ?? EmptyClaims;
     }
 
     /// <summary>Gets the shared anonymous actor.</summary>
@@ -125,6 +138,32 @@ public sealed record CurrentActor
     /// <summary>Gets the credential expiry asserted by the provider.</summary>
     public DateTimeOffset? ExpiresAt { get; }
 
+    /// <summary>
+    /// Gets when the credential was issued (<c>iat</c>). A refreshed token is issued later than the person
+    /// authenticated; use <see cref="AuthenticatedAt"/> to judge how recently the person signed in.
+    /// </summary>
+    public DateTimeOffset? IssuedAt { get; }
+
+    /// <summary>
+    /// Gets the claims the host allowlisted beyond the mapped members, by claim type: ordinal, at most
+    /// <see cref="MaximumAdditionalClaimCount"/> entries of at most <see cref="MaximumMemberLength"/> characters.
+    /// Never the token itself.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> AdditionalClaims { get; }
+
+    /// <summary>
+    /// Determines whether the person authenticated no longer than <paramref name="maximumAge"/> before
+    /// <paramref name="now"/>, as OpenID Connect's <c>max_age</c>. An actor without an authentication time is never
+    /// fresh, and neither is one whose authentication time lies more than thirty seconds after
+    /// <paramref name="now"/>.
+    /// </summary>
+    /// <param name="maximumAge">The longest accepted time since the person authenticated.</param>
+    /// <param name="now">The current time, from the host's clock.</param>
+    public bool IsAuthenticationFresh(TimeSpan maximumAge, DateTimeOffset now) =>
+        AuthenticatedAt is { } authenticated &&
+        authenticated - now <= AuthenticationClockSkew &&
+        now - authenticated <= maximumAge;
+
     /// <summary>Gets the ordinal, de-duplicated OAuth scopes.</summary>
     public IReadOnlyCollection<string> Scopes { get; }
 
@@ -153,6 +192,10 @@ public sealed record CurrentActor
         string.Equals(Issuer, other.Issuer, StringComparison.Ordinal) &&
         AuthenticatedAt == other.AuthenticatedAt &&
         ExpiresAt == other.ExpiresAt &&
+        IssuedAt == other.IssuedAt &&
+        AdditionalClaims.Count == other.AdditionalClaims.Count &&
+        AdditionalClaims.All(claim => other.AdditionalClaims.TryGetValue(claim.Key, out var value) &&
+                                      string.Equals(claim.Value, value, StringComparison.Ordinal)) &&
         Scopes.SequenceEqual(other.Scopes, StringComparer.Ordinal) &&
         Roles.SequenceEqual(other.Roles, StringComparer.Ordinal);
 
@@ -173,6 +216,8 @@ public sealed record CurrentActor
         hash.Add(Issuer);
         hash.Add(AuthenticatedAt);
         hash.Add(ExpiresAt);
+        hash.Add(IssuedAt);
+        hash.Add(AdditionalClaims.Count);
         hash.Add(Scopes.Count);
         hash.Add(Roles.Count);
         return hash.ToHashCode();

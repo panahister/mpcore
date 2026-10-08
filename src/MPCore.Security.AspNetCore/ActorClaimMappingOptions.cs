@@ -39,6 +39,14 @@ public sealed class ActorClaimMappingOptions
     /// <summary>Gets or sets the space-delimited scope claim per RFC 8693. Defaults to <c>scope</c>.</summary>
     public string? ScopeClaim { get; set; } = "scope";
 
+    /// <summary>
+    /// Gets the allowlist of further claim types exposed on <see cref="CurrentActor.AdditionalClaims"/>, for a
+    /// claim MP Core does not map, such as <c>acr</c>. At most <see cref="CurrentActor.MaximumAdditionalClaimCount"/>.
+    /// A claim is exposed only when the token carries it exactly once, with a value of at most
+    /// <see cref="CurrentActor.MaximumMemberLength"/> characters; anything else is left out, never truncated.
+    /// </summary>
+    public ISet<string> AdditionalClaims { get; } = new HashSet<string>(StringComparer.Ordinal);
+
     /// <summary>Gets or sets the claim type used for synthesized normalized roles.</summary>
     public string RoleClaimType { get; set; } = "role";
 

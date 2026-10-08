@@ -96,6 +96,7 @@ live backends on every change. A line with neither says so.
 | A second token, carried as evidence beside the caller's, validated with its issuer's own parameters and never made the current actor (next version, not yet released; ADR-016) | the same (`IMPCoreBearerTokenValidator`) | Tests: `MultipleIssuerTests` |
 | Deny by default: an endpoint without a policy requires a token | the same | Tests; sample S11 |
 | The current actor from the validated token: a user, a service, or the system | `MPCore.Security.Abstractions` | Tests |
+| When the person authenticated (`auth_time` only, null without it), when the token was issued, a freshness check, and an allowlisted, bounded map of claims MP Core does not map (next version, `0.10.0`, not yet released; ADR-007 addendum) | `MPCore.Security.Abstractions`, `MPCore.Security.AspNetCore` (`ActorClaimMappingOptions.AdditionalClaims`) | Tests: `AuthenticationTimeAndClaimsTests`, seen failing |
 | Roles from Keycloak: realm roles, client roles, service accounts | `MPCore.Security.AspNetCore` | Tests; every scenario of the sample |
 | Roles from any OpenID Connect provider, flat or nested claims | the same | Tests |
 | Behind a gateway: forwarded headers from trusted proxies only | the same | Tests; sample S20 |
