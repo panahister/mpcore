@@ -180,3 +180,11 @@ checks it.
 | C | The default retention of 24 hours (2.14) is not asserted |
 | D | The template leaves the wiring to the product (5.2): the owner may prefer a generator choice, as business audit has |
 | E | Section 1 leaves the business key to the product; nothing in MP Core helps a product declare one |
+
+## Amendment 2026-10-08 — the wiring stays by hand
+
+Decided by the repository owner on 2026-10-08 (open point D of the review above), choosing between keeping
+the wiring by hand and an opt-in switch of the template and the CLI, as business audit has. **The wiring
+stays by hand.** The template does not generate it; the generated `docs/architecture.md` lists the lines that
+add it (section 5), and `TemplateContractTests.The_catalogue_and_the_architecture_document_describe_idempotency_as_it_is_implemented`
+holds that the document and the runtime agree.
