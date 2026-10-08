@@ -125,13 +125,52 @@ public sealed record FundsArrived : IntegrationEvent
 public static class FundsArrivedHandler
 {
     public static readonly ConcurrentDictionary<Guid, string?> IdempotencyHeaders = new();
+    public static readonly ConcurrentDictionary<Guid, string?> EventVersionHeaders = new();
     public static int Calls;
 
     public static void Handle(FundsArrived message, Envelope envelope, IDepositRepository deposits, IUnitOfWork unitOfWork)
     {
         Interlocked.Increment(ref Calls);
         IdempotencyHeaders[message.EventId] = envelope.Headers.TryGetValue("x-idempotency-key", out var key) ? key : null;
+        EventVersionHeaders[message.EventId] = envelope.Headers.TryGetValue("x-event-version", out var version) ? version : null;
         deposits.Add(new Deposit { Id = Guid.NewGuid(), Account = message.Account, Amount = message.Amount, Source = "event" });
+    }
+}
+
+/// <summary>An event whose handler waits until two deliveries are inside it at once: a race made certain.</summary>
+public sealed record FundsArrivedTwice : IntegrationEvent
+{
+    public FundsArrivedTwice(Guid eventId, Guid account)
+        : base("tests.funds-arrived-twice", 1, DateTimeOffset.UtcNow, eventId) => Account = account;
+
+    public Guid Account { get; init; }
+}
+
+public static class FundsArrivedTwiceHandler
+{
+    private static TaskCompletionSource _bothInside = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private static int _inside;
+
+    public static int Calls;
+
+    public static void Reset()
+    {
+        _bothInside = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _inside = 0;
+    }
+
+    public static async Task Handle(FundsArrivedTwice message, IDepositRepository deposits, IUnitOfWork unitOfWork)
+    {
+        Interlocked.Increment(ref Calls);
+        deposits.Add(new Deposit { Id = Guid.NewGuid(), Account = message.Account, Amount = 1m, Source = "event" });
+
+        // Both deliveries are inside their transactions before either commits; a later one does not wait.
+        if (Interlocked.Increment(ref _inside) == 2)
+        {
+            _bothInside.TrySetResult();
+        }
+
+        await _bothInside.Task.WaitAsync(TimeSpan.FromSeconds(10));
     }
 }
 

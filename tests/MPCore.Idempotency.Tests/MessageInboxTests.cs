@@ -28,6 +28,66 @@ public sealed class MessageInboxTests
     }
 
     [PostgreSqlFact]
+    public async Task Two_deliveries_racing_each_other_commit_once_and_the_redelivery_finds_the_entry()
+    {
+        await using var host = await IdempotencyHost.StartAsync();
+        FundsArrivedTwiceHandler.Reset();
+        var calls = FundsArrivedTwiceHandler.Calls;
+        var message = new FundsArrivedTwice(Guid.NewGuid(), Guid.NewGuid());
+        var bus = host.Host.Services.GetRequiredService<IMessageBus>();
+
+        // Both reach the handler, because neither has committed the inbox entry yet.
+        var first = Task.Run(() => bus.InvokeAsync(message));
+        var second = Task.Run(() => bus.InvokeAsync(new FundsArrivedTwice(message.EventId, message.Account)));
+        var outcomes = await Task.WhenAll(Settle(first), Settle(second));
+
+        Assert.Equal(calls + 2, FundsArrivedTwiceHandler.Calls);
+        Assert.Single(outcomes, static failed => failed);
+        Assert.Equal(1, await host.CountAsync("idem_test_deposits"));
+        Assert.Equal(1, await host.CountAsync("idempotency.processed_messages"));
+
+        // The delivery that lost is delivered again, finds the entry, and stops before the handler.
+        await bus.InvokeAsync(new FundsArrivedTwice(message.EventId, message.Account));
+
+        Assert.Equal(calls + 2, FundsArrivedTwiceHandler.Calls);
+        Assert.Equal(1, await host.CountAsync("idem_test_deposits"));
+    }
+
+    [PostgreSqlFact]
+    public async Task A_published_integration_event_carries_its_contract_version()
+    {
+        await using var host = await IdempotencyHost.StartAsync();
+        var message = new FundsArrived(Guid.NewGuid(), Guid.NewGuid(), 5m);
+
+        await using (var scope = host.Host.Services.CreateAsyncScope())
+        {
+            await scope.ServiceProvider.GetRequiredService<IMessagePublisher>().PublishAsync(message);
+        }
+
+        var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(15);
+        while (DateTime.UtcNow < deadline && !FundsArrivedHandler.EventVersionHeaders.ContainsKey(message.EventId))
+        {
+            await Task.Delay(100);
+        }
+
+        Assert.True(FundsArrivedHandler.EventVersionHeaders.TryGetValue(message.EventId, out var version), "the event was never handled");
+        Assert.Equal("1", version);
+    }
+
+    private static async Task<bool> Settle(Task delivery)
+    {
+        try
+        {
+            await delivery;
+            return false;
+        }
+        catch (Exception)
+        {
+            return true;
+        }
+    }
+
+    [PostgreSqlFact]
     public async Task Two_different_events_are_both_processed()
     {
         await using var host = await IdempotencyHost.StartAsync();
