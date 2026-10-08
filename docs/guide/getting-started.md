@@ -127,5 +127,6 @@ Assert.Single(publisher.OfType<OrderPlaced>());
 
 ## Where to go next
 
+- [Backend engineering conventions](../BACKEND-CONVENTIONS.md): decide ownership and carry a vertical slice from requirement to connected evidence.
 - [Concepts](concepts.md): what happens around your handler, and what is guaranteed.
 - The sample, for a whole business: four modules, three hosts, and scenarios you can run and read.

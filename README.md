@@ -13,6 +13,7 @@ once, in the open, with a test for each and the name of the person who first des
 [![.NET](https://img.shields.io/badge/.NET-10-6267e8)](global.json)
 
 [Get started](docs/guide/getting-started.md) ·
+[Conventions](docs/BACKEND-CONVENTIONS.md) ·
 [Capabilities](docs/guide/capabilities.md) ·
 [Reference architecture](docs/architecture/reference-architecture.md) ·
 [Ecosystem](docs/architecture/ecosystem.md) ·
@@ -372,6 +373,7 @@ All packages share one version and ship together.
 | Read | To |
 |---|---|
 | [Getting started](docs/guide/getting-started.md) | Generate a backend and write a first use case |
+| [Backend conventions](docs/BACKEND-CONVENTIONS.md) | Decide ownership and layers, then carry a vertical slice from contract to connected evidence |
 | [Capabilities](docs/guide/capabilities.md) | Find everything MP Core does, and everything it does not |
 | [Reference architecture](docs/architecture/reference-architecture.md) | See the whole platform, part by part |
 | [Concepts](docs/guide/concepts.md) | Understand the execution model, the failure model, the three kinds of message, and what is guaranteed |
