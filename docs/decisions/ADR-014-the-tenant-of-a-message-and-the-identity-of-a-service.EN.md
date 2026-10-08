@@ -163,3 +163,87 @@ Storefront's does.
   hosts believe it.
 - The edge may remove `x-tenant-id` from requests that come from outside; the backend does not depend on
   it, because a user's header is never read.
+
+## Addendum, 2026-10-08: a person's token as evidence beside the service's identity
+
+- Status: Proposed; pending owner acceptance
+
+### Context
+
+A service calls an internal service as itself (section 3). For some commands the called service must decide
+on the end user's own permission: whether this person may do this. Its caller is the service, so it does not
+know the person. Forwarding the user's token as the credential of the call is rejected above: the called
+service would accept a user where it accepts only services. Token exchange (RFC 8693) is the strongest answer
+and needs a provider that supports it; it remains a separate decision.
+
+### Decision
+
+**The caller calls as itself, and carries the person's unchanged token in a second header, as evidence only.**
+The called service admits only a listed service as caller, validates the evidence with its own issuer
+parameters (ADR-016), decides with it, and exposes the person as a bounded record. MP Core carries both
+components, so there is one governed implementation and not one per product.
+
+| Side | Who | What |
+|---|---|---|
+| Calling | `AddMPCoreSubjectEvidence()` on the client's builder | writes the token of the request being served into `x-subject-token`, when the current actor is a user; never touches `Authorization`, which `AddMPCoreServiceIdentity` sets. Over HTTPS only, unless a developer's machine turns it off. A value set elsewhere on the request is removed |
+| Being called | `AddMPCoreSubjectEvidenceValidation(...)` and `UseMPCoreSubjectEvidence()`, after `UseAuthentication` | removes the header from every request before any endpoint, gRPC service or handler runs, then validates it |
+| The command | `RequireSubjectEvidence("<issuer scheme>")` on its policy | succeeds only for valid evidence from that issuer; a command without it needs no person and passes with the service's token alone |
+| Application code | `ISubjectEvidenceAccessor.Current` | a `SubjectEvidence`: subject, session, issuer, authentication time. Never the token |
+
+The evidence is valid only when all of these hold, in this order; the first that fails refuses it:
+
+| Rule | Configured by |
+|---|---|
+| Exactly one header value | — |
+| The caller is a service (`ActorKind.Service`) whose client id is listed | `TrustedServiceClients`, required |
+| The token passes every rule of its issuer: signature by that issuer's keys, issuer, an audience of this host, lifetime with `exp`, asymmetric algorithm | the host's bearer issuers (ADR-007 section 6, ADR-016) |
+| It was issued to an allowed client (`azp`) | `AllowedAuthorizedParties`, required |
+| Its `typ` claim is `Bearer` | `RequiredTokenType`; null accepts any |
+| It names a subject and a session (`sid`) | the claim mapping |
+| It carries `auth_time`, no older than allowed and not in the future | `MaximumAuthenticationAge`, required (OpenID Connect Core 1.0, `max_age`) |
+| It comes from an issuer the command accepts | `RequireSubjectEvidence("<issuer scheme>", ...)` |
+
+A refusal answers `403` (gRPC `PermissionDenied`): the service was authenticated, and the person was not
+proved. A call without a service token stays `401` (`Unauthenticated`). The record of a refusal is one
+warning with a fixed reason; no token, claim value or IdentityModel message is written.
+
+### The question ADR-007 left open
+
+ADR-007 section 6 says the raw bearer token "cannot reach Application code". A product could meet that only
+with an infrastructure handler of its own that read the inbound token. Two options were weighed: (a) MP Core
+carries both components; (b) an addendum to ADR-007 that lets a product read the inbound token in one
+infrastructure handler. **(a) is taken.** The rule of ADR-007 stands unchanged: the token is read only by MP
+Core's outbound handler, at the moment it sends, and by the called host's middleware, which removes it before
+any application code runs.
+
+### What was proved
+
+`SubjectEvidenceTests` in `MPCore.Security.Tests`, 25 tests. The first 24 were seen failing against stubs of
+the API; the gRPC test was added after the implementation. A mutation that kept the header on the request
+failed the three that prove application code cannot read it, the gRPC test among them.
+
+| Case | Result |
+|---|---|
+| One call through the factory, with the standard resilience handler and the service's own identity | carries both; the callee's actor is the service, its handler cannot read the header, and it sees the person as a `SubjectEvidence` |
+| Over gRPC | the evidence is metadata the service cannot read; refused evidence is `PermissionDenied`, no service token `Unauthenticated`; no rendering of the request or of the exception holds the token |
+| A command that needs no person | passes with the service's token alone |
+| No evidence, expired, an issuer other than the command's, another issuer's key, an audience without the callee, a wrong `azp`, `typ` not `Bearer`, no `sid`, no `auth_time`, `auth_time` too old, an unknown issuer, two headers, a caller that is not listed, malformed | `403` |
+| A user's token as the caller's credential | `403` |
+| No service token | `401` |
+| The calling side over cleartext | refused before the request leaves |
+| A host without its rules | startup fails |
+| Logs, spans, exception texts | hold no token |
+
+The probe that suggested this design also refused a call without a client certificate when mutual TLS is
+on. That rule belongs to mutual TLS between services, which MP Core does not have yet; it is not part of this
+addendum.
+
+### Consequences
+
+- A command can decide on the person behind a service's call without the person's token ever being the
+  credential of the call, and without application code ever holding it.
+- The person's token must name every service that receives it as evidence in its audience; that is the
+  identity provider's configuration.
+- The evidence travels one hop: a service called with evidence does not carry it further.
+- MP Core's audit trail records the caller, the service. A command that decides with the evidence records the
+  person from `SubjectEvidence` in its own business audit record.

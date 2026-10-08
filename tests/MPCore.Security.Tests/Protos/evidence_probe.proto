@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "MPCore.Security.Tests.Protos";
+
+package mpcore.security.tests;
+
+// A command of a called service, reached over gRPC with the service's token and a person's evidence.
+service EvidenceProbe {
+  rpc Describe (DescribeRequest) returns (DescribeReply);
+}
+
+message DescribeRequest {
+  string note = 1;
+}
+
+message DescribeReply {
+  string actor_kind = 1;
+  string actor_client = 2;
+  string evidence_subject = 3;
+  bool metadata_visible = 4;
+  string request_rendering = 5;
+}

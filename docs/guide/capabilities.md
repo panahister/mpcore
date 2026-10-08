@@ -151,6 +151,7 @@ live backends on every change. A line with neither says so.
 | Health: alive and ready, over REST and over gRPC | the template | Tests; proved with the databases stopped |
 | Calls to other systems with timeouts, retries and a circuit breaker | `MPCore.Resilience.Http` | Tests: `MPCore.Resilience.Tests`; sample S6, S7 |
 | A call to another service as the service itself: a token by OAuth 2.0 client credentials, asked for once, never sent in cleartext (since `0.9.1`) | `MPCore.Resilience.Http` | Tests: `ServiceIdentityTests`; Tiffin S0, S1, S10 |
+| The person behind a service's call: the user's token travels beside the service's identity as evidence, the called service admits only a listed service, validates it with its own issuer rules, and gives application code a bounded record, never the token (next version, not yet released; ADR-014, addendum of 2026-10-08) | `MPCore.Security.AspNetCore` (`AddMPCoreSubjectEvidence`, `AddMPCoreSubjectEvidenceValidation`), `MPCore.Security.Abstractions` (`SubjectEvidence`) | Tests: `SubjectEvidenceTests`, seen failing; over REST and gRPC |
 
 ## 12. Tooling
 

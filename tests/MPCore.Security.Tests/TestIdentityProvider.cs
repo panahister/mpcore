@@ -48,19 +48,25 @@ internal sealed class TestIdentityProvider : IDisposable
         DateTime? notBefore = null,
         DateTime? expires = null,
         string algorithm = SecurityAlgorithms.RsaSha256,
-        string? issuer = null)
+        string? issuer = null,
+        string[]? audiences = null)
     {
         var now = DateTime.UtcNow;
         var descriptor = new SecurityTokenDescriptor
         {
             Issuer = issuer ?? IssuerName,
-            Audience = audience ?? Audience,
+            Audience = audiences is null ? audience ?? Audience : null,
             NotBefore = notBefore ?? now.AddMinutes(-1),
             IssuedAt = now.AddMinutes(-1),
             Expires = expires ?? now.AddMinutes(10),
             SigningCredentials = new SigningCredentials(SigningKey, algorithm),
             Claims = BuildClaims(subject, claims)
         };
+
+        foreach (var each in audiences ?? [])
+        {
+            descriptor.Audiences.Add(each);
+        }
 
         return _handler.CreateToken(descriptor);
     }

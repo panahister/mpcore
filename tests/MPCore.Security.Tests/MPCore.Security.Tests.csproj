@@ -3,11 +3,19 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" />
+    <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Grpc.Tools" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
     <ProjectReference Include="../../src/MPCore.Security.Abstractions/MPCore.Security.Abstractions.csproj" />
     <ProjectReference Include="../../src/MPCore.Security.AspNetCore/MPCore.Security.AspNetCore.csproj" />
+    <!-- The caller's side of a call between services: its own identity and the resilience pipeline. -->
+    <ProjectReference Include="../../src/MPCore.Resilience.Http/MPCore.Resilience.Http.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos/evidence_probe.proto" GrpcServices="Both" />
   </ItemGroup>
 </Project>
