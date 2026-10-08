@@ -9,12 +9,16 @@
     <PackageReference Include="Grpc.Tools" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="OpenTelemetry.Exporter.InMemory" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
     <ProjectReference Include="../../src/MPCore.Application/MPCore.Application.csproj" />
     <ProjectReference Include="../../src/MPCore.Transport.Grpc/MPCore.Transport.Grpc.csproj" />
+    <!-- The log pipeline that masks the messages of a named service. -->
+    <ProjectReference Include="../../src/MPCore.Observability/MPCore.Observability.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="Protos/failure_probe.proto" GrpcServices="Both" />
+    <Protobuf Include="Protos/sensitive_probe.proto" GrpcServices="Both" />
   </ItemGroup>
 </Project>

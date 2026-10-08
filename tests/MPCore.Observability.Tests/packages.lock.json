@@ -123,9 +123,13 @@
           "xunit.extensibility.core": "[2.9.3]"
         }
       },
+      "mpcore.application": {
+        "type": "Project"
+      },
       "mpcore.observability": {
         "type": "Project",
         "dependencies": {
+          "MPCore.Application": "[0.9.4, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.18.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.18.0, )",
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.18.0, )",
@@ -136,7 +140,7 @@
       "mpcore.observability.prometheus": {
         "type": "Project",
         "dependencies": {
-          "MPCore.Observability": "[0.2.0-alpha.9, )",
+          "MPCore.Observability": "[0.9.4, )",
           "OpenTelemetry.Exporter.Prometheus.AspNetCore": "[1.18.0-beta.1, )"
         }
       },

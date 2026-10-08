@@ -32,9 +32,13 @@
           "OpenTelemetry.Api": "1.18.0"
         }
       },
+      "mpcore.application": {
+        "type": "Project"
+      },
       "mpcore.observability": {
         "type": "Project",
         "dependencies": {
+          "MPCore.Application": "[0.9.4, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.18.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.18.0, )",
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.18.0, )",

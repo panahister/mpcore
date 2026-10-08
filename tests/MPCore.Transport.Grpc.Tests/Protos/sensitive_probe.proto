@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option csharp_namespace = "MPCore.Transport.Grpc.Tests.Sensitive";
+
+package mpcore.sensitive_test.v1;
+
+// A service whose messages carry a one-time code: named as sensitive.
+service OtpProbe {
+  rpc Verify (VerifyRequest) returns (VerifyReply);
+}
+
+// A service that is not named: its messages are logged as they are.
+service PlainProbe {
+  rpc Echo (EchoRequest) returns (EchoReply);
+}
+
+message VerifyRequest {
+  string phone = 1;
+  string code = 2 [debug_redact = true];
+}
+
+message VerifyReply {
+  string session = 1;
+}
+
+message EchoRequest {
+  string text = 1;
+}
+
+message EchoReply {
+  string text = 1;
+}
