@@ -31,6 +31,12 @@ public static class MPCoreAuthorizationPolicies
     /// <summary>The single named policy MP Core ships: any validated bearer identity.</summary>
     public const string Authenticated = "MPCore.Authenticated";
 
+    /// <summary>
+    /// The policy of an endpoint that declares a resource key: an authenticated caller, and the product's
+    /// <see cref="IResourceAuthorizer"/> grants the key. Registered by <c>AddMPCoreResourceKeys</c>.
+    /// </summary>
+    public const string ResourceKey = "MPCore.ResourceKey";
+
     /// <summary>Builds a policy requiring an authenticated caller carrying every supplied scope.</summary>
     /// <param name="scopes">The OAuth scopes that must all be present.</param>
     public static AuthorizationPolicy RequireScope(params string[] scopes) =>

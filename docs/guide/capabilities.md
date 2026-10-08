@@ -103,6 +103,7 @@ live backends on every change. A line with neither says so.
 | Identity headers a caller could forge are removed before authentication | the same | Tests; sample S20 |
 | Mutual TLS between services: every TLS listener requires a client certificate from configured authorities only, valid now and for client authentication, with a listed workload name (a SPIFFE ID or a DNS name); the bearer token stays the caller. A proxy's forwarded certificate is read only from listed proxies; a calling service presents its certificate with `AddMPCoreClientCertificate` (next version, not yet released; ADR-017) | `MPCore.Security.AspNetCore` (`AddMPCoreMutualTls`), `MPCore.Resilience.Http` (`AddMPCoreClientCertificate`); the template, off by default | Tests: `MutualTlsTests`, seen failing, against real TLS listeners |
 | Named policies contributed by the product | the same | Sample S11, S19 |
+| Resource keys: each endpoint declares the key it acts on, over REST and gRPC, and a decision component the product owns grants it; denied when the component is missing, does not know the key, throws or is too slow; a host with an undeclared endpoint does not start (next version, `0.10.0`, not yet released; ADR-007 addendum) | `MPCore.Security.AspNetCore` (`AddMPCoreResourceKeys`, `RequireResourceKey`, `[ResourceKey]`), `MPCore.Security.Abstractions` (`IResourceAuthorizer`) | Tests: `ResourceKeyTests`, seen failing |
 
 ## 8. Business audit
 

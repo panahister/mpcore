@@ -275,3 +275,30 @@ would leave the wrong one as the obvious choice.
 
 **Evidence.** `AuthenticationTimeAndClaimsTests`, 12 tests; 8 were seen failing against stubs, among them
 `A_token_without_auth_time_has_no_authentication_time_and_is_never_fresh`, which failed on the old mapping.
+
+## Addendum 2026-10-08 — resource keys and a decision port (proposed; pending owner acceptance)
+
+**Context.** Section 9 keeps resource and action evaluation product-owned, behind extension points, and MP
+Core authorizes by scope and role only. A product that authorizes each endpoint by a resource key rebuilt
+the same plumbing each time: endpoint metadata, a requirement, a handler, and denial on every failure.
+
+**Decision: MP Core carries the plumbing; the evaluation stays the product's.**
+
+| Part | What it is |
+|---|---|
+| `IResourceAuthorizer` (`MPCore.Security.Abstractions`) | the port the product implements: `DecideAsync(CurrentActor, resourceKey, cancellationToken)` returns `Granted`, `Denied` or `UnknownKey`. `Denied` is the default value |
+| `RequireResourceKey("<key>")` on a REST endpoint; `[ResourceKey("<key>")]` on a gRPC service or method | the endpoint's metadata; a method's key wins over its service's. The policy `MPCore.ResourceKey` asks for an authenticated caller and the port's grant |
+| `ExemptFromResourceKey()`, `[ResourceKeyExempt]` | an endpoint that deliberately acts on no key. An anonymous endpoint (`AllowAnonymous`) is exempt |
+| `AddMPCoreResourceKeys(...)` | opt-in. Once it is called, the host fails to start when a mapped endpoint declares neither a key nor an exemption, before the server listens |
+
+The request is denied (`403`, gRPC `PermissionDenied`) when no port is registered, when the port answers
+`Denied` or `UnknownKey`, when it throws, and when it takes longer than `ResourceKeyOptions.Timeout` (two
+seconds by default), even if it ignores its cancellation token. An unauthenticated caller is answered `401`
+and the port is never asked about nobody. MP Core still ships no permission store, no permission name and no
+code for one identity provider; an adapter for UMA or Keycloak's Authorization Services remains a new ADR and
+a new package (section 2).
+
+**Evidence.** `ResourceKeyTests`, 12 tests: 9 seen failing against stubs, the other 3 guards that a stub
+cannot fail (no token, an exempt endpoint, a host without resource keys). Granted, denied, an unknown key,
+a port that throws, a port that hangs, no port, over REST; granted and denied over gRPC; a host with an
+undeclared endpoint fails to start and names it.
