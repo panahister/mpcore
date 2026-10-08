@@ -72,6 +72,13 @@ The alternatives were considered:
 If one module's domain later grows rich enough to deserve the stronger split, that module alone can be
 divided into Domain, Application and Infrastructure projects. Nothing else has to change.
 
+**The rules are tests.** `tests/<Product>.Tests/ModuleRulesTests.cs` checks every module listed in
+`HandlerAssemblies`: a module's `Domain` folder depends on neither its `Application` nor its
+`Infrastructure` folder nor on a provider (Entity Framework, Npgsql, Wolverine, a broker, ASP.NET, gRPC);
+its `Application` folder depends on neither its `Infrastructure` folder nor on a provider; and no module
+references another module's main project. A module that is not listed in `HandlerAssemblies` is not
+checked, and has no handlers either.
+
 **What `internal` can and cannot hide.** Wolverine generates each handler's code in its own assembly and
 constructs the handler's dependencies there. Handlers, messages, ports and the adapters Wolverine
 constructs must therefore stay `public`. The boundary between modules comes from project references,

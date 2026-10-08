@@ -72,7 +72,8 @@ public sealed class TemplateContractTests
             new[] { "src/MPCore.Backend.Api/Protos/**", "src/MPCore.Backend.Api/Grpc/**" },
             modifiers["(!includeGrpc)"]);
         Assert.Equal(new[] { "src/MPCore.Backend.Api/Rest/**" }, modifiers["(!includeRest)"]);
-        Assert.Equal(new[] { "src/Modules/**" }, modifiers["(shape == \"service\")"]);
+        // A service has no modules, and so no module rules to test.
+        Assert.Equal(new[] { "src/Modules/**", "tests/MPCore.Backend.Tests/ModuleRulesTests.cs" }, modifiers["(shape == \"service\")"]);
         // A modular monolith is its modules: one project per bounded context. The root Domain and
         // Application projects would be empty there, so they are not generated at all.
         Assert.Equal(

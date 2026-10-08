@@ -262,7 +262,8 @@
         {
           "condition": "(shape == \"service\")",
           "exclude": [
-            "src/Modules/**"
+            "src/Modules/**",
+            "tests/MPCore.Backend.Tests/ModuleRulesTests.cs"
           ]
         },
         {
