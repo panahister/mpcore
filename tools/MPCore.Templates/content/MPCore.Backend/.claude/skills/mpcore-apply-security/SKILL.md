@@ -1,6 +1,6 @@
 ---
 name: mpcore-apply-security
-description: Apply authorization and current-actor integration to an approved capability. For MPCORE_ORGANIZATION.MPCORE_COMPONENT backends generated from MP Core MPCORE_VERSION.
+description: Apply authorization and current-actor integration to an approved capability, and the rules of an identity-provider administration adapter. For MPCORE_ORGANIZATION.MPCORE_COMPONENT backends generated from MP Core MPCORE_VERSION.
 ---
 
 # mpcore-apply-security

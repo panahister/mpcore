@@ -51,8 +51,8 @@ SKILL_GUIDE = {
         "Messaging configured within the broker choice already recorded, or a clear refusal if none is configured.",
         "This capability needs asynchronous work: <describe>. Read the messaging value in the manifest and configure only what that allows. If it needs a broker this project does not have, tell me instead of adding one."),
     "mpcore-apply-security": (
-        "Who may perform the operation, expressed as roles or scopes you approve.",
-        "Authorization on the endpoint plus ownership enforced in the domain, with negative tests.",
+        "Who may perform the operation, expressed as roles or scopes you approve; for the backend you name as the identity-provider administration adapter, the commands its catalogue holds.",
+        "Authorization on the endpoint plus ownership enforced in the domain, with negative tests; for the administration adapter, its commands under the rules of MP Core ADR-019.",
         "Restrict <capability> to <who>. Use the current actor from the validated token only. Ask me for the exact role or scope names; do not invent them. Add tests for no token, wrong right, and acting on another actor's record."),
     "mpcore-apply-observability": (
         "The capability and what someone would need to act on in production.",

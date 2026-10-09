@@ -68,7 +68,10 @@ through `ICurrentActorAccessor`; a `CurrentActor` is built only by the framework
 - Every endpoint without authorization metadata is already protected by the authenticated fallback
   policy. Add `RequireScope`/`RequireRole` policies for narrower access; never add `AllowAnonymous`
   outside the health probes.
-- Login, signup, OTP, password reset and identity-provider administration are never implemented here.
+- Login, signup, OTP, password reset and password change are never implemented here.
+- Administration of the identity provider only in the backend the owner names as its administration
+  adapter, under the rules of the `mpcore-apply-security` skill; any other backend sends that adapter a
+  command.
 - Never write a realm URL, client secret, connection string or credential into this repository.
 
 ## Verification

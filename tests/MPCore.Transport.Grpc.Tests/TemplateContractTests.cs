@@ -1631,6 +1631,66 @@ public sealed class TemplateContractTests
     }
 
     /// <summary>
+    /// Identity-provider administration is governed, not refused (ADR-019, decided by the owner on
+    /// 2026-10-09): the generated guidance no longer forbids the backend the owner names for it, and the
+    /// security skill states the rules that backend keeps. Login, signup, one-time codes and password reset
+    /// stay out of every generated host.
+    /// </summary>
+    [Fact]
+    public void Identity_provider_administration_is_governed_by_rules_not_refused()
+    {
+        static string Flat(string text) => Regex.Replace(text, @"\s+", " ");
+        var guidance = new[]
+        {
+            ".mpcore/skills/mpcore-apply-security/SKILL.md",
+            ".mpcore/skills/mpcore-implement-vertical-slice/SKILL.md",
+            "README.md",
+            "src/MPCore.Backend.Api/Program.cs",
+            "docs/architecture.md",
+        };
+        foreach (var file in guidance)
+        {
+            var text = Flat(File.ReadAllText(Path.Combine(TemplateRoot, file))).Replace("// ", string.Empty, StringComparison.Ordinal);
+            Assert.DoesNotContain("identity-provider administration are", text, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("and identity-provider administration are never implemented", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var security = Flat(File.ReadAllText(Path.Combine(TemplateRoot, ".mpcore/skills/mpcore-apply-security/SKILL.md")));
+        foreach (var rule in new[]
+                 {
+                     "Login, signup, OTP, password reset and password change are never implemented here",
+                     "administration adapter",
+                     "closed catalogue of typed commands",
+                     "no pass-through",
+                     "its own service identity",
+                     "AddMPCoreServiceIdentity",
+                     "only the provider roles the catalogue needs",
+                     "every write audited",
+                     "IBusinessAuditRecorder",
+                     "a refused or failed attempt too",
+                     "no administration token",
+                     "SensitiveValue",
+                     "never calls the provider's administration API itself",
+                     "ADR-019",
+                 })
+        {
+            // A rule may open its sentence or its bullet, so case is not part of it.
+            Assert.Contains(rule, security, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var slice = Flat(File.ReadAllText(Path.Combine(TemplateRoot, ".mpcore/skills/mpcore-implement-vertical-slice/SKILL.md")));
+        Assert.Contains("Login, signup, OTP, password reset and password change are never implemented here", slice, StringComparison.Ordinal);
+        Assert.Contains("administration adapter", slice, StringComparison.Ordinal);
+        Assert.Contains("mpcore-apply-security", slice, StringComparison.Ordinal);
+
+        var adr = Path.Combine(RepositoryRoot, "docs/decisions/ADR-019-identity-provider-administration-by-a-governed-adapter.EN.md");
+        Assert.True(File.Exists(adr), $"missing {adr}");
+        var record = File.ReadAllText(adr);
+        Assert.Contains("ADR-007", record, StringComparison.Ordinal);
+        Assert.Contains("What changes in ADR-007", record, StringComparison.Ordinal);
+    }
+
+    /// <summary>
     /// Four kinds of work a product needs beside its backends belong to the platform, not to MP Core: the
     /// owner decided so on 2026-10-09. MP Core's catalogue and the one a generated backend carries name each
     /// of them as not available here, and name its owner, so an agent knows where the pattern lives.

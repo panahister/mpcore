@@ -436,7 +436,8 @@ or the system itself: background work names its actor with `SystemActorScope.Ent
 so audit and logs never show a job as anonymous.
 
 The host is a **bearer-only resource server**. It never hosts login, signup, OTP, password reset or a
-browser callback.
+browser callback. Administration of the identity provider happens only in the one backend the owner names
+as its administration adapter, under the rules of the `mpcore-apply-security` skill (MP Core ADR-019).
 
 - Identity comes only from the validated token, through `ICurrentActorAccessor`.
 - A user id, tenant or role taken from a body, query string, route value or an arbitrary header is

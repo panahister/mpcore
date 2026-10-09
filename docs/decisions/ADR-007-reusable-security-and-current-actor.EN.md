@@ -302,3 +302,14 @@ a new package (section 2).
 cannot fail (no token, an exempt endpoint, a host without resource keys). Granted, denied, an unknown key,
 a port that throws, a port that hangs, no port, over REST; granted and denied over gRPC; a host with an
 undeclared endpoint fails to start and names it.
+
+## Addendum 2026-10-09 — the identity provider's administration (ADR-019)
+
+The repository owner decided on 2026-10-09 that one backend of a product, the one he names, may administer
+the identity provider as a governed adapter: a closed catalogue of typed commands, its own service identity
+with least privilege, every write audited, no administration token in any log.
+[ADR-019](ADR-019-identity-provider-administration-by-a-governed-adapter.EN.md) records the rules and states
+precisely which lines of this record it amends: the context's "and for any generated host" no longer covers
+the provider's administration, section 2's "new package" is not created, and the consequences' "separate
+approved contracts" for it are ADR-019. Login UI, signup, OTP, forgot-password and change-password stay out of
+scope for MP Core and for every generated host. The text above is kept as written.

@@ -93,8 +93,9 @@ foreach (var assembly in HandlerAssemblies.All)
     builder.Services.AddMPCoreValidators(assembly);
 }
 
-// Bearer-only OIDC resource server. Login, signup, OTP, password and identity-provider
-// administration are Product surfaces and are never implemented here.
+// Bearer-only OIDC resource server. Login, signup, OTP and password flows are the identity provider's
+// and are never implemented here. Administering the identity provider happens only in the backend the
+// owner names for it, under the rules of the mpcore-apply-security skill (MP Core ADR-019).
 builder.Services.AddMPCoreBearerAuthentication(options =>
 {
     options.Authority = builder.Configuration["Security:Authority"]

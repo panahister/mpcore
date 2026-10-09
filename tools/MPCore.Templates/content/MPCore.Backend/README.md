@@ -86,7 +86,7 @@ Two advisories, neither of which blocks generation:
 
 ## Security
 
-The host is a bearer-only OAuth 2.0 / OIDC resource server. Login, signup, OTP, forgot-password, change-password and identity-provider administration are Product surfaces and are never implemented here.
+The host is a bearer-only OAuth 2.0 / OIDC resource server. Login, signup, OTP, forgot-password and change-password are the identity provider's own flows and are never implemented here. Administration of the identity provider happens only in the one backend the owner names as its administration adapter, under the rules of the `mpcore-apply-security` skill and [MP Core ADR-019](https://github.com/panahister/mpcore/blob/main/docs/decisions/ADR-019-identity-provider-administration-by-a-governed-adapter.EN.md).
 
 `Security:Authority` and `Security:Audiences` have no usable defaults and must be replaced before the host starts. `ConnectionStrings:PostgreSql` and `Messaging:RabbitMq:ConnectionString` ship with `replace-me` credentials for the same reason: the generated file must never contain a working credential, not even a well-known development one.
 

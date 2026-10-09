@@ -1,6 +1,6 @@
 ---
 name: mpcore-apply-security
-description: Apply authorization and current-actor integration to an approved capability. For MPCORE_ORGANIZATION.MPCORE_COMPONENT backends generated from MP Core MPCORE_VERSION.
+description: Apply authorization and current-actor integration to an approved capability, and the rules of an identity-provider administration adapter. For MPCORE_ORGANIZATION.MPCORE_COMPONENT backends generated from MP Core MPCORE_VERSION.
 ---
 
 # Apply security
@@ -24,7 +24,13 @@ through `ICurrentActorAccessor`; a `CurrentActor` is built only by the framework
 - Every endpoint without authorization metadata is already protected by the authenticated fallback
   policy. Add `RequireScope`/`RequireRole` policies for narrower access; never add `AllowAnonymous`
   outside the health probes.
-- Login, signup, OTP, password reset and identity-provider administration are never implemented here.
+- Login, signup, OTP, password reset and password change are never implemented here: they are the
+  identity provider's own flows.
+- Administration of the identity provider (its users, their roles and groups) is implemented only in the
+  one backend the owner names as its administration adapter, under the rules of
+  [MP Core ADR-019](https://github.com/panahister/mpcore/blob/main/docs/decisions/ADR-019-identity-provider-administration-by-a-governed-adapter.EN.md). Any other backend sends the adapter a
+  command and never calls the provider's administration API itself. See "An identity-provider
+  administration adapter" below.
 - Never write a realm URL, client secret, connection string or credential into this repository.
 
 ## Steps
@@ -38,6 +44,40 @@ through `ICurrentActorAccessor`; a `CurrentActor` is built only by the framework
    is not automatically authorized to act on a particular record.
 4. Expect `401` for an absent or invalid token and `403` for an authenticated caller lacking rights,
    with no configuration detail in the response body.
+
+## An identity-provider administration adapter
+
+Only in the backend the owner has named as the adapter; anywhere else, stop and ask. The rules
+(MP Core ADR-019):
+
+- **A closed catalogue of typed commands**, one handler each, every one approved by the owner. There is
+  no pass-through: no command forwards a provider path, an HTTP method, a raw payload or a query. No
+  command sets or resets a password, enrols a one-time code, signs in as a user, reads or issues a user's
+  token, or configures a realm, a client or a flow (that is the platform's work).
+- **Its own service identity**: a confidential client with the client credentials grant, through
+  `AddMPCoreServiceIdentity`, granted only the provider roles the catalogue needs. Never a person's token,
+  never an administrator's account. Its secret is configuration, never in this repository.
+- **Every caller authorized for every command**: the callers it lists and, where a person asked for the
+  change, `RequireSubjectEvidence` and `RequireResourceKey`. The user a command acts on is a parameter,
+  never the caller's identity.
+- **Every write audited** with `IBusinessAuditRecorder`: who asked, the command, the target's identifier,
+  the outcome as the provider answered; a refused or failed attempt too, with `RecordAttemptAsync`.
+  Identifiers only, never a credential or the provider's response body.
+- **No administration token**, client secret or credential in any log, trace, audit record, message,
+  problem document or response: hold the token as a `SensitiveValue`, log no header or body of the
+  provider's calls, and map the provider's errors to this backend's own failure codes.
+- **Every write idempotent**: it sets a state rather than adding to one, because a command can arrive
+  twice; no provider call inside a transaction a concurrent attempt can lose.
+
+Steps:
+
+1. Confirm with the owner that this backend is the adapter, and which commands the catalogue holds.
+2. Declare a port in `Application/Ports` with one method per command, and implement it in
+   `Infrastructure` with an HTTP client registered with `AddMPCoreResilientHttpClient` and
+   `AddMPCoreServiceIdentity`, against the provider's documented administration API.
+3. Give each command its handler, its authorization and its audit record.
+4. Test a caller that is not listed, a caller without the right, a refusal by the provider (recorded, and
+   answered without the provider's body), and a captured log of a call that holds no token.
 
 ## Verification
 

@@ -7,7 +7,7 @@ assistant what to establish, what to ask about, and what it may not decide alone
 |---|---|
 | `mpcore-apply-business-audit` | Record entity changes and business actions in the audit trail, within the audit choice already recorded for this project |
 | `mpcore-apply-observability` | Add logging, metrics and tracing to an approved capability without leaking sensitive data |
-| `mpcore-apply-security` | Apply authorization and current-actor integration to an approved capability |
+| `mpcore-apply-security` | Apply authorization and current-actor integration to an approved capability, and the rules of an identity-provider administration adapter |
 | `mpcore-configure-messaging` | Configure messaging for this project within the broker choice the manifest already records |
 | `mpcore-design-transport-contract` | Design or revise the REST/OpenAPI or gRPC/protobuf contract for an approved capability |
 | `mpcore-implement-ddd-module` | Create or reshape the technical skeleton of a DDD module or context in this repository |

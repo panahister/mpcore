@@ -24,7 +24,7 @@ Every skill reads `.mpcore/template-manifest.json` before acting, because this p
 |---|---|
 | [`mpcore-apply-business-audit`](#mpcore-apply-business-audit) | Record entity changes and business actions in the audit trail, within the audit choice already recorded for this project |
 | [`mpcore-apply-observability`](#mpcore-apply-observability) | Add logging, metrics and tracing to an approved capability without leaking sensitive data |
-| [`mpcore-apply-security`](#mpcore-apply-security) | Apply authorization and current-actor integration to an approved capability |
+| [`mpcore-apply-security`](#mpcore-apply-security) | Apply authorization and current-actor integration to an approved capability, and the rules of an identity-provider administration adapter |
 | [`mpcore-configure-messaging`](#mpcore-configure-messaging) | Configure messaging for this project within the broker choice the manifest already records |
 | [`mpcore-design-transport-contract`](#mpcore-design-transport-contract) | Design or revise the REST/OpenAPI or gRPC/protobuf contract for an approved capability |
 | [`mpcore-implement-ddd-module`](#mpcore-implement-ddd-module) | Create or reshape the technical skeleton of a DDD module or context in this repository |
@@ -76,11 +76,11 @@ Full instructions: [`.mpcore/skills/mpcore-apply-observability/SKILL.md`](../.mp
 
 ### mpcore-apply-security
 
-Apply authorization and current-actor integration to an approved capability.
+Apply authorization and current-actor integration to an approved capability, and the rules of an identity-provider administration adapter.
 
-**Needs from you:** Who may perform the operation, expressed as roles or scopes you approve.
+**Needs from you:** Who may perform the operation, expressed as roles or scopes you approve; for the backend you name as the identity-provider administration adapter, the commands its catalogue holds.
 
-**Gives you back:** Authorization on the endpoint plus ownership enforced in the domain, with negative tests.
+**Gives you back:** Authorization on the endpoint plus ownership enforced in the domain, with negative tests; for the administration adapter, its commands under the rules of MP Core ADR-019.
 
 **Ready-to-use prompt** — replace the angle-bracket parts:
 
