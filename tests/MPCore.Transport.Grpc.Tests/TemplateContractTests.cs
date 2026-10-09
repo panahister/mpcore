@@ -204,13 +204,62 @@ public sealed class TemplateContractTests
         Assert.Contains("\"EnableConsoleLogExporter\": true", settings, StringComparison.Ordinal);
 
         // No code of the template brings a provider back: they would print what the pipeline masks.
-        var provider = new Regex(@"\.Add(Console|SimpleConsole|JsonConsole|SystemdConsole|Debug|EventSourceLogger|EventLog|TraceSource)\s*\(");
-        var returned = Directory.EnumerateFiles(Path.Combine(TemplateRoot, "src"), "*.cs", SearchOption.AllDirectories)
-            .Where(file => provider.IsMatch(File.ReadAllText(file)))
-            .Select(file => Path.GetRelativePath(TemplateRoot, file))
-            .ToArray();
-        Assert.Empty(returned);
+        Assert.Empty(FilesThatBringALoggingProviderBack(TemplateRoot));
     }
+
+    /// <summary>
+    /// The guard above is only as wide as its pattern, so the pattern is proved on planted lines: each way a host
+    /// can bring a logging provider back, one in a file of its own, must be found, and the lines that clear or
+    /// filter the logs must not be.
+    /// </summary>
+    [Theory]
+    [InlineData("builder.Logging.AddConsole();")]
+    [InlineData("builder.Logging.AddProvider(new PlantedProvider());")]
+    [InlineData("builder.Host.UseSerilog();")]
+    [InlineData("builder.Logging.AddSerilog();")]
+    [InlineData("builder.Logging.AddNLog();")]
+    [InlineData("builder.Host.UseNLog();")]
+    [InlineData("builder.Services.AddSingleton<ILoggerProvider, PlantedProvider>();")]
+    [InlineData("builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, PlantedProvider>());")]
+    [InlineData("builder.Services.AddSingleton(typeof(ILoggerProvider), typeof(PlantedProvider));")]
+    public void The_logging_provider_guard_finds_a_provider_brought_back_by_a_planted_line(string plantedLine)
+    {
+        var root = Directory.CreateTempSubdirectory("mpcore-provider-guard-").FullName;
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(root, "src"));
+            File.WriteAllText(Path.Combine(root, "src", "Planted.cs"), "var builder = WebApplication.CreateBuilder();\n" + plantedLine + "\n");
+            File.WriteAllText(Path.Combine(root, "src", "Clean.cs"), CleanLoggingLines);
+
+            Assert.Equal(["src" + Path.DirectorySeparatorChar + "Planted.cs"], FilesThatBringALoggingProviderBack(root));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    private const string CleanLoggingLines = """
+        builder.Logging.ClearProviders();
+        builder.Logging.AddFilter("Microsoft", LogLevel.Warning);
+        builder.Services.AddSingleton<ILoggerFactory, PlantedFactory>();
+        var logger = provider.GetRequiredService<ILogger<Program>>();
+        """;
+
+    // Every way to put a logging provider into a host, beside the three the host builder adds and the template
+    // clears: the named providers of Microsoft.Extensions.Logging, any provider by AddProvider, Serilog and NLog
+    // (a host builder's Use or a logging builder's Add), and a registration of ILoggerProvider in the container,
+    // as a generic argument or as a type.
+    private static readonly Regex LoggingProviderAddition = new(
+        @"\.(Add(Console|SimpleConsole|JsonConsole|SystemdConsole|Debug|EventSourceLogger|EventLog|TraceSource|Provider|Serilog|NLog)|Use(Serilog|NLog))\s*\("
+        + @"|<\s*ILoggerProvider\b|typeof\s*\(\s*ILoggerProvider\s*\)",
+        RegexOptions.CultureInvariant);
+
+    private static string[] FilesThatBringALoggingProviderBack(string root) =>
+        [.. Directory.EnumerateFiles(Path.Combine(root, "src"), "*.cs", SearchOption.AllDirectories)
+            .Where(file => LoggingProviderAddition.IsMatch(File.ReadAllText(file)))
+            .Select(file => Path.GetRelativePath(root, file))
+            .Order(StringComparer.Ordinal)];
 
     [Fact]
     public void Kestrel_endpoints_are_declared_per_transport_with_authoritative_protocols()

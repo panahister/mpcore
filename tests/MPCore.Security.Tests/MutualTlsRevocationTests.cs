@@ -22,11 +22,11 @@ namespace MPCore.Security.Tests;
 /// it off, which is the default, it is admitted.
 /// </summary>
 /// <remarks>
-/// Whether a platform reaches the list is the platform's own. On Linux and Windows it downloads the list from the
-/// address in the certificate and tells the two certificates apart. On macOS .NET does not download a list from an
-/// address of a private authority: with revocation on, the status of every certificate is unknown, and the host
-/// refuses them all (it fails closed). Both outcomes refuse the revoked certificate; only the reason differs, and
-/// the test asserts the reason of the platform it runs on. See ADR-017.
+/// Whether a platform reaches the list is the platform's own. On Linux (run in a container) it downloads the list
+/// from the address in the certificate and tells the two certificates apart; not run on Windows. On macOS .NET does
+/// not download a list from an address of a private authority: with revocation on, the status of every certificate
+/// is unknown, and the host refuses them all (it fails closed). Both outcomes refuse the revoked certificate; only
+/// the reason differs, and the test asserts the reason of the platform it runs on. See ADR-017.
 /// </remarks>
 public sealed class MutualTlsRevocationTests : IClassFixture<MutualTlsTests.Certificates>
 {
