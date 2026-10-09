@@ -109,23 +109,54 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
 
         using var client = host.RawClient(certificate);
 
-        await Assert.ThrowsAnyAsync<HttpRequestException>(() => client.SendAsync(host.Request("/workload", withToken: true)));
+        // A refused handshake is a failure of the TLS layer: an authentication or an I/O failure of the connection the
+        // server closed. A refused connection or a timeout is not one, and would not pass.
+        await HandshakeFailure.ExpectAsync(() => client.SendAsync(host.Request("/workload", withToken: true)));
 
-        // Each is refused for its own reason. Without a certificate Kestrel refuses before the validator runs.
+        if (certificateCase == "no-certificate")
+        {
+            // Without a certificate Kestrel refuses the handshake itself, before the validator runs: its record names
+            // the rejected remote certificate, and the validator's record of a refused certificate does not exist.
+            Assert.True(
+                await LoggedAsync(host.Logs, message =>
+                    message.Contains("Failed to authenticate HTTPS connection", StringComparison.Ordinal) &&
+                    message.Contains("The remote certificate was rejected by the provided RemoteCertificateValidationCallback", StringComparison.Ordinal)),
+                "Kestrel did not log the refused handshake:\n" + string.Join("\n", host.Logs.Messages));
+            Assert.DoesNotContain(host.Logs.Messages, message => message.StartsWith("A client certificate was refused at the handshake", StringComparison.Ordinal));
+            return;
+        }
+
+        // Each other certificate is refused by the validator, for its own reason, which it logs.
         var reason = certificateCase switch
         {
             "another-authority" => "Chain:",
             "expired" => "NotTimeValid",
             "name-not-listed" => "NameNotListed",
             "server-certificate-as-client" => "NotValidForUsage",
-            _ => null
+            _ => throw new ArgumentOutOfRangeException(nameof(certificateCase), certificateCase, "Unknown case.")
         };
-        if (reason is not null)
-        {
-            Assert.Contains(host.Logs.Messages, message =>
+        Assert.True(
+            await LoggedAsync(host.Logs, message =>
                 message.StartsWith("A client certificate was refused at the handshake", StringComparison.Ordinal) &&
-                message.Contains(reason, StringComparison.Ordinal));
+                message.Contains(reason, StringComparison.Ordinal)),
+            $"The validator did not log {reason}:\n" + string.Join("\n", host.Logs.Messages));
+    }
+
+    /// <summary>The host writes a record when the connection fails, which can be a moment after the caller sees the failure.</summary>
+    private static async Task<bool> LoggedAsync(CapturingLoggerProvider logs, Func<string, bool> match)
+    {
+        var until = DateTime.UtcNow.AddSeconds(5);
+        while (DateTime.UtcNow < until)
+        {
+            if (logs.Messages.Any(match))
+            {
+                return true;
+            }
+
+            await Task.Delay(50);
         }
+
+        return logs.Messages.Any(match);
     }
 
     [Fact]
