@@ -1,0 +1,13 @@
+<Project>
+  <!-- A nearer Directory.Build.props replaces the one above it, so the repository's own is imported first. -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <PropertyGroup>
+    <!--
+      A test project is never a package. It says so with IsPackable, and `dotnet pack MPCore.sln` then warns for
+      each of them that "packaging has been disabled", which is the answer it was given. The warning is for a
+      project someone meant to pack; WarnOnPackingNonPackableProject switches it off for these.
+    -->
+    <IsPackable>false</IsPackable>
+    <WarnOnPackingNonPackableProject>false</WarnOnPackingNonPackableProject>
+  </PropertyGroup>
+</Project>
