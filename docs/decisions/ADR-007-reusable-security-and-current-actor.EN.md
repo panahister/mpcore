@@ -306,8 +306,9 @@ undeclared endpoint fails to start and names it.
 ## Addendum 2026-10-09 — the identity provider's administration (ADR-019)
 
 The repository owner decided on 2026-10-09 that one backend of a product, the one he names, may administer
-the identity provider as a governed adapter: a closed catalogue of typed commands, its own service identity
-with least privilege, every write audited, no administration token in any log.
+the identity provider as a governed adapter, under six rules: a closed catalogue of typed commands, its own
+service identity with least privilege, every caller authorized for every command, every write audited, no
+administration token in any log, and every write idempotent.
 [ADR-019](ADR-019-identity-provider-administration-by-a-governed-adapter.EN.md) records the rules and states
 precisely which lines of this record it amends: the context's "and for any generated host" no longer covers
 the provider's administration, section 2's "new package" is not created, and the consequences' "separate
