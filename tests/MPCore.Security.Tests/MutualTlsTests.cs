@@ -215,7 +215,8 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
     /// <summary>
     /// Label, the address the request comes from, the certificate the proxy forwards, the certificate presented
     /// on the peer's own TLS connection, and the outcome. The proxy's own connection certificate is never the
-    /// client's: for a trusted proxy the request has the forwarded certificate or none.
+    /// client's: for a trusted proxy the request has the forwarded certificate or none, and a header that is sent
+    /// twice, whatever it holds, is none.
     /// </summary>
     public static TheoryData<string, string?, string, string?, HttpStatusCode> ForwardedCases() => new()
     {
@@ -225,6 +226,7 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
         { "from a listed proxy, expired", "10.0.0.5", "expired", null, HttpStatusCode.Unauthorized },
         { "from a listed proxy, a name not listed", "10.0.0.5", "billing", null, HttpStatusCode.Unauthorized },
         { "from a listed proxy, not a certificate", "10.0.0.5", "garbage", null, HttpStatusCode.Unauthorized },
+        { "from a listed proxy, the header twice, a listed certificate in each", "10.0.0.5", "orders-twice", null, HttpStatusCode.Unauthorized },
         { "no certificate at all", null, "none", null, HttpStatusCode.Unauthorized },
         { "from a listed proxy, none forwarded, its own connection certificate a listed workload", "10.0.0.5", "none", "orders", HttpStatusCode.Unauthorized },
         { "from a listed proxy, none forwarded, its own connection certificate not listed", "10.0.0.5", "none", "billing", HttpStatusCode.Unauthorized },
@@ -247,7 +249,7 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
         await using var host = await ForwardingHost.CreateAsync(_certificates);
         var header = certificateCase switch
         {
-            "orders" => Convert.ToBase64String(_certificates.Orders.RawData),
+            "orders" or "orders-twice" => Convert.ToBase64String(_certificates.Orders.RawData),
             "another-authority" => Convert.ToBase64String(_certificates.OrdersFromAnotherAuthority.RawData),
             "expired" => Convert.ToBase64String(_certificates.ExpiredOrders.RawData),
             "billing" => Uri.EscapeDataString(_certificates.Billing.ExportCertificatePem()),
@@ -256,8 +258,10 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
             _ => throw new ArgumentOutOfRangeException(nameof(certificateCase), certificateCase, label)
         };
 
-        var response = await host.SendAsync("/workload", peer, header, connectionCertificate);
-        var plain = await host.SendAsync("/plain", peer, header, connectionCertificate);
+        // A repeated header is sent as two header lines, each a certificate that would be admitted alone.
+        var copies = certificateCase == "orders-twice" ? 2 : 1;
+        var response = await host.SendAsync("/workload", peer, header, connectionCertificate, copies);
+        var plain = await host.SendAsync("/plain", peer, header, connectionCertificate, copies);
         var seen = await plain.Content.ReadFromJsonAsync<JsonElement>();
 
         Assert.Equal(expected, response.StatusCode);
@@ -589,7 +593,7 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
             return new ForwardingHost(application, identity, captured);
         }
 
-        public async Task<HttpResponseMessage> SendAsync(string path, string? peer, string? certificate, string? connectionCertificate = null)
+        public async Task<HttpResponseMessage> SendAsync(string path, string? peer, string? certificate, string? connectionCertificate = null, int certificateCopies = 1)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(path, UriKind.Relative));
             request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + _identity.CreateToken(
@@ -602,7 +606,10 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
 
             if (certificate is not null)
             {
-                request.Headers.TryAddWithoutValidation("X-Client-Cert", certificate);
+                for (var copy = 0; copy < certificateCopies; copy++)
+                {
+                    request.Headers.TryAddWithoutValidation("X-Client-Cert", certificate);
+                }
             }
 
             if (connectionCertificate is not null)
