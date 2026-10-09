@@ -68,7 +68,9 @@ public sealed class EnglishOnlyTests
         Assert.True(findings.Count == 0, "Text outside the Latin script: " + string.Join(", ", findings.Take(40)) + (findings.Count > 40 ? $" and {findings.Count - 40} more" : string.Empty));
     }
 
+    // Packs a package inside the test, which restores packages from the network: it runs in the slow job of CI.
     [Fact]
+    [Trait("Category", "Packaging")]
     public async Task The_packed_localization_package_carries_no_satellite_assembly()
     {
         var root = RepositoryRoot();

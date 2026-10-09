@@ -38,6 +38,17 @@ dotnet test MPCore.sln --configuration Release --no-build
 
 The credentials above belong to throwaway containers on your own machine and to nothing else.
 
+`dotnet test` as written runs every test. Four of them generate a backend from the template and build it, or pack
+a package: they take minutes and use the network, and carry the trait `Category=Generated` or `Category=Packaging`.
+For a fast run while you work, leave them out:
+
+```bash
+dotnet test MPCore.sln --configuration Release --no-build --filter "Category!=Generated&Category!=Packaging"
+```
+
+Continuous integration runs the fast set in one job and the slow tests in a job of their own, and the release
+workflow runs every test.
+
 On a Mac with Apple Silicon, install a native gRPC code generator once (`brew install protobuf grpc`) or
 Rosetta: the one that ships with .NET's gRPC tools is built for Intel.
 

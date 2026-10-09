@@ -97,8 +97,10 @@ jobs:
         run: dotnet restore MPCore.sln --locked-mode
       - name: Build (warnings are errors)
         run: dotnet build MPCore.sln --configuration Release --no-restore
+      # The fast run. The tests that generate a backend from the template and build it, and the one that packs a
+      # package, take minutes and use the network; they run in their own job below, and in the release gate.
       - name: Test
-        run: dotnet test MPCore.sln --configuration Release --no-build --logger "trx;LogFileName=results.trx"
+        run: dotnet test MPCore.sln --configuration Release --no-build --filter "Category!=Generated&Category!=Packaging" --logger "trx;LogFileName=results.trx"
       - name: Pack (a verification candidate, never published from here)
         run: dotnet pack MPCore.sln --configuration Release --no-build --output artifacts/candidate -p:VersionSuffix=ci.${{ github.run_number }}
       - name: A consumer can pin the commit the packages record
@@ -110,4 +112,43 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results
+          path: "**/results.trx"
+
+  # The slow tests: a backend generated from the template, built against this source and run, and a package packed
+  # inside a test. They restore third-party packages from the network and take minutes, so they do not slow the run
+  # above. The release workflow runs every test, these included.
+  generated-and-packaged:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_USER: mpcore
+          POSTGRES_PASSWORD: mpcore
+          POSTGRES_DB: mpcore_it
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mpcore -d mpcore_it" --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      DOTNET_NOLOGO: "true"
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      # A throwaway service container of this job; not a secret. The generated host keeps its messages there.
+      MPCORE_TEST_POSTGRESQL: Host=localhost;Port=5432;Database=mpcore_it;Username=mpcore;Password=mpcore
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Restore (locked)
+        run: dotnet restore MPCore.sln --locked-mode
+      - name: Build (warnings are errors)
+        run: dotnet build MPCore.sln --configuration Release --no-restore
+      - name: Test (generated backends and packing)
+        run: dotnet test MPCore.sln --configuration Release --no-build --filter "Category=Generated|Category=Packaging" --logger "trx;LogFileName=results.trx"
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-generated-and-packaged
           path: "**/results.trx"

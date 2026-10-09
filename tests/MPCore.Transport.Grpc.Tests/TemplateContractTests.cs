@@ -261,6 +261,31 @@ public sealed class TemplateContractTests
     }
 
     [Fact]
+    public void The_slow_tests_run_in_a_job_of_their_own_and_the_release_gate_runs_every_test()
+    {
+        // Generating a backend and building it, and packing a package inside a test, take minutes and use the
+        // network. Their traits keep them out of the fast run; the job of their own and the release workflow, which
+        // filters nothing, run them.
+        var ci = File.ReadAllText(Path.Combine(RepositoryRoot, ".github/workflows/ci.yml"));
+        var release = File.ReadAllText(Path.Combine(RepositoryRoot, ".github/workflows/release.yml"));
+        var generated = File.ReadAllText(Path.Combine(RepositoryRoot, "tests/MPCore.Transport.Grpc.Tests/GeneratedBackendTests.cs"));
+        var packaging = File.ReadAllText(Path.Combine(RepositoryRoot, "tests/MPCore.Localization.Tests/EnglishOnlyTests.cs"));
+
+        Assert.Contains("--filter \"Category!=Generated&Category!=Packaging\"", ci, StringComparison.Ordinal);
+        Assert.Contains("generated-and-packaged:", ci, StringComparison.Ordinal);
+        Assert.Contains("--filter \"Category=Generated|Category=Packaging\"", ci, StringComparison.Ordinal);
+        Assert.Contains("[Trait(\"Category\", \"Generated\")]\npublic sealed partial class GeneratedBackendTests", generated.ReplaceLineEndings("\n"), StringComparison.Ordinal);
+        Assert.Matches(
+            new Regex(@"\[Trait\(""Category"", ""Packaging""\)\]\s*public async Task The_packed_localization_package_carries_no_satellite_assembly"),
+            packaging);
+
+        // No test step of the release gate has a filter: every test runs before anything is packed.
+        var testSteps = Regex.Matches(release, @"dotnet test [^\n]*").Select(static match => match.Value).ToList();
+        Assert.NotEmpty(testSteps);
+        Assert.All(testSteps, static step => Assert.DoesNotContain("--filter", step, StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Continuous_integration_builds_and_tests_and_never_publishes_or_deploys()
     {
         // ADR-004, addenda of 2026-09-27: integration is automated, publication is a maintainer's act.
