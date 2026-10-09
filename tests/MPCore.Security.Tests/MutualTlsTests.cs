@@ -265,6 +265,39 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
         Assert.False(seen.GetProperty("headerVisible").GetBoolean());
     }
 
+    [Fact]
+    public async Task A_certificate_a_trusted_proxy_forwards_is_disposed_at_the_end_of_the_request_and_a_connections_own_is_not()
+    {
+        await using var host = await ForwardingHost.CreateAsync(_certificates);
+
+        // From a trusted proxy the certificate is read from the header for this request alone.
+        using var forwarded = await host.SendAsync("/capture", "10.0.0.5", Convert.ToBase64String(_certificates.Orders.RawData));
+        var perRequest = host.Captured;
+
+        // From any other address the certificate is the one of the connection, which the server owns.
+        using var direct = await host.SendAsync("/capture", "10.0.0.9", null, "orders");
+        var ofTheConnection = host.Captured;
+
+        Assert.NotNull(perRequest);
+        Assert.NotSame(_certificates.Orders, perRequest);
+        Assert.True(await DisposedAsync(perRequest), "The certificate created for the request was not disposed when the request ended.");
+        Assert.Same(_certificates.Orders, ofTheConnection);
+        Assert.NotEqual(IntPtr.Zero, _certificates.Orders.Handle);
+    }
+
+    private static async Task<bool> DisposedAsync(X509Certificate2 certificate)
+    {
+        // The request's resources are released after the response is complete, which can be a moment after the
+        // caller has it.
+        var until = DateTime.UtcNow.AddSeconds(5);
+        while (certificate.Handle != IntPtr.Zero && DateTime.UtcNow < until)
+        {
+            await Task.Delay(25);
+        }
+
+        return certificate.Handle == IntPtr.Zero;
+    }
+
     public static TheoryData<string> InvalidServerOptions() => new() { "no-authority", "no-workload-name", "missing-authority-file" };
 
     [Theory]
@@ -469,6 +502,11 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
         }
     }
 
+    private sealed class CapturedCertificate
+    {
+        public X509Certificate2? Value { get; set; }
+    }
+
     /// <summary>A called host behind a proxy that terminates TLS and forwards the client's certificate.</summary>
     private sealed class ForwardingHost : IAsyncDisposable
     {
@@ -478,8 +516,13 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
         private readonly TestIdentityProvider _identity;
         private readonly HttpClient _client;
 
-        private ForwardingHost(WebApplication application, TestIdentityProvider identity)
+        private readonly CapturedCertificate _captured;
+
+        public X509Certificate2? Captured => _captured.Value;
+
+        private ForwardingHost(WebApplication application, TestIdentityProvider identity, CapturedCertificate captured)
         {
+            _captured = captured;
             _application = application;
             _identity = identity;
             _client = application.GetTestServer().CreateClient();
@@ -534,8 +577,16 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
                 headerVisible = context.Request.Headers.ContainsKey("X-Client-Cert")
             }));
 
+            // Keeps the certificate object the request carried, to look at it after the request has ended.
+            var captured = new CapturedCertificate();
+            application.MapGet("/capture", (HttpContext context) =>
+            {
+                captured.Value = context.Connection.ClientCertificate;
+                return Results.Ok();
+            });
+
             await application.StartAsync();
-            return new ForwardingHost(application, identity);
+            return new ForwardingHost(application, identity, captured);
         }
 
         public async Task<HttpResponseMessage> SendAsync(string path, string? peer, string? certificate, string? connectionCertificate = null)

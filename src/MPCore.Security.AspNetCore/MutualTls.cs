@@ -357,8 +357,16 @@ internal sealed class CertificateForwardingMiddleware(
             // is the one the proxy forwards; with none, or one that cannot be read, the request has no certificate,
             // so a command that requires one is refused. Leaving the connection's certificate would admit any
             // client through a proxy whose own certificate is a listed workload.
-            context.Connection.ClientCertificate = values.Count == 1 ? Read(values[0]) : null;
-            if (values.Count > 0 && context.Connection.ClientCertificate is null)
+            var forwarded = values.Count == 1 ? Read(values[0]) : null;
+            if (forwarded is not null)
+            {
+                // Created for this request alone, so released when it ends. The certificate of a connection is not:
+                // the server owns that one.
+                context.Response.RegisterForDispose(forwarded);
+            }
+
+            context.Connection.ClientCertificate = forwarded;
+            if (values.Count > 0 && forwarded is null)
             {
                 logger.LogWarning("A forwarded client certificate could not be read.");
             }
