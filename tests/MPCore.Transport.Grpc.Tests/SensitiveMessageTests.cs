@@ -57,6 +57,79 @@ public sealed class SensitiveMessageTests
         Assert.Contains(Echoed, plain.FormattedMessage, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task A_message_logged_before_the_first_call_is_masked()
+    {
+        var exported = new List<LogRecord>();
+        await using var application = await StartAsync(exported, "mpcore.sensitive_test.v1.OtpProbe");
+
+        // No call has been made: the types of a named service are known from the host's endpoints at start.
+        var logger = application.Services.GetRequiredService<ILoggerFactory>().CreateLogger("before-the-first-call");
+        logger.LogInformation("Startup check {Request}", new VerifyRequest { Phone = "+1-555-0100", Code = Code });
+        application.Services.GetRequiredService<LoggerProvider>().ForceFlush();
+
+        var record = Assert.Single(exported);
+        Assert.Equal(SensitiveLogRecordProcessor.Mask, record.Attributes!.Single(attribute => attribute.Key == "Request").Value);
+        Assert.DoesNotContain(Code, record.FormattedMessage, StringComparison.Ordinal);
+        Assert.DoesNotContain("+1-555-0100", record.FormattedMessage, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task What_one_host_names_does_not_reach_another_host_of_the_same_process()
+    {
+        var namedLogs = new List<LogRecord>();
+        var otherLogs = new List<LogRecord>();
+        await using var named = await StartAsync(namedLogs, "mpcore.sensitive_test.v1.OtpProbe");
+        using var channel = GrpcChannel.ForAddress(named.GetTestServer().BaseAddress, new GrpcChannelOptions { HttpHandler = named.GetTestServer().CreateHandler() });
+        await new OtpProbe.OtpProbeClient(channel).VerifyAsync(new VerifyRequest { Phone = "+1-555-0100", Code = Code });
+
+        // The second host maps the same service and names nothing: opting in is per host, not per process.
+        await using var other = await StartAsync(otherLogs);
+        other.Services.GetRequiredService<ILoggerFactory>().CreateLogger("other").LogInformation("Not named {Request}", new VerifyRequest { Code = Code });
+        other.Services.GetRequiredService<LoggerProvider>().ForceFlush();
+
+        var record = Assert.Single(otherLogs);
+        Assert.Contains(Code, record.FormattedMessage, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task A_service_name_that_no_mapped_service_has_fails_the_start()
+    {
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseTestServer();
+        builder.Logging.ClearProviders();
+        builder.Services.AddMPCoreObservability(new MPCoreObservabilityOptions { ServiceName = "tests", EnableOtlpExporter = false, Signals = new MPCoreObservabilitySignals() });
+        builder.Services.AddGrpc().AddMPCoreSensitiveMessages("mpcore.sensitive_test.v1.OtpProbe", "mpcore.sensitive_test.v1.OtpProbee");
+        await using var application = builder.Build();
+        application.MapGrpcService<OtpProbeService>();
+
+        // A mistyped name would leave a service unmasked without a sign of it.
+        var failure = await Assert.ThrowsAsync<InvalidOperationException>(() => application.StartAsync());
+
+        Assert.Contains("mpcore.sensitive_test.v1.OtpProbee", failure.Message, StringComparison.Ordinal);
+        Assert.DoesNotContain("mpcore.sensitive_test.v1.OtpProbe,", failure.Message, StringComparison.Ordinal);
+    }
+
+    private static async Task<WebApplication> StartAsync(List<LogRecord> exported, params string[] sensitiveServices)
+    {
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseTestServer();
+        builder.Logging.ClearProviders();
+        builder.Services.AddMPCoreObservability(new MPCoreObservabilityOptions { ServiceName = "tests", EnableOtlpExporter = false, Signals = new MPCoreObservabilitySignals() });
+        builder.Services.ConfigureOpenTelemetryLoggerProvider(logging => logging.AddInMemoryExporter(exported));
+        var grpc = builder.Services.AddGrpc();
+        if (sensitiveServices.Length > 0)
+        {
+            grpc.AddMPCoreSensitiveMessages(sensitiveServices);
+        }
+
+        var application = builder.Build();
+        application.MapGrpcService<OtpProbeService>();
+        application.MapGrpcService<PlainProbeService>();
+        await application.StartAsync();
+        return application;
+    }
+
     private sealed class OtpProbeService(ILogger<OtpProbeService> logger) : OtpProbe.OtpProbeBase
     {
         public override Task<VerifyReply> Verify(VerifyRequest request, ServerCallContext context)

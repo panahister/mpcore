@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MPCore.Application.Sensitive;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -57,6 +58,10 @@ public static class ObservabilityExtensions
         var plan = ObservabilityPlan.Resolve(options);
         services.AddSingleton(plan);
 
+        // The processors read the host's registry of sensitive message types when the providers are created, so
+        // a type added at startup is masked from the first record, and hosts of one process share nothing.
+        services.AddMPCoreSensitiveMessageTypes();
+
         services.Configure<OpenTelemetryLoggerOptions>(logging =>
         {
             logging.IncludeFormattedMessage = true;
@@ -73,7 +78,7 @@ public static class ObservabilityExtensions
             {
                 if (plan.RedactionEnabled)
                 {
-                    logging.AddProcessor(new SensitiveLogRecordProcessor(plan.SensitiveFields));
+                    logging.AddProcessor(provider => new SensitiveLogRecordProcessor(plan.SensitiveFields, provider.GetRequiredService<SensitiveMessageTypes>()));
                 }
 
                 // After the redaction, never before: the processors run in the order they are added.
@@ -96,7 +101,7 @@ public static class ObservabilityExtensions
                     .AddSource("Wolverine");
                 if (plan.RedactionEnabled)
                 {
-                    tracing.AddProcessor(new SensitiveActivityProcessor(plan.SensitiveFields));
+                    tracing.AddProcessor(provider => new SensitiveActivityProcessor(plan.SensitiveFields, provider.GetRequiredService<SensitiveMessageTypes>()));
                 }
 
                 if (plan.Traces.Exporter == SignalExporter.Otlp)

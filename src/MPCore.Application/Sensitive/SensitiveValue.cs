@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -79,38 +78,5 @@ internal sealed class SensitiveValueJsonConverter : JsonConverter<SensitiveValue
     {
         ArgumentNullException.ThrowIfNull(writer);
         writer.WriteStringValue(SensitiveValue.Mask);
-    }
-}
-
-/// <summary>
-/// Types whose objects must never be logged whole, such as the request and response messages of a gRPC service
-/// that carries codes or tokens. MP Core's log and trace processors mask an attribute or tag that holds one.
-/// </summary>
-/// <remarks>
-/// Google.Protobuf prints every field of a message, even one marked <c>debug_redact</c>, so a message cannot
-/// keep its own secrets out of a log. A type is added by the gRPC interceptor for a named service
-/// (<c>AddMPCoreSensitiveMessages</c>), or by the host for any other type. A type is never removed.
-/// </remarks>
-public static class SensitiveMessageTypes
-{
-    private static readonly ConcurrentDictionary<Type, byte> Types = new();
-
-    /// <summary>Gets a value indicating whether no type was added; the processors skip the lookup then.</summary>
-    public static bool IsEmpty => Types.IsEmpty;
-
-    /// <summary>Adds a type whose objects are masked whole wherever MP Core's processors see them.</summary>
-    /// <param name="type">The type.</param>
-    public static void Add(Type type)
-    {
-        ArgumentNullException.ThrowIfNull(type);
-        Types.TryAdd(type, 0);
-    }
-
-    /// <summary>Determines whether objects of a type are masked whole.</summary>
-    /// <param name="type">The type.</param>
-    public static bool Contains(Type type)
-    {
-        ArgumentNullException.ThrowIfNull(type);
-        return !Types.IsEmpty && Types.ContainsKey(type);
     }
 }

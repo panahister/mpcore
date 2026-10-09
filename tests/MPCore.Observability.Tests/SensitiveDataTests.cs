@@ -140,9 +140,9 @@ public sealed class SensitiveDataTests
     [Fact]
     public void An_object_of_a_sensitive_message_type_is_masked_whole()
     {
-        SensitiveMessageTypes.Add(typeof(OtpChallenge));
         var exportedLogs = new List<LogRecord>();
         var services = new ServiceCollection();
+        services.AddMPCoreSensitiveMessageTypes(typeof(OtpChallenge));
         services.AddMPCoreObservability(new MPCoreObservabilityOptions { ServiceName = "tests", EnableOtlpExporter = false, Signals = new MPCoreObservabilitySignals() });
         services.ConfigureOpenTelemetryLoggerProvider(logging => logging.AddInMemoryExporter(exportedLogs));
         using var provider = services.BuildServiceProvider();

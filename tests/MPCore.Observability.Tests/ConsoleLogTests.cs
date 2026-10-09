@@ -49,10 +49,10 @@ public sealed class ConsoleLogTests
     [Fact]
     public void An_object_of_a_sensitive_message_type_and_a_sensitive_name_print_as_the_mask()
     {
-        SensitiveMessageTypes.Add(typeof(OtpChallenge));
         var console = Run(
             consoleLogs: true,
-            logger => logger.LogInformation("Challenge {Challenge} for {Phone}", new OtpChallenge("+1-555-0100", new SensitiveValue(Known)), "+1-555-0100"));
+            logger => logger.LogInformation("Challenge {Challenge} for {Phone}", new OtpChallenge("+1-555-0100", new SensitiveValue(Known)), "+1-555-0100"),
+            services => services.AddMPCoreSensitiveMessageTypes(typeof(OtpChallenge)));
 
         Assert.Contains("Challenge *** for ***", console, StringComparison.Ordinal);
         Assert.DoesNotContain("+1-555-0100", console, StringComparison.Ordinal);
@@ -82,7 +82,7 @@ public sealed class ConsoleLogTests
         Signals = new MPCoreObservabilitySignals()
     };
 
-    private static string Run(bool consoleLogs, Action<ILogger> log)
+    private static string Run(bool consoleLogs, Action<ILogger> log, Action<IServiceCollection>? configure = null)
     {
         var console = new StringWriter();
         var original = Console.Out;
@@ -91,6 +91,7 @@ public sealed class ConsoleLogTests
         {
             var services = new ServiceCollection();
             services.AddMPCoreObservability(Options(consoleLogs));
+            configure?.Invoke(services);
             using var provider = services.BuildServiceProvider();
             log(provider.GetRequiredService<ILoggerFactory>().CreateLogger("tests"));
             provider.GetRequiredService<LoggerProvider>().ForceFlush();
