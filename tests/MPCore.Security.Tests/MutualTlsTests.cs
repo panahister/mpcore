@@ -62,6 +62,34 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
+    [Fact]
+    public async Task A_valid_certificate_without_a_bearer_token_is_refused_where_a_token_is_required_and_is_never_the_actor()
+    {
+        await using var host = await Host.StartAsync(_certificates);
+        using var client = host.RawClient(_certificates.Orders);
+
+        // An endpoint with no policy of its own is held by the authenticated fallback policy: the certificate does not
+        // stand in for the token.
+        var withoutToken = await client.SendAsync(host.Request("/default", withToken: false));
+
+        // With a token, the actor is what the token says, even when the certificate names another workload.
+        var withToken = await client.SendAsync(host.Request("/default", withToken: true, client: "reporting"));
+        var actor = await withToken.Content.ReadFromJsonAsync<JsonElement>();
+
+        // Where anyone may call, a certificate with no token leaves the actor anonymous.
+        var open = await client.SendAsync(host.Request("/open", withToken: false));
+        var anonymous = await open.Content.ReadFromJsonAsync<JsonElement>();
+
+        Assert.Equal(HttpStatusCode.Unauthorized, withoutToken.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, withToken.StatusCode);
+        Assert.Equal("Service", actor.GetProperty("kind").GetString());
+        Assert.Equal("reporting", actor.GetProperty("client").GetString());
+        Assert.Equal(HttpStatusCode.OK, open.StatusCode);
+        Assert.Equal("Anonymous", anonymous.GetProperty("kind").GetString());
+        Assert.Equal(JsonValueKind.Null, anonymous.GetProperty("client").ValueKind);
+        Assert.Equal(JsonValueKind.Null, anonymous.GetProperty("subject").ValueKind);
+    }
+
     public static TheoryData<string> RefusedAtTheHandshake() => new() { "no-certificate", "another-authority", "expired", "name-not-listed", "server-certificate-as-client" };
 
     [Theory]
@@ -352,23 +380,37 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
                 client = actors.Current.ClientId
             })).RequireWorkloadCertificate();
 
+            // No policy of its own: the authenticated fallback policy applies. And an endpoint open to anyone, which
+            // shows who the current actor is when a certificate arrives with no token.
+            application.MapGet("/default", static (ICurrentActorAccessor actors) => Results.Ok(new
+            {
+                kind = actors.Current.Kind.ToString(),
+                client = actors.Current.ClientId
+            }));
+            application.MapGet("/open", static (ICurrentActorAccessor actors) => Results.Ok(new
+            {
+                kind = actors.Current.Kind.ToString(),
+                client = actors.Current.ClientId,
+                subject = actors.Current.SubjectId
+            })).AllowAnonymous();
+
             await application.StartAsync();
             var address = application.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.Single();
             return new Host(application, identity, logs, new Uri(address));
         }
 
-        public HttpRequestMessage Request(string path, bool withToken)
+        public HttpRequestMessage Request(string path, bool withToken, string client = ServiceClient)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, new Uri(Address, path));
             if (withToken)
             {
                 request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + _identity.CreateToken(
-                    subject: "service-orders",
+                    subject: $"service-{client}",
                     claims: new Dictionary<string, object>
                     {
-                        ["azp"] = ServiceClient,
-                        ["client_id"] = ServiceClient,
-                        ["preferred_username"] = "service-account-orders"
+                        ["azp"] = client,
+                        ["client_id"] = client,
+                        ["preferred_username"] = $"service-account-{client}"
                     }));
             }
 
