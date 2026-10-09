@@ -106,7 +106,7 @@ and `IGrpcFailureLocalizer` keep their shape; their default implementations now 
 port when one is registered, and render nothing otherwise, exactly as before.
 
 A new package, `MPCore.Localization`, implements it as a **message catalog** over `IMessageTemplateSource`s
-ordered by precedence: MP Core's own texts (−100; English and Persian ship in the package), the product's
+ordered by precedence: MP Core's own texts (−100; English and Persian ship in the package — superseded from 0.10.0 by the amendment "English is MP Core's only built-in language" (2026-10-08): English only), the product's
 resource files (0), and administrator overrides (100). Rendering walks the requested culture, its parents,
 the default culture and the neutral text, exactly as .NET's `ResourceManager` does, and substitutes
 named placeholders (`{limit}`) so a translator may reorder them. A key with no template anywhere renders
@@ -206,7 +206,8 @@ its Contracts projects publish one interface, a read. A later use case will show
   placement prevented (the handler ran on an invalid command and was validated after).
 - `MPCore.Validation.Tests`: conversion of paths, codes, keys and limits; the caller's value is never
   carried; an invalid message never reaches the handler under Wolverine's `NotAllowed` service-location
-  policy; every built-in validator has an English and a Persian default text.
+  policy; every built-in validator has an English and a Persian default text (superseded from 0.10.0 by the
+  amendment "English is MP Core's only built-in language" (2026-10-08): an English default text).
 - `MPCore.Localization.Tests`: culture chain, overrides, placeholders, missing-key metric and log, REST
   `detail` in the negotiated language, and stored translations against a real PostgreSQL database,
   including an uncommitted change that is never served.
@@ -255,7 +256,7 @@ as enforced by review.
 | 4.3 | `AddMPCoreValidators(assembly)`; the template registers validators for every handler assembly | `TemplateContractTests.Every_host_renders_messages_and_validates_input_before_the_handler` |
 | 4.4 | A validator checks shape; a check that needs state is a business rule, and the Application project cannot reach the database | `TemplateContractTests.The_application_layer_declares_ports_and_stays_provider_neutral`; the division itself is text only |
 | 5.1 | `IFailureMessageLocalizer` is the neutral port; the transport localizers delegate to it when registered and render nothing otherwise | `MessageCatalogTests.The_catalog_is_the_transport_neutral_localizer`; `HttpLocalizationTests.Without_a_catalog_the_detail_is_omitted_as_before` |
-| 5.2 | `MPCore.Localization` is a catalog over sources by precedence: MP Core (−100), the product (0), overrides (100) | `MessageCatalogTests.MP_Core_messages_ship_in_English_and_Persian_below_the_product`, `An_override_source_beats_the_resource_file_only_in_its_culture` |
+| 5.2 | `MPCore.Localization` is a catalog over sources by precedence: MP Core (−100), the product (0), overrides (100) | `MessageCatalogTests.MP_Core_messages_ship_in_English_below_the_product` (renamed from the test of English and Persian, which the amendment "English is MP Core's only built-in language" (2026-10-08) replaced), `An_override_source_beats_the_resource_file_only_in_its_culture` |
 | 5.3 | Rendering walks the culture, its parents, the default culture and the neutral text | `MessageCatalogTests.A_key_is_rendered_through_the_culture_chain`, `A_key_translated_nowhere_falls_back_to_the_default_text`; the transports' full parent chain: `A_region_two_steps_from_what_is_supported_still_resolves` |
 | 5.4 | Named placeholders, which a translator may reorder | `MessageCatalogTests.Named_placeholders_are_substituted_and_unknown_ones_stay` |
 | 5.5 | A key with no template renders nothing, increments `mpcore.localization.missing` and is logged once | `MessageCatalogTests.A_missing_key_renders_nothing_is_counted_and_is_logged_once` |
