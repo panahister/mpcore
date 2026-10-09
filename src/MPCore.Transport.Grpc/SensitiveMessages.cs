@@ -25,7 +25,8 @@ public static class SensitiveMessageRegistrationExtensions
     /// Keeps the request and response messages of the named services out of the logs: when the host starts, with
     /// every endpoint mapped and before the server listens, the message types of each method of those services
     /// join the host's <see cref="SensitiveMessageTypes"/>, and MP Core's log and trace processors mask any
-    /// attribute or tag that holds one. A message logged before the first call is masked as well.
+    /// attribute or tag that holds one. A message is masked from host start: one logged from the
+    /// application-started callback, or by a handler, is masked, and no call is needed first.
     /// </summary>
     /// <remarks>
     /// Google.Protobuf prints every field of a message, even one marked <c>debug_redact</c>, so a handler that logs
@@ -33,6 +34,14 @@ public static class SensitiveMessageRegistrationExtensions
     /// processors run: the OpenTelemetry logs and traces of <c>AddMPCoreObservability</c>, which is the only log
     /// pipeline of a host generated from the template. The host fails to start when a name is that of no mapped
     /// service: a mistyped name would leave the service unmasked without a sign of it.
+    /// <para>
+    /// Not covered: a request object of a named service that is logged before the registry is filled, by a hosted
+    /// service that starts before the fill (one added with <c>AddHostedService</c> starts before the web host's own
+    /// hosted service, which runs the fill) or by code between <c>Build</c> and <c>Run</c>. It is printed whole on
+    /// the console and in the log export. A type that must be masked earlier is registered in the service
+    /// collection with <c>AddMPCoreSensitiveMessageTypes(typeof(...))</c>, which puts it in the registry when the
+    /// container creates it.
+    /// </para>
     /// </remarks>
     /// <param name="builder">The gRPC server builder.</param>
     /// <param name="serviceNames">Full service names: <c>package.Service</c>.</param>

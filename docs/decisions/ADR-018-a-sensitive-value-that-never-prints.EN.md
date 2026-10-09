@@ -49,9 +49,19 @@ host starts, with every endpoint mapped and before the server listens, it reads 
 endpoint of a named service (`Method<TRequest, TResponse>`, from the endpoint's `GrpcMethodMetadata`) and adds
 the request and response types to the host's `SensitiveMessageTypes` (`MPCore.Application`). The log and trace
 processors mask whole any attribute or tag that holds an object of such a type, and scrub its text from the
-formatted message. A message is therefore masked from the first record, before any call, whether a handler,
-a hosted service or a startup check logs it. A host can add any other type itself, for example the messages of
-a client, with `services.AddMPCoreSensitiveMessageTypes(typeof(...))`.
+formatted message. A message is therefore masked from host start: from the application-started callback and
+from every call, whether a handler or a startup check logs it, and no call is needed first.
+
+Not covered: a request object of a named service that is logged before the registry is filled. The fill runs
+when the web host starts, in the web host's own hosted service; a hosted service added with `AddHostedService`
+starts before it, and code between `Build` and `Run` runs before any of them. Such a log prints the object
+whole, on the console and in the log export. This was seen in one host with all three logs of the same request:
+the hosted service's and the one between `Build` and `StartAsync` printed `{ "phone": ..., "code": ... }`, and
+the application-started callback printed `***`. The mechanism is unchanged. A type that must be masked in that
+window is registered in the service collection, with `services.AddMPCoreSensitiveMessageTypes(typeof(...))`,
+because the registry holds such a type from the moment the container creates it; with the request type
+registered that way, the same two logs printed `***`. A host can add any other type the same way, for example
+the messages of a client.
 
 The registry is a service of the host's container, one per host, and the processors take it from there. The
 first version of this decision kept it in a static, filled by an interceptor at the first call of a method. That
@@ -96,7 +106,7 @@ A product generated before this change keeps the providers it has; it moves by a
 | `SensitiveDataTests.The_name_processors_also_mask_nested_attributes` | `http.request.header.authorization` and a password inside a nested collection are masked in logs and traces; a neighbouring order id is kept |
 | `SensitiveDataTests.The_name_list_is_unchanged` | the 22 names |
 | `SensitiveDataTests.An_object_of_a_sensitive_message_type_is_masked_whole` | an object of an added type is masked, and its text is scrubbed from the message |
-| `SensitiveMessageTests`, 4 | a gRPC handler of a named service logs its request and its response: both are masked, and neither the code (a `debug_redact` field), the phone nor the session appears in the message; the handler of a service that is not named is logged as it is. A message logged before any call is masked (run alone against the static registry it printed `{ "phone": "+1-555-0100", "code": "552-118" }`; in the suite it passed only because another test had filled the static first). What one host names does not reach a second host of the process (seen failing when one registry is shared). A name that no mapped service has fails the start (seen failing: no exception) |
+| `SensitiveMessageTests`, 5 | a gRPC handler of a named service logs its request and its response: both are masked, and neither the code (a `debug_redact` field), the phone nor the session appears in the message; the handler of a service that is not named is logged as it is. A message logged after the host started and before any call is masked (run alone against the static registry it printed `{ "phone": "+1-555-0100", "code": "552-118" }`; in the suite it passed only because another test had filled the static first). A message logged from the application-started callback is masked (seen failing when the filling adds the wrong type: `Expected: ***`, `Actual: { "phone": "+1-555-0100", "code": "552-118" }`). What one host names does not reach a second host of the process (seen failing when one registry is shared). A name that no mapped service has fails the start (seen failing: no exception) |
 | `ConsoleLogTests`, 4 | the console sink is off unless a host turns it on; an entry is written after masking (a sensitive value, a sensitive name and a message type are `***`); scopes are not printed, an exception is; moving the sink before the redaction processor makes two of them fail |
 | `TemplateContractTests.The_host_clears_the_default_logging_providers_before_the_foundation_registers_its_pipeline` | `ClearProviders` is in `Program.cs` and before `AddMPCoreFoundation`; no template file adds a console, debug, event-source or event-log provider; seen failing when `ClearProviders` is removed, when it comes after the foundation, and when `AddConsole()` returns |
 | `GeneratedBackendTests.A_generated_host_prints_no_sensitive_request_to_its_console_and_the_default_providers_would` | a host generated from the template, with a gRPC service that logs its request, is built and run, and called once over HTTP/2: its console shows `Verify ***`, its other logs, and neither the phone, the code nor the field names. With `ClearProviders` removed the same call prints `Verify { "phone": "+1-555-0100", "code": "552-118" }`, and the test, run against the template as it was before this change, fails with that line |

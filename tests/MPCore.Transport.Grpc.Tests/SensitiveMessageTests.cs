@@ -75,6 +75,35 @@ public sealed class SensitiveMessageTests
     }
 
     [Fact]
+    public async Task A_message_logged_from_the_application_started_callback_is_masked()
+    {
+        var exported = new List<LogRecord>();
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseTestServer();
+        builder.Logging.ClearProviders();
+        builder.Services.AddMPCoreObservability(new MPCoreObservabilityOptions { ServiceName = "tests", EnableOtlpExporter = false, Signals = new MPCoreObservabilitySignals() });
+        builder.Services.ConfigureOpenTelemetryLoggerProvider(logging => logging.AddInMemoryExporter(exported));
+        builder.Services.AddGrpc().AddMPCoreSensitiveMessages("mpcore.sensitive_test.v1.OtpProbe");
+        await using var application = builder.Build();
+        application.MapGrpcService<OtpProbeService>();
+        var logger = application.Services.GetRequiredService<ILoggerFactory>().CreateLogger("application-started");
+
+        // The registry is filled when the web host starts, before the server listens: the callback that tells the
+        // application it has started is the first moment code of the host's own can rely on it. A request object
+        // logged earlier (by a hosted service that starts before the fill, or by code between Build and Run) is
+        // not covered, and this test does not claim it is.
+        application.Lifetime.ApplicationStarted.Register(
+            () => logger.LogInformation("Started {Request}", new VerifyRequest { Phone = "+1-555-0100", Code = Code }));
+        await application.StartAsync();
+        application.Services.GetRequiredService<LoggerProvider>().ForceFlush();
+
+        var record = Assert.Single(exported, record => record.CategoryName == "application-started");
+        Assert.Equal(SensitiveLogRecordProcessor.Mask, record.Attributes!.Single(attribute => attribute.Key == "Request").Value);
+        Assert.DoesNotContain(Code, record.FormattedMessage, StringComparison.Ordinal);
+        Assert.DoesNotContain("+1-555-0100", record.FormattedMessage, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task What_one_host_names_does_not_reach_another_host_of_the_same_process()
     {
         var namedLogs = new List<LogRecord>();

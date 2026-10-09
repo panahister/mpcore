@@ -59,7 +59,9 @@ public static class ObservabilityExtensions
         services.AddSingleton(plan);
 
         // The processors read the host's registry of sensitive message types when the providers are created, so
-        // a type added at startup is masked from the first record, and hosts of one process share nothing.
+        // a type is masked from the moment it is in the registry: a type the host registers in the service
+        // collection, from the first record; a type a named gRPC service adds, from host start. Hosts of one
+        // process share nothing.
         services.AddMPCoreSensitiveMessageTypes();
 
         services.Configure<OpenTelemetryLoggerOptions>(logging =>
