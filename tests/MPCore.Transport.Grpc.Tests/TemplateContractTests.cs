@@ -185,6 +185,34 @@ public sealed class TemplateContractTests
     }
 
     [Fact]
+    public void The_host_clears_the_default_logging_providers_before_the_foundation_registers_its_pipeline()
+    {
+        var program = File.ReadAllText(
+            Path.Combine(TemplateRoot, "src/MPCore.Backend.Api/Program.cs"));
+        var settings = File.ReadAllText(
+            Path.Combine(TemplateRoot, "src/MPCore.Backend.Api/appsettings.json"));
+
+        // WebApplication.CreateBuilder adds the console, debug and event-source providers. Each prints a log
+        // argument as it is, so a protobuf request of a sensitive service reaches the console whole. They are
+        // cleared before the foundation registers MP Core's pipeline, because ClearProviders also removes a
+        // provider registered earlier; the pipeline's console sink then keeps the logs on the console.
+        var clear = program.IndexOf("builder.Logging.ClearProviders();", StringComparison.Ordinal);
+        var foundation = program.IndexOf("builder.Services.AddMPCoreFoundation(", StringComparison.Ordinal);
+        Assert.True(clear > 0, "Program.cs must clear the default logging providers.");
+        Assert.True(clear < foundation, "ClearProviders must come before AddMPCoreFoundation, or it removes MP Core's provider too.");
+        Assert.Contains("EnableConsoleLogExporter = builder.Configuration.GetValue(\"Observability:EnableConsoleLogExporter\", true)", program, StringComparison.Ordinal);
+        Assert.Contains("\"EnableConsoleLogExporter\": true", settings, StringComparison.Ordinal);
+
+        // No code of the template brings a provider back: they would print what the pipeline masks.
+        var provider = new Regex(@"\.Add(Console|SimpleConsole|JsonConsole|SystemdConsole|Debug|EventSourceLogger|EventLog|TraceSource)\s*\(");
+        var returned = Directory.EnumerateFiles(Path.Combine(TemplateRoot, "src"), "*.cs", SearchOption.AllDirectories)
+            .Where(file => provider.IsMatch(File.ReadAllText(file)))
+            .Select(file => Path.GetRelativePath(TemplateRoot, file))
+            .ToArray();
+        Assert.Empty(returned);
+    }
+
+    [Fact]
     public void Kestrel_endpoints_are_declared_per_transport_with_authoritative_protocols()
     {
         var settings = File.ReadAllText(

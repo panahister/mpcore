@@ -111,7 +111,7 @@ public sealed class ObservabilityPlan
     /// <summary>Named OTLP options for traces.</summary>
     public const string TracesExporterName = "mpcore-traces";
 
-    private ObservabilityPlan(ResolvedDestination logs, ResolvedDestination metrics, ResolvedDestination traces, double samplingRatio, bool prometheus, string prometheusPath, bool redaction, IReadOnlySet<string> sensitiveFields)
+    private ObservabilityPlan(ResolvedDestination logs, ResolvedDestination metrics, ResolvedDestination traces, double samplingRatio, bool prometheus, string prometheusPath, bool redaction, IReadOnlySet<string> sensitiveFields, bool consoleLogs)
     {
         Logs = logs;
         Metrics = metrics;
@@ -120,6 +120,7 @@ public sealed class ObservabilityPlan
         PrometheusScrapeEnabled = prometheus;
         PrometheusScrapePath = prometheusPath;
         RedactionEnabled = redaction;
+        ConsoleLogsEnabled = consoleLogs;
         SensitiveFields = sensitiveFields;
     }
 
@@ -143,6 +144,9 @@ public sealed class ObservabilityPlan
 
     /// <summary>Whether redaction processors are attached.</summary>
     public bool RedactionEnabled { get; }
+
+    /// <summary>Whether log records are also written to standard output, after the redaction processor.</summary>
+    public bool ConsoleLogsEnabled { get; }
 
     /// <summary>Names redacted in log attributes and trace tags, case-insensitive.</summary>
     public IReadOnlySet<string> SensitiveFields { get; }
@@ -183,7 +187,8 @@ public sealed class ObservabilityPlan
             signals.Metrics.Prometheus.Enabled,
             path,
             signals.Redaction.Enabled,
-            fields);
+            fields,
+            options.EnableConsoleLogExporter);
     }
 
     private static ResolvedDestination Resolve(SignalDestination destination, SignalExporter fallback, string signal)

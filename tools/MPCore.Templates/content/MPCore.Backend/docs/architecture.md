@@ -419,6 +419,12 @@ to different backends or the same one. Nothing is exported until you say so. Sen
 attributes and trace tags are masked before they leave the process; metric labels are not
 redacted, so never put an identifier in one. Telemetry export failure never fails a request.
 
+The host writes its logs to the console through the same pipeline: `Program.cs` clears the logging
+providers ASP.NET Core adds (console, debug, event source) before it registers the foundation, and
+`Observability:EnableConsoleLogExporter` (`true`) adds a console sink after the redaction. This is on
+purpose. The providers that were cleared print a log argument as it is, so a protobuf request of a
+sensitive service would reach the console whole, one-time code included. Do not add a provider back.
+
 ## Security and trust boundary
 
 The gateway (APISIX or another reverse proxy) is trusted for `X-Forwarded-For`, `X-Forwarded-Proto`

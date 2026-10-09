@@ -1,7 +1,11 @@
 using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Grpc.Core;
+using Grpc.Net.Client;
 
 namespace MPCore.Transport.Grpc.Tests;
 
@@ -84,6 +88,39 @@ public sealed partial class GeneratedBackendTests
         Assert.Equal("Failed", seeded.Outcome(Rule));
         Assert.Contains("ListRecentHandler.Handle takes IMessagePublisher", seeded.Message(Rule), StringComparison.Ordinal);
     }
+
+    /// <summary>
+    /// A host generated from the template logs the request of a gRPC service the host names as sensitive. Its
+    /// console shows neither the value nor the names of the fields; it still shows the host's other logs. With
+    /// the default logging providers brought back, which the template clears, the same call prints the request
+    /// whole: the check can see the leak it guards against.
+    /// </summary>
+    [GeneratedHostFact]
+    public async Task A_generated_host_prints_no_sensitive_request_to_its_console_and_the_default_providers_would()
+    {
+        var connection = Environment.GetEnvironmentVariable("MPCORE_TEST_POSTGRESQL")!;
+        using var workspace = await Workspace.GenerateAsync("service", transport: "grpc");
+        workspace.SeedSensitiveService();
+
+        var clean = await workspace.RunHostAsync(connection, Phone, Code);
+
+        // The pipeline's console sink keeps the host's own logs on the console: silence would also be clean.
+        Assert.True(clean.Contains("Application started", StringComparison.Ordinal), "The host's console shows no log:\n" + clean);
+        Assert.True(clean.Contains("OtpProbeService: Verify ***", StringComparison.Ordinal), "The handler's log is not the masked request:\n" + clean);
+        foreach (var leaked in new[] { Phone, Code, "\"code\"", "\"phone\"" })
+        {
+            Assert.False(clean.Contains(leaked, StringComparison.Ordinal), $"The console holds {leaked}:\n" + clean);
+        }
+
+        // Seeded violation: the providers ASP.NET Core adds return.
+        workspace.Replace("src/Acme.Ledger.Api/Program.cs", "builder.Logging.ClearProviders();", "// Seeded violation: the default providers return.");
+        var seeded = await workspace.RunHostAsync(connection, Phone, Code);
+
+        Assert.True(seeded.Contains(Code, StringComparison.Ordinal), "With the default providers back, the console should show the request:\n" + seeded);
+    }
+
+    private const string Phone = "+1-555-0100";
+    private const string Code = "552-118";
 
     /// <summary>A rule of the generated tests, the violation that must break it, and what its failure names.</summary>
     private sealed record Rule(string Test, string Evidence, Action<Workspace> Seed);
@@ -268,7 +305,7 @@ public sealed partial class GeneratedBackendTests
 
         public string Backend { get; }
 
-        public static async Task<Workspace> GenerateAsync(string shape)
+        public static async Task<Workspace> GenerateAsync(string shape, string transport = "rest")
         {
             var workspace = new Workspace(Directory.CreateTempSubdirectory("mpcore-generated-").FullName);
             try
@@ -278,7 +315,7 @@ public sealed partial class GeneratedBackendTests
                     workspace._root,
                     "new", "mpcore-backend", "--name", "Acme.Ledger", "--output", workspace.Backend,
                     "--organization", "Acme", "--component", "Ledger", "--shape", shape, "--messaging", "none",
-                    "--transport", "rest", "--businessAudit", "none", "--cache", "none", "--timeseries", "none",
+                    "--transport", transport, "--businessAudit", "none", "--cache", "none", "--timeseries", "none",
                     "--aiTooling", "none", "--securityAuthority", "https://identity.invalid/realms/replace-me",
                     "--securityAudience", "replace-me", "--mpcoreVersion", CohortVersion());
                 workspace.UseMPCoreSource();
@@ -296,6 +333,163 @@ public sealed partial class GeneratedBackendTests
             var path = Path.Combine(Backend, relativePath);
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             File.WriteAllText(path, content);
+        }
+
+        /// <summary>
+        /// A gRPC service that logs its request, named as sensitive, and open to an anonymous caller: the
+        /// authenticated fallback policy would refuse the call before the handler logged anything.
+        /// </summary>
+        public void SeedSensitiveService()
+        {
+            Write("src/Acme.Ledger.Api/Protos/otp_probe.proto", """
+                syntax = "proto3";
+
+                option csharp_namespace = "Acme.Ledger.Api.Otp";
+
+                package acme.ledger.otp.v1;
+
+                service OtpProbe {
+                  rpc Verify (VerifyRequest) returns (VerifyReply);
+                }
+
+                message VerifyRequest {
+                  string phone = 1;
+                  string code = 2;
+                }
+
+                message VerifyReply {
+                  string session = 1;
+                }
+                """);
+            Write("src/Acme.Ledger.Api/Grpc/Services/OtpProbeService.cs", """
+                using Acme.Ledger.Api.Otp;
+                using Grpc.Core;
+
+                namespace Acme.Ledger.Api.Grpc.Services;
+
+                public sealed class OtpProbeService(ILogger<OtpProbeService> logger) : OtpProbe.OtpProbeBase
+                {
+                    public override Task<VerifyReply> Verify(VerifyRequest request, ServerCallContext context)
+                    {
+                        logger.LogInformation("Verify {Request}", request);
+                        return Task.FromResult(new VerifyReply { Session = "session-7f3a" });
+                    }
+                }
+                """);
+            Replace(
+                "src/Acme.Ledger.Api/Acme.Ledger.Api.csproj",
+                "<Protobuf Include=\"Protos/platform_probe.proto\" GrpcServices=\"Server\" />",
+                "<Protobuf Include=\"Protos/platform_probe.proto\" GrpcServices=\"Server\" />\n    <Protobuf Include=\"Protos/otp_probe.proto\" GrpcServices=\"Server\" />");
+            Replace(
+                "src/Acme.Ledger.Api/Program.cs",
+                "builder.Services.AddGrpc().AddMPCoreFailureHandling();",
+                "builder.Services.AddGrpc().AddMPCoreFailureHandling().AddMPCoreSensitiveMessages(\"acme.ledger.otp.v1.OtpProbe\");");
+            Replace(
+                "src/Acme.Ledger.Api/Program.cs",
+                "var grpcProbeEndpoint = app.MapGrpcService<PlatformProbeService>();",
+                "var grpcProbeEndpoint = app.MapGrpcService<PlatformProbeService>();\napp.MapGrpcService<OtpProbeService>().AllowAnonymous();");
+
+            // The host's message store lives in a schema of its own in the test database.
+            Replace("src/Acme.Ledger.Api/Program.cs", "PersistenceSchemaName = \"wolverine\"", "PersistenceSchemaName = \"wolverine_generated_host_tests\"");
+        }
+
+        /// <summary>
+        /// Builds the generated host, runs it on a free loopback port, calls the seeded service once, and returns
+        /// what the host wrote to its console by then.
+        /// </summary>
+        public async Task<string> RunHostAsync(string postgreSql, string phone, string code)
+        {
+            await RunOrThrowAsync(Backend, "build", "src/Acme.Ledger.Api/Acme.Ledger.Api.csproj", "--configuration", "Release", "-nodeReuse:false");
+            var output = Directory.GetDirectories(Path.Combine(Backend, "src/Acme.Ledger.Api/bin/Release")).Single();
+            int port;
+            using (var probe = new TcpListener(IPAddress.Loopback, 0))
+            {
+                probe.Start();
+                port = ((IPEndPoint)probe.LocalEndpoint).Port;
+            }
+
+            var start = new ProcessStartInfo("dotnet")
+            {
+                // The content root is the working directory: the host reads its appsettings.json from here.
+                WorkingDirectory = output,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+            };
+            start.ArgumentList.Add("Acme.Ledger.Api.dll");
+            ApplyEnvironment(start);
+            start.Environment["Kestrel__Endpoints__Grpc__Url"] = $"http://127.0.0.1:{port}";
+            start.Environment["ConnectionStrings__PostgreSql"] = postgreSql;
+            start.Environment["DOTNET_ENVIRONMENT"] = "Production";
+            start.Environment["ASPNETCORE_ENVIRONMENT"] = "Production";
+
+            var console = new List<string>();
+            string Output()
+            {
+                lock (console)
+                {
+                    return string.Join('\n', console);
+                }
+            }
+
+            async Task<bool> WaitForAsync(string text, TimeSpan patience)
+            {
+                var until = DateTime.UtcNow + patience;
+                while (DateTime.UtcNow < until)
+                {
+                    if (Output().Contains(text, StringComparison.Ordinal))
+                    {
+                        return true;
+                    }
+
+                    await Task.Delay(100);
+                }
+
+                return false;
+            }
+
+            using var process = new Process { StartInfo = start };
+            DataReceivedEventHandler collect = (_, line) =>
+            {
+                if (line.Data is not null)
+                {
+                    lock (console)
+                    {
+                        console.Add(line.Data);
+                    }
+                }
+            };
+            process.OutputDataReceived += collect;
+            process.ErrorDataReceived += collect;
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            try
+            {
+                Assert.True(await WaitForAsync("Application started", TimeSpan.FromMinutes(2)), "The generated host did not start:\n" + Output());
+
+                // A unary call by hand: the request is the two string fields of the seeded message.
+                byte[] Field(int number, string value) => [(byte)((number << 3) | 2), (byte)Encoding.UTF8.GetByteCount(value), .. Encoding.UTF8.GetBytes(value)];
+                var method = new Method<byte[], byte[]>(
+                    MethodType.Unary,
+                    "acme.ledger.otp.v1.OtpProbe",
+                    "Verify",
+                    Marshallers.Create(static bytes => bytes, static bytes => bytes),
+                    Marshallers.Create(static bytes => bytes, static bytes => bytes));
+                using var channel = GrpcChannel.ForAddress($"http://127.0.0.1:{port}");
+                await channel.CreateCallInvoker()
+                    .AsyncUnaryCall(method, null, new CallOptions(deadline: DateTime.UtcNow.AddSeconds(30)), [.. Field(1, phone), .. Field(2, code)])
+                    .ResponseAsync;
+
+                Assert.True(await WaitForAsync("OtpProbeService", TimeSpan.FromSeconds(15)), "The handler logged nothing:\n" + Output());
+            }
+            finally
+            {
+                process.Kill(entireProcessTree: true);
+                process.WaitForExit();
+            }
+
+            return Output();
         }
 
         public void AddProjectReference(string project, string reference)
@@ -424,22 +618,7 @@ public sealed partial class GeneratedBackendTests
                 start.ArgumentList.Add(argument);
             }
 
-            // The test host inherits what the outer `dotnet test` and MSBuild set, and MSBuild reads every
-            // environment variable as a property. The generated build starts from a clean environment instead.
-            var inherited = start.Environment.ToDictionary(static pair => pair.Key, static pair => pair.Value);
-            start.Environment.Clear();
-            foreach (var name in new[] { "PATH", "HOME", "USER", "LOGNAME", "TMPDIR", "TEMP", "TMP", "LANG", "LC_ALL", "SHELL", "DOTNET_ROOT" })
-            {
-                if (inherited.TryGetValue(name, out var value) && value is not null)
-                {
-                    start.Environment[name] = value;
-                }
-            }
-
-            foreach (var (name, value) in _environment)
-            {
-                start.Environment[name] = value;
-            }
+            ApplyEnvironment(start);
 
             using var process = Process.Start(start)!;
             var output = process.StandardOutput.ReadToEndAsync();
@@ -456,6 +635,29 @@ public sealed partial class GeneratedBackendTests
             }
 
             return (process.ExitCode, await output + await error);
+        }
+
+        /// <summary>
+        /// The test host inherits what the outer `dotnet test` and MSBuild set, and MSBuild reads every
+        /// environment variable as a property. The generated build, and the generated host, start from a clean
+        /// environment instead.
+        /// </summary>
+        private void ApplyEnvironment(ProcessStartInfo start)
+        {
+            var inherited = start.Environment.ToDictionary(static pair => pair.Key, static pair => pair.Value);
+            start.Environment.Clear();
+            foreach (var name in new[] { "PATH", "HOME", "USER", "LOGNAME", "TMPDIR", "TEMP", "TMP", "LANG", "LC_ALL", "SHELL", "DOTNET_ROOT" })
+            {
+                if (inherited.TryGetValue(name, out var value) && value is not null)
+                {
+                    start.Environment[name] = value;
+                }
+            }
+
+            foreach (var (name, value) in _environment)
+            {
+                start.Environment[name] = value;
+            }
         }
 
         private static string CohortVersion() =>
@@ -478,4 +680,16 @@ public sealed partial class GeneratedBackendTests
 
     [GeneratedRegex("<VersionPrefix>([^<]+)</VersionPrefix>")]
     private static partial Regex VersionPrefix();
+}
+
+/// <summary>Runs only when MPCORE_TEST_POSTGRESQL holds a connection string to a disposable database: the generated host stores its messages there.</summary>
+public sealed class GeneratedHostFactAttribute : FactAttribute
+{
+    public GeneratedHostFactAttribute()
+    {
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("MPCORE_TEST_POSTGRESQL")))
+        {
+            Skip = "Set MPCORE_TEST_POSTGRESQL to a disposable PostgreSQL connection string to run a generated host.";
+        }
+    }
 }

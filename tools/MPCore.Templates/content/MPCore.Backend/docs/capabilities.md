@@ -178,6 +178,7 @@ hybrid adapter; memory and Redis run the factory per concurrent caller and say s
 <!--#endif -->
 | Trace sampling ratio | Supported | `Observability:Traces:SamplingRatio` |
 | Redaction of sensitive log attributes and trace tags | Supported | `Observability:Redaction` |
+| Logs on the console, after redaction; no other logging provider | Supported | `Observability:EnableConsoleLogExporter` |
 | Redaction of metric labels | **Not available** | — |
 
 ## Resilience

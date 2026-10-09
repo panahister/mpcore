@@ -55,6 +55,28 @@ other type itself, for example the messages of a client.
 transport package may not reference a security package (ADR-007), so the registry is not in
 `MPCore.Security.Abstractions`.
 
+### 4. A generated host prints through the pipeline only (`MPCore.Observability`, the template)
+
+The masking runs in MP Core's OpenTelemetry processors, and `WebApplication.CreateBuilder` adds three logging
+providers beside them: console, debug and event source. Each prints a log argument as the argument prints,
+so a protobuf request of a named service reached the console whole, a one-time code and a token included.
+The template now closes this:
+
+- `builder.Logging.ClearProviders()` comes before `AddMPCoreFoundation`. The order matters: `ClearProviders`
+  removes every provider registered so far, MP Core's own included.
+- `MPCoreObservabilityOptions.EnableConsoleLogExporter` (off by default for a library; the template turns it
+  on with `Observability:EnableConsoleLogExporter`, `true`) adds a console sink to the log pipeline, after the
+  redaction processor. A host with no provider still shows its logs, and what it shows has been masked. The
+  sink prints the time, the level, the category, the event id, the formatted message and the exception; it
+  does not print attributes, which are already in the message, or scopes, which are not redacted.
+- The convention is Microsoft's own: the default host builder adds the console, debug and event-source
+  providers (and the event-log provider on Windows), and `ILoggingBuilder.ClearProviders()` is how a host
+  that wants a different set starts from none (Microsoft Learn, "Logging in .NET and ASP.NET Core"). It was
+  chosen over wrapping every provider in a redacting logger because one pipeline masks once, and a provider
+  added later cannot skip it.
+
+A product generated before this change keeps the providers it has; it moves by adding the two lines.
+
 ## What was proved
 
 | Test | What it shows |
@@ -65,6 +87,9 @@ transport package may not reference a security package (ADR-007), so the registr
 | `SensitiveDataTests.The_name_list_is_unchanged` | the 22 names |
 | `SensitiveDataTests.An_object_of_a_sensitive_message_type_is_masked_whole` | an object of an added type is masked, and its text is scrubbed from the message |
 | `SensitiveMessageTests` | a gRPC handler of a named service logs its request and its response: both are masked, and neither the code (a `debug_redact` field), the phone nor the session appears in the message; the handler of a service that is not named is logged as it is |
+| `ConsoleLogTests`, 4 | the console sink is off unless a host turns it on; an entry is written after masking (a sensitive value, a sensitive name and a message type are `***`); scopes are not printed, an exception is; moving the sink before the redaction processor makes two of them fail |
+| `TemplateContractTests.The_host_clears_the_default_logging_providers_before_the_foundation_registers_its_pipeline` | `ClearProviders` is in `Program.cs` and before `AddMPCoreFoundation`; no template file adds a console, debug, event-source or event-log provider; seen failing when `ClearProviders` is removed, when it comes after the foundation, and when `AddConsole()` returns |
+| `GeneratedBackendTests.A_generated_host_prints_no_sensitive_request_to_its_console_and_the_default_providers_would` | a host generated from the template, with a gRPC service that logs its request, is built and run, and called once over HTTP/2: its console shows `Verify ***`, its other logs, and neither the phone, the code nor the field names. With `ClearProviders` removed the same call prints `Verify { "phone": "+1-555-0100", "code": "552-118" }`, and the test, run against the template as it was before this change, fails with that line |
 
 Nine of the eleven were seen failing against stubs of the API; the two that passed, the members of the type
 and the unchanged name list, are guards that a stub cannot fail.
@@ -83,6 +108,7 @@ and the unchanged name list, are guards that a stub cannot fail.
   consumed. Every sink then sees `***`.
 - The name processors mask more, never less: a nested or dotted name that contains a sensitive one.
 - The masking of names and of message types runs where MP Core's processors run: the OpenTelemetry logs and
-  traces of `AddMPCoreObservability`. Another logging provider, the console provider ASP.NET Core adds
-  included, prints a protobuf message it is given whole; a `SensitiveValue` masks itself everywhere.
+  traces of `AddMPCoreObservability`. A generated host has no other provider. A host that adds one, the
+  console provider included, prints a protobuf message it is given whole; a `SensitiveValue` masks itself
+  everywhere.
 - An exception message built from a message's text, and log scopes, are not scrubbed.

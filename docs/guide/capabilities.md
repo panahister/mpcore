@@ -151,6 +151,7 @@ live backends on every change. A line with neither says so.
 | Secrets masked in log attributes and trace tags; also inside a dotted name or a nested collection (next version, not yet released) | the same | Tests |
 | A value that never prints: `SensitiveValue` shows `***` in every rendering, JSON and the debugger, leaves only through `Reveal()`, and compares in constant time (next version, not yet released; ADR-018) | `MPCore.Application` | Tests: `SensitiveValueTests`, `SensitiveDataTests`, seen failing; no known value in the OpenTelemetry export, the console provider or a plain provider |
 | The request and response messages of a named gRPC service are masked whole in logs and traces (next version, not yet released; ADR-018) | `MPCore.Transport.Grpc` (`AddMPCoreSensitiveMessages`), `MPCore.Observability` | Tests: `SensitiveMessageTests`, seen failing |
+| A generated host prints through the masking pipeline only: the providers ASP.NET Core adds are cleared, and the pipeline has a console sink after the redaction (next version, not yet released; ADR-018) | the template, `MPCore.Observability` (`EnableConsoleLogExporter`) | Tests: `ConsoleLogTests`, `TemplateContractTests`; a generated host is run and called, and its console holds neither the value nor the field names |
 | The ratio of traces that are kept | the same | Tests |
 | A Prometheus scrape endpoint, protected by default | `MPCore.Observability.Prometheus` | Tests |
 | Health: alive and ready, over REST and over gRPC | the template | Tests; proved with the databases stopped |

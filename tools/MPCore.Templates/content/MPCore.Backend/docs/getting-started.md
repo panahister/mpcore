@@ -91,7 +91,11 @@ and keep `abortConnect=false` so a Redis outage degrades the cache rather than t
 `Endpoint` is an absolute URL (leave it null to use the `OTEL_EXPORTER_OTLP_*` environment);
 `Headers` carries a backend API key in `key=value` form and belongs in user secrets or the
 environment, never in this file. `Traces:SamplingRatio` is 0 to 1. `Redaction` masks sensitive
-attribute names in logs and traces and is on by default. Prometheus pull (`Metrics:Prometheus`)
+attribute names in logs and traces and is on by default. `EnableConsoleLogExporter` (`true`) writes
+the logs to the console after that redaction; the host clears the console, debug and event-source
+providers so that nothing prints what the redaction masks. The level of those logs is `Logging:LogLevel`,
+or `Logging:OpenTelemetry:LogLevel` for them alone; a `Logging:Console:*` setting no longer applies.
+Prometheus pull (`Metrics:Prometheus`)
 maps a protected endpoint on the REST listener: give the scraper a bearer token or confine the
 listener to its network.
 

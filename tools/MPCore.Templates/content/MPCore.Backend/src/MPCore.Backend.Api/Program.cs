@@ -49,12 +49,20 @@ const TransportMode HostTransport = TransportMode.Both;
 // #endif
 TransportEndpointGuard.Validate(builder.Configuration, HostTransport);
 
+// Every log goes through MP Core's pipeline and nowhere else. WebApplication.CreateBuilder adds the console,
+// debug and event-source providers, and each prints a log argument as it is: a protobuf request of a service
+// named in AddMPCoreSensitiveMessages would reach the console whole, one-time code and token included, since
+// Google.Protobuf prints even a debug_redact field (ADR-018). Clearing them must come before the foundation
+// registers the pipeline, because ClearProviders also removes a provider registered earlier; the pipeline's
+// console sink then keeps the logs on the console, after redaction.
+builder.Logging.ClearProviders();
 builder.Services.AddMPCoreFoundation(new MPCoreObservabilityOptions
 {
     ServiceName = "MPCore.Backend",
     ServiceNamespace = "MPCORE_ORGANIZATION",
     ServiceVersion = typeof(Program).Assembly.GetName().Version?.ToString(),
     EnableOtlpExporter = builder.Configuration.GetValue("Observability:EnableOtlpExporter", false),
+    EnableConsoleLogExporter = builder.Configuration.GetValue("Observability:EnableConsoleLogExporter", true),
     // Each signal has its own destination, sampling and redaction settings; see docs/architecture.md.
     Signals = builder.Configuration.GetSection("Observability").Get<MPCoreObservabilitySignals>()
 });

@@ -10,7 +10,11 @@ need a custom metric to exist.
 
 ## Steps
 
-1. Use the framework's OpenTelemetry composition and `ILogger`. Do not add a second logging stack.
+1. Use the framework's OpenTelemetry composition and `ILogger`. Do not add a second logging stack, and do
+   not add a logging provider (`AddConsole`, `AddDebug`, a third-party sink): `Program.cs` clears the
+   providers ASP.NET Core adds on purpose, because each prints a log argument as it is and would print a
+   protobuf request, one-time code included, that MP Core's pipeline masks. The console already shows the
+   logs, through that pipeline (`Observability:EnableConsoleLogExporter`).
 2. Log business-meaningful events at the boundary of a use case, with the correlation identifier the
    framework already propagates. Logging every method entry produces noise, not observability.
 3. Add a metric when someone would act on it: failure rate, queue depth, latency of a critical

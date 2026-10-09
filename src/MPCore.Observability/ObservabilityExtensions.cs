@@ -24,6 +24,13 @@ public sealed class MPCoreObservabilityOptions
     public bool EnableOtlpExporter { get; init; } = true;
 
     /// <summary>
+    /// Gets a value indicating whether each log record is also written to standard output, after redaction.
+    /// Off by default. A host that clears the logging providers ASP.NET Core adds, so that no provider prints a
+    /// value the redaction would have masked, turns this on to keep its logs on the console.
+    /// </summary>
+    public bool EnableConsoleLogExporter { get; init; }
+
+    /// <summary>
     /// Per-signal destinations, sampling, scrape and redaction. Null means every signal follows
     /// <see cref="EnableOtlpExporter"/> with environment defaults, redaction on, no scrape.
     /// </summary>
@@ -67,6 +74,12 @@ public static class ObservabilityExtensions
                 if (plan.RedactionEnabled)
                 {
                     logging.AddProcessor(new SensitiveLogRecordProcessor(plan.SensitiveFields));
+                }
+
+                // After the redaction, never before: the processors run in the order they are added.
+                if (plan.ConsoleLogsEnabled)
+                {
+                    logging.AddProcessor(new ConsoleLogRecordProcessor());
                 }
 
                 if (plan.Logs.Exporter == SignalExporter.Otlp)
