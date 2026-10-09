@@ -73,7 +73,8 @@ If one module's domain later grows rich enough to deserve the stronger split, th
 divided into Domain, Application and Infrastructure projects. Nothing else has to change.
 
 **The rules are tests.** `tests/<Product>.Tests/ModuleRulesTests.cs` checks every module listed in
-`HandlerAssemblies`: a module's `Domain` folder depends on neither its `Application` nor its
+`HandlerAssemblies`. While none is listed a rule has nothing to check, and the test run reports it as
+**skipped, with its reason**, not as passed: listing the first module turns them on. The rules: a module's `Domain` folder depends on neither its `Application` nor its
 `Infrastructure` folder nor on a provider (Entity Framework, Npgsql, Wolverine, a broker, ASP.NET, gRPC);
 its `Application` folder depends on neither its `Infrastructure` folder nor on a provider; a query handler
 takes no unit of work and no publisher; and no module references another module's main project. Four more

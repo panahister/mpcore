@@ -31,6 +31,17 @@ public sealed partial class GeneratedBackendTests
     public async Task A_modular_monolith_holds_its_module_rules_and_each_rule_fails_on_its_seeded_violation()
     {
         using var workspace = await Workspace.GenerateAsync("modular-monolith");
+
+        // As generated there is no module. A rule that walks no module has checked nothing: each is reported as
+        // skipped, not as passed, and the run still succeeds.
+        var empty = await workspace.TestAsync("empty");
+
+        Assert.True(empty.ExitCode == 0, "The generated tests fail as generated, before any module:\n" + empty.Output);
+        foreach (var rule in ModuleRules)
+        {
+            Assert.Equal("NotExecuted", empty.Outcome(rule.Test));
+        }
+
         workspace.SeedModules();
 
         var clean = await workspace.TestAsync("clean");

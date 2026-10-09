@@ -17,6 +17,13 @@ namespace MPCore.Backend.Tests;
 /// ("The Missing Chapter", in Robert C. Martin's "Clean Architecture", 2017) with the Dependency Rule of the
 /// same book inside each component. A module is checked once it is listed in <see cref="HandlerAssemblies"/>.
 /// </summary>
+/// <remarks>
+/// <b>A rule with no module to check has checked nothing, and says so.</b> Every rule below walks the modules
+/// listed in <see cref="HandlerAssemblies"/>; with none listed the walk is empty and the rule would pass without
+/// having looked at anything. Each rule is therefore a <see cref="ModuleRuleFactAttribute"/>: while no module is
+/// listed it is reported as skipped, with the reason, and not as passed. The first module you list turns all of
+/// them on, and from then on a violation fails the build.
+/// </remarks>
 [Trait("Category", "Architecture")]
 public sealed class ModuleRulesTests
 {
@@ -42,7 +49,7 @@ public sealed class ModuleRulesTests
         return context.Model;
     }
 
-    [Fact]
+    [ModuleRuleFact]
     public void Each_modules_domain_knows_neither_its_other_layers_nor_a_provider()
     {
         var failures = new List<string>();
@@ -57,7 +64,7 @@ public sealed class ModuleRulesTests
         Assert.True(failures.Count == 0, "Domain types that depend on another layer or on a provider: " + string.Join(", ", failures));
     }
 
-    [Fact]
+    [ModuleRuleFact]
     public void Each_modules_application_knows_neither_its_infrastructure_nor_a_provider()
     {
         var failures = new List<string>();
@@ -72,7 +79,7 @@ public sealed class ModuleRulesTests
         Assert.True(failures.Count == 0, "Application types that depend on the infrastructure or on a provider: " + string.Join(", ", failures));
     }
 
-    [Fact]
+    [ModuleRuleFact]
     public void A_query_handler_takes_no_unit_of_work_and_publishes_nothing()
     {
         var violations = Modules.SelectMany(QueryRules.Violations).ToList();
@@ -85,7 +92,7 @@ public sealed class ModuleRulesTests
     /// tables can move to a database of their own without being taken apart. Tables of the host and of MP Core
     /// keep their own schemas, which no module may use either.
     /// </summary>
-    [Fact]
+    [ModuleRuleFact]
     public void Each_module_maps_to_its_own_schema()
     {
         var model = Model();
@@ -123,7 +130,7 @@ public sealed class ModuleRulesTests
     /// reference shows it; the day one of them becomes a service, the key has to be cut. It is read from the
     /// Entity Framework model, which is what the migrations create.
     /// </summary>
-    [Fact]
+    [ModuleRuleFact]
     public void No_foreign_key_crosses_a_schema()
     {
         var failures = Model().GetEntityTypes()
@@ -140,7 +147,7 @@ public sealed class ModuleRulesTests
     /// project that writes is a deliberate exception for two modules that must change together and stay in one
     /// deployment, and declares that reason with <see cref="CrossModuleWriteAttribute"/>.
     /// </summary>
-    [Fact]
+    [ModuleRuleFact]
     public void A_contracts_interface_that_writes_declares_its_reason()
     {
         var failures = Contracts
@@ -158,7 +165,7 @@ public sealed class ModuleRulesTests
     /// class's constructor, is its own module's. A repository another module publishes in its Contracts
     /// project is that module's too, and so is an <c>IRepository&lt;T, TId&gt;</c> of another module's aggregate.
     /// </summary>
-    [Fact]
+    [ModuleRuleFact]
     public void A_handler_takes_only_its_own_modules_repositories()
     {
         var failures = new List<string>();
@@ -192,7 +199,7 @@ public sealed class ModuleRulesTests
         Assert.True(failures.Count == 0, "Handlers that take another module's repository: " + string.Join("; ", failures));
     }
 
-    [Fact]
+    [ModuleRuleFact]
     public void No_module_references_another_modules_main_project()
     {
         var names = Modules.Select(static module => module.GetName().Name!).ToHashSet(StringComparer.Ordinal);
@@ -238,5 +245,23 @@ public sealed class ModuleRulesTests
         }
 
         return Modules.Any(module => module.GetName().Name == name) ? name : null;
+    }
+}
+
+/// <summary>
+/// A module rule. It is skipped, with its reason, while <see cref="HandlerAssemblies"/> lists no module: a rule
+/// that walks an empty list passes whatever the code does, and a pass that checked nothing must not look like one
+/// that did. xunit 2 cannot skip from inside a test, so the attribute decides when the tests are discovered.
+/// </summary>
+[AttributeUsage(AttributeTargets.Method)]
+public sealed class ModuleRuleFactAttribute : FactAttribute
+{
+    public ModuleRuleFactAttribute()
+    {
+        if (!HandlerAssemblies.All.Any(static assembly => assembly.GetName().Name!.Contains(".Modules.", StringComparison.Ordinal)))
+        {
+            Skip = "No module is listed in HandlerAssemblies, so there is nothing to check: this rule has not passed, it has not run. " +
+                   "List the first module (src/Modules/README.md) and it runs.";
+        }
     }
 }

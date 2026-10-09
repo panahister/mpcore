@@ -51,7 +51,9 @@ Use when the plan is agreed and the module needs its structure, before business 
 ## Verification
 
 Build the solution, run `ModuleRulesTests`, and report the real result. A module skeleton with no
-behaviour still has to compile, register cleanly and hold the module rules.
+behaviour still has to compile, register cleanly and hold the module rules. A module rule that reports
+"skipped" has checked nothing, because no module is listed in `HandlerAssemblies`: list the module and run
+it again, and do not report a skipped rule as a passed one.
 
 ## Project configuration is authoritative
 
