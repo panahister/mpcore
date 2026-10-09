@@ -185,6 +185,10 @@ says yes to everything guarantees nothing.
 | Signing in, signing up, passwords, one-time codes | An identity provider's job |
 | Rate limits on incoming requests | The gateway's job |
 | Deployment: images, charts, pipelines that deploy | The platform's job |
+| Configuration of an identity provider: realms, clients, flows, and reading the configuration back to check it | The platform's: [`mp-platform`](https://github.com/panahister/mp-platform) and its identity-provider base repository. A backend validates the tokens the provider issues and configures nothing in it (ADR-007) |
+| Configuration of a gateway: routes, plugins, path rules | The platform's: `mp-platform` and its gateway base repository. A backend still validates every token itself and takes no identity from a forwarded header (ADR-007, section 7) |
+| An extension of the identity provider, such as the scaffold of a Keycloak SPI (Service Provider Interface) | The platform's: `mp-platform` and its identity-provider base repository. An extension runs inside the provider, not in a backend |
+| Platform jobs: a monitor, a telemetry collector, alert rules, secret custody | The platform's: `mp-platform`. A backend emits OpenTelemetry signals and reads its secrets from configuration; collecting the signals, alerting on them and keeping the secrets are not a backend's |
 | gRPC JSON transcoding | Choose `--transport both`: REST and gRPC side by side |
 | Versions by header or media type | Versions are route groups |
 | A second, independent read store; projections | One PostgreSQL database; a query reads through a read model |
@@ -201,3 +205,8 @@ says yes to everything guarantees nothing.
 | Migrations applied at startup outside Development | A migration is reviewed and applied on purpose |
 | Continuous aggregates in TimescaleDB | Write them in a migration by hand |
 | An endpoint for the audit trail | The product exposes `IAuditQuery` behind its own policy |
+
+The four rows that name `mp-platform` record the repository owner's decision of 2026-10-09. Each is the
+platform's work, in `mp-platform` or in a base repository it lists, and none of them is a skill, a template
+shape or a package of MP Core: a backend generated from MP Core neither configures nor extends the identity
+provider or the gateway, and runs no platform job. A product's agent that needs one of them works there.

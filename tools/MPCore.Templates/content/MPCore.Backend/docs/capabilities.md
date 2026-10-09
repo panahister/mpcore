@@ -132,6 +132,19 @@ The backend never hosts login, signup, OTP or a browser callback. It validates a
 Behind a gateway it still validates signature, issuer, audience and expiry itself: a gateway in front
 is not a reason to trust an unvalidated request.
 
+## Outside this backend
+
+The platform's work, decided by MP Core's owner on 2026-10-09. None of it is a skill, a template shape or a
+package of MP Core, and none of it belongs in this repository; it lives in the platform repositories,
+[`mp-platform`](https://github.com/panahister/mp-platform) and the base repositories it lists.
+
+| Capability | Status | Where it lives |
+|---|---|---|
+| Configuration of an identity provider: realms, clients, flows, read-back | **Not available** | `mp-platform` and its identity-provider base repository |
+| Configuration of a gateway: routes, plugins, path rules | **Not available** | `mp-platform` and its gateway base repository |
+| An extension of the identity provider, such as a Keycloak SPI scaffold | **Not available** | `mp-platform` and its identity-provider base repository |
+| Platform jobs: a monitor, a telemetry collector, alert rules, secret custody | **Not available** | `mp-platform`; this backend emits OpenTelemetry signals and reads its secrets from configuration |
+
 ## Caching
 
 | Capability | Status | Selected by |

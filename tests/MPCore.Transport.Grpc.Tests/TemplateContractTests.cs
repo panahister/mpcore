@@ -1630,6 +1630,43 @@ public sealed class TemplateContractTests
         }
     }
 
+    /// <summary>
+    /// Four kinds of work a product needs beside its backends belong to the platform, not to MP Core: the
+    /// owner decided so on 2026-10-09. MP Core's catalogue and the one a generated backend carries name each
+    /// of them as not available here, and name its owner, so an agent knows where the pattern lives.
+    /// </summary>
+    [Fact]
+    public void The_capability_lists_name_the_platform_work_MP_Core_does_not_do_and_its_owner()
+    {
+        var work = new (string Row, string[] Names)[]
+        {
+            ("Configuration of an identity provider", ["realms", "clients", "flows", "read"]),
+            ("Configuration of a gateway", ["routes", "plugins", "path rules"]),
+            ("An extension of the identity provider", ["SPI"]),
+            ("Platform jobs", ["monitor", "telemetry collector", "alert rules", "secret custody"]),
+        };
+        var lists = new[]
+        {
+            ("docs/guide/capabilities.md", File.ReadAllText(Path.Combine(RepositoryRoot, "docs/guide/capabilities.md"))),
+            ("the template's docs/capabilities.md", File.ReadAllText(Path.Combine(TemplateRoot, "docs/capabilities.md"))),
+        };
+
+        foreach (var (list, text) in lists)
+        {
+            foreach (var (row, names) in work)
+            {
+                var line = text.Split('\n').FirstOrDefault(candidate => candidate.StartsWith("| " + row, StringComparison.Ordinal));
+                Assert.True(line is not null, $"{list} has no row for: {row}");
+                Assert.All(names, name => Assert.Contains(name, line, StringComparison.Ordinal));
+                Assert.Contains("mp-platform", line, StringComparison.Ordinal);
+                if (list != "docs/guide/capabilities.md")
+                {
+                    Assert.Contains("**Not available**", line, StringComparison.Ordinal);
+                }
+            }
+        }
+    }
+
     [Fact]
     public void A_modular_monolith_composes_one_project_per_module_and_references_no_root_application()
     {
