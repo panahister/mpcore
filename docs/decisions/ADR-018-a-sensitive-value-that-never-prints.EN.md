@@ -101,7 +101,7 @@ A product generated before this change keeps the providers it has; it moves by a
 
 | Test | What it shows |
 |---|---|
-| `SensitiveValueTests`, 6 | every rendering shows the mask; JSON writes it and reads a value; the debugger shows the mask; the value leaves only through `Reveal()`; equality by value in constant time; null is refused |
+| `SensitiveValueTests`, 10 (two are theories of four cases) | every rendering shows the mask; JSON writes it and reads a value, and `null` as no value; a token that is not a string is a `JsonException`, through the serializer and through the converter read directly; text that is not valid UTF-8 is a `JsonException` with the fixed message `A sensitive value must be a valid JSON string.`, which does not carry the text (seen failing when the branch let the bytes through as a value: no exception; and when it put the text into the message: `Actual: ... must be a valid JSON string: 418-205-OTP`); the debugger shows the mask; the value leaves only through `Reveal()`; equality by value in constant time; null is refused |
 | `SensitiveDataTests.A_sensitive_value_reaches_no_sink` | a known value, logged as a structured attribute, inside a record, in an interpolated message and in an exception's message, and set as a trace tag, appears in none of: the OpenTelemetry log and trace export, the JSON console provider, a plain provider |
 | `SensitiveDataTests.The_name_processors_also_mask_nested_attributes` | `http.request.header.authorization` and a password inside a nested collection are masked in logs and traces; a neighbouring order id is kept |
 | `SensitiveDataTests.The_name_list_is_unchanged` | the 22 names |

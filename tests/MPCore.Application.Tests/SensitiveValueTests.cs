@@ -85,11 +85,28 @@ public sealed class SensitiveValueTests
         Assert.IsType<JsonException>(failure);
     }
 
-    private static void ReadWithTheConverter(string json)
+    [Fact]
+    public void The_converter_refuses_text_that_is_not_valid_UTF_8_with_a_fixed_message_that_does_not_carry_the_value()
+    {
+        // 0xFF can never occur in UTF-8. The text before it is what a caller meant as the value: the message must
+        // not repeat it, and the converter must not let the bytes through as a value. The serializer would convert
+        // the reader's own exception by itself, so the converter is read directly.
+        var json = new List<byte>(Encoding.UTF8.GetBytes("\"" + Known)) { 0xFF };
+        json.AddRange(Encoding.UTF8.GetBytes("\""));
+
+        var failure = Assert.IsType<JsonException>(Record.Exception(() => ReadWithTheConverter(json.ToArray())));
+
+        Assert.Equal("A sensitive value must be a valid JSON string.", failure.Message);
+        Assert.DoesNotContain(Known, failure.Message, StringComparison.Ordinal);
+    }
+
+    private static void ReadWithTheConverter(string json) => ReadWithTheConverter(Encoding.UTF8.GetBytes(json));
+
+    private static void ReadWithTheConverter(byte[] json)
     {
         var converterType = typeof(SensitiveValue).GetCustomAttribute<JsonConverterAttribute>()!.ConverterType!;
         var converter = (JsonConverter<SensitiveValue>)Activator.CreateInstance(converterType)!;
-        var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
+        var reader = new Utf8JsonReader(json);
         reader.Read();
         converter.Read(ref reader, typeof(SensitiveValue), JsonSerializerOptions.Default);
     }
