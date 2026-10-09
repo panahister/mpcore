@@ -10,6 +10,12 @@ namespace MPCore.Idempotency.Tests;
 /// </summary>
 public sealed class MessageInboxTests
 {
+    private const string HandlerNotCalled = "The handler was not called for the published event within the time allowed.";
+
+    // A bound, not a delay: the test goes on the moment the handler has run. The bound is generous because a
+    // loaded machine can hold a durable delivery for many seconds.
+    private static readonly TimeSpan HandlerTimeout = TimeSpan.FromSeconds(30);
+
     [PostgreSqlFact]
     public async Task An_integration_event_delivered_twice_is_processed_once()
     {
@@ -64,14 +70,8 @@ public sealed class MessageInboxTests
             await scope.ServiceProvider.GetRequiredService<IMessagePublisher>().PublishAsync(message);
         }
 
-        var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(15);
-        while (DateTime.UtcNow < deadline && !FundsArrivedHandler.EventVersionHeaders.ContainsKey(message.EventId))
-        {
-            await Task.Delay(100);
-        }
-
-        Assert.True(FundsArrivedHandler.EventVersionHeaders.TryGetValue(message.EventId, out var version), "the event was never handled");
-        Assert.Equal("1", version);
+        Assert.True(await FundsArrivedHandler.WaitUntilHandledAsync(message.EventId, HandlerTimeout), HandlerNotCalled);
+        Assert.Equal("1", FundsArrivedHandler.EventVersionHeaders[message.EventId]);
     }
 
     private static async Task<bool> Settle(Task delivery)
@@ -110,14 +110,8 @@ public sealed class MessageInboxTests
             await scope.ServiceProvider.GetRequiredService<IMessagePublisher>().PublishAsync(message);
         }
 
-        var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(15);
-        while (DateTime.UtcNow < deadline && !FundsArrivedHandler.IdempotencyHeaders.ContainsKey(message.EventId))
-        {
-            await Task.Delay(100);
-        }
-
-        Assert.True(FundsArrivedHandler.IdempotencyHeaders.TryGetValue(message.EventId, out var header), "the event was never handled");
-        Assert.Equal(message.EventId.ToString("N"), header);
+        Assert.True(await FundsArrivedHandler.WaitUntilHandledAsync(message.EventId, HandlerTimeout), HandlerNotCalled);
+        Assert.Equal(message.EventId.ToString("N"), FundsArrivedHandler.IdempotencyHeaders[message.EventId]);
     }
 
     [PostgreSqlFact]
@@ -132,12 +126,7 @@ public sealed class MessageInboxTests
                 .PublishAsync(message, new MessageDeliveryContext("corr-1", "cause-1", "tenant-7", "my-own-key"));
         }
 
-        var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(15);
-        while (DateTime.UtcNow < deadline && !FundsArrivedHandler.IdempotencyHeaders.ContainsKey(message.EventId))
-        {
-            await Task.Delay(100);
-        }
-
-        Assert.Equal("my-own-key", FundsArrivedHandler.IdempotencyHeaders.GetValueOrDefault(message.EventId));
+        Assert.True(await FundsArrivedHandler.WaitUntilHandledAsync(message.EventId, HandlerTimeout), HandlerNotCalled);
+        Assert.Equal("my-own-key", FundsArrivedHandler.IdempotencyHeaders[message.EventId]);
     }
 }

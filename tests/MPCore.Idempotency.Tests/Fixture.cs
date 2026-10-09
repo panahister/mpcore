@@ -128,13 +128,35 @@ public static class FundsArrivedHandler
     public static readonly ConcurrentDictionary<Guid, string?> EventVersionHeaders = new();
     public static int Calls;
 
+    // One signal per event, completed by the handler once it has recorded the headers it was given. A test that
+    // publishes an event waits on it; the handler and the test may come in either order.
+    private static readonly ConcurrentDictionary<Guid, TaskCompletionSource> Handled = new();
+
     public static void Handle(FundsArrived message, Envelope envelope, IDepositRepository deposits, IUnitOfWork unitOfWork)
     {
         Interlocked.Increment(ref Calls);
         IdempotencyHeaders[message.EventId] = envelope.Headers.TryGetValue("x-idempotency-key", out var key) ? key : null;
         EventVersionHeaders[message.EventId] = envelope.Headers.TryGetValue("x-event-version", out var version) ? version : null;
         deposits.Add(new Deposit { Id = Guid.NewGuid(), Account = message.Account, Amount = message.Amount, Source = "event" });
+        SignalFor(message.EventId).TrySetResult();
     }
+
+    /// <summary>Waits until the handler has run for the event, for at most the given time; false when it did not.</summary>
+    public static async Task<bool> WaitUntilHandledAsync(Guid eventId, TimeSpan timeout)
+    {
+        try
+        {
+            await SignalFor(eventId).Task.WaitAsync(timeout);
+            return true;
+        }
+        catch (TimeoutException)
+        {
+            return false;
+        }
+    }
+
+    private static TaskCompletionSource SignalFor(Guid eventId) =>
+        Handled.GetOrAdd(eventId, static _ => new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously));
 }
 
 /// <summary>An event whose handler waits until two deliveries are inside it at once: a race made certain.</summary>
