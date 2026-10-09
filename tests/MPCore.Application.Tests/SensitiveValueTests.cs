@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using MPCore.Application.Sensitive;
 
 namespace MPCore.Application.Tests;
@@ -52,6 +53,53 @@ public sealed class SensitiveValueTests
         Assert.Contains("\"Code\":\"***\"", json, StringComparison.Ordinal);
         Assert.Equal(Known, read.Code.Reveal());
         Assert.DoesNotContain(Known, JsonSerializer.Serialize(read), StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("123")]
+    [InlineData("true")]
+    [InlineData("{}")]
+    [InlineData("[\"a\"]")]
+    public void Json_refuses_a_value_that_is_not_a_string_as_a_malformed_document(string code)
+    {
+        // A JsonException is what a serializer's caller expects of a document that does not fit the type. Any other
+        // exception type is a fault of the host, and an ASP.NET Core endpoint answers it with 500.
+        var failure = Record.Exception(() => JsonSerializer.Deserialize<VerifyCode>($$"""{"Phone":"+1-555","Code":{{code}}}"""));
+
+        Assert.IsType<JsonException>(failure);
+        Assert.DoesNotContain(code, failure.Message, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("123")]
+    [InlineData("true")]
+    [InlineData("{}")]
+    [InlineData("[\"a\"]")]
+    public void The_converter_itself_throws_a_JsonException_and_does_not_rely_on_the_serializer_to_convert_it(string json)
+    {
+        // JsonSerializer turns the reader's own InvalidOperationException into a JsonException, which is why the
+        // test above passes without any check. The converter is public through its attribute, and a caller that
+        // reads with it directly must get the same exception type.
+        var failure = Record.Exception(() => ReadWithTheConverter(json));
+
+        Assert.IsType<JsonException>(failure);
+    }
+
+    private static void ReadWithTheConverter(string json)
+    {
+        var converterType = typeof(SensitiveValue).GetCustomAttribute<JsonConverterAttribute>()!.ConverterType!;
+        var converter = (JsonConverter<SensitiveValue>)Activator.CreateInstance(converterType)!;
+        var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
+        reader.Read();
+        converter.Read(ref reader, typeof(SensitiveValue), JsonSerializerOptions.Default);
+    }
+
+    [Fact]
+    public void Json_reads_null_as_no_value()
+    {
+        var read = JsonSerializer.Deserialize<VerifyCode>("""{"Phone":"+1-555","Code":null}""")!;
+
+        Assert.Null(read.Code);
     }
 
     [Fact]

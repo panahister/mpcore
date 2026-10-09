@@ -27,7 +27,7 @@ exclude" from logs. Masking by name protects only the names someone thought of.
 | Rule | Why |
 |---|---|
 | `ToString()` returns `***`; so do interpolation, `string.Format`, `StringBuilder`, a record's printed members and an exception message built from it | they all call `ToString()`. This covers every sink, OpenTelemetry or not: the value never becomes its text |
-| System.Text.Json writes `***`; it reads a string into the value | a response or a serialized command never carries it; a request can |
+| System.Text.Json writes `***`; it reads a string into the value, `null` as no value, and refuses any other token with a `JsonException` that does not carry the value | a response or a serialized command never carries it; a request can. A body that holds a number or an object where the code should be is the caller's mistake and is answered with 400; any other exception type would be answered with 500, as a fault of the host |
 | The debugger shows `***`; its field is hidden from the debugger | `DebuggerDisplay` and `DebuggerBrowsable(Never)` |
 | The value leaves only through `Reveal()` | one method to search for in a review; there is no conversion to `string` |
 | Equality, `==` and `FixedTimeEquals(string)` compare in constant time | `CryptographicOperations.FixedTimeEquals`: comparing a submitted code with a stored one does not disclose how much of it matched. Values of different lengths are unequal without comparing content |

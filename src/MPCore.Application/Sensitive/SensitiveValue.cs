@@ -71,8 +71,30 @@ public sealed class SensitiveValue : IEquatable<SensitiveValue>
 /// <summary>Reads a JSON string into a <see cref="SensitiveValue"/>, and writes the mask.</summary>
 internal sealed class SensitiveValueJsonConverter : JsonConverter<SensitiveValue>
 {
-    public override SensitiveValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-        reader.TokenType == JsonTokenType.Null ? null : new SensitiveValue(reader.GetString()!);
+    public override SensitiveValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        // A document that does not fit the type is the caller's mistake and a JsonException, which an ASP.NET Core
+        // endpoint answers with 400. Any other type would be read as a fault of the host and answered with 500.
+        // The message is fixed: it never carries the value.
+        switch (reader.TokenType)
+        {
+            case JsonTokenType.Null:
+                return null;
+            case JsonTokenType.String:
+                try
+                {
+                    return new SensitiveValue(reader.GetString()!);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Text that is not valid UTF-8.
+                    throw new JsonException("A sensitive value must be a valid JSON string.");
+                }
+
+            default:
+                throw new JsonException("A sensitive value must be a JSON string.");
+        }
+    }
 
     public override void Write(Utf8JsonWriter writer, SensitiveValue value, JsonSerializerOptions options)
     {
