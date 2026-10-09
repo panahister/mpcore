@@ -30,7 +30,7 @@ validates it in process; the bearer token stays the caller.
 | Every one of these is checked at the handshake; a failure ends the handshake | a refused workload never reaches HTTP |
 | The certificate never becomes `CurrentActor`; the authenticated fallback policy of ADR-007 still requires a token | the certificate says which workload connects, the token says who calls |
 | `RequireWorkloadCertificate()` on an endpoint requires the certificate as well, as a policy beside the token; `UseMPCoreMutualTls()` refuses such a request without a valid certificate with `401` (gRPC `Unauthenticated`) | for an endpoint that a proxy also reaches, where the handshake did not check the client |
-| A proxy that terminates TLS may forward the client's certificate in `X-Client-Cert` (base64 DER, or URL-encoded PEM). It is read only when the request comes from `TrustedProxies`, as `KnownProxies` is for `X-Forwarded-*`, and the header is removed from every request | `UseMPCoreCertificateForwarding()`, placed first, before gateway forwarding replaces the proxy's address. A forwarded certificate is held to the same rules |
+| A proxy that terminates TLS may forward the client's certificate in `X-Client-Cert` (base64 DER, or URL-encoded PEM). It is read only when the request comes from `TrustedProxies`, as `KnownProxies` is for `X-Forwarded-*`, and the header is removed from every request. For a request from a trusted proxy the client certificate is the forwarded one or none: the certificate of the proxy's own connection is the proxy's, never the client's | `UseMPCoreCertificateForwarding()`, placed first, before gateway forwarding replaces the proxy's address. A forwarded certificate is held to the same rules. Without this, a proxy enrolled as a workload that forwards nothing would present its own listed certificate for every client behind it |
 | No log record carries a certificate or key material; a refusal logs one fixed reason | |
 | Startup fails without an authority or a workload name | |
 
@@ -77,6 +77,7 @@ which a stub cannot fail.
 | the client extension | presents its certificate from PEM files and is admitted; configured with another server authority, it refuses the server |
 | a client without its certificate or its server authority | fails when the client is built |
 | a forwarded certificate | admitted from a listed proxy; refused with `401` from another address, of another authority, expired, with a name not listed, unreadable, or absent. The header never reaches an endpoint |
+| the proxy's own connection certificate (`A_forwarded_certificate_is_read_only_from_a_listed_proxy_and_held_to_the_same_rules`, 14 cases) | from a listed proxy that forwards none, refused with `401` even when its own certificate is a listed workload; replaced by the forwarded one when there is one; from an address that is not a listed proxy, kept as it is. The case of a listed proxy that forwards none, with its own listed certificate, was seen failing (`OK` for `Unauthorized`) before the correction |
 | a host without an authority or a workload name, or with an authority file that does not exist | startup fails |
 | the options | bind from the configuration a generated host ships |
 | the log | no certificate and no private key |

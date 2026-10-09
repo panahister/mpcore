@@ -464,7 +464,9 @@ A listener becomes TLS in `Kestrel:Endpoints`, with its own certificate, for exa
 `"Grpc": { "Url": "https://0.0.0.0:8081", "Protocols": "Http2", "Certificate": { "Path": "...", "KeyPath": "..." } }`.
 An endpoint marked `RequireWorkloadCertificate()` also refuses, with `401`, a request that reaches it
 without a valid certificate. Behind a proxy that terminates TLS, the client's certificate is read from the
-`X-Client-Cert` header only when the request comes from `Security:MutualTls:TrustedProxies`. A calling
+`X-Client-Cert` header only when the request comes from `Security:MutualTls:TrustedProxies`. For a request
+from a trusted proxy the client's certificate is the forwarded one or none: the certificate of the proxy's own
+connection is the proxy's, and is never taken as the client's. A calling
 service presents its certificate with `AddMPCoreClientCertificate` on its HTTP or gRPC client.
 
 ## Configuration

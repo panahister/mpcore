@@ -43,7 +43,9 @@ public sealed class MutualTlsOptions
 
     /// <summary>
     /// The proxies, as addresses or CIDR networks, that terminate TLS and may forward the client's certificate
-    /// in <see cref="ForwardedCertificateHeader"/>. Empty by default: the header is then never read.
+    /// in <see cref="ForwardedCertificateHeader"/>. Empty by default: the header is then never read. For a request
+    /// from one of them the client certificate is the forwarded one or none, never the certificate of the
+    /// proxy's own connection.
     /// </summary>
     public IList<string> TrustedProxies { get; } = [];
 
@@ -89,8 +91,10 @@ public static class MutualTlsExtensions
 
     /// <summary>
     /// Reads a client certificate that a trusted proxy forwards, only when the request comes from one of
-    /// <see cref="MutualTlsOptions.TrustedProxies"/>, and removes the header from every request. Place it first,
-    /// before gateway forwarding changes the remote address. Does nothing without <see cref="AddMPCoreMutualTls"/>.
+    /// <see cref="MutualTlsOptions.TrustedProxies"/>, and removes the header from every request. For a request
+    /// from a trusted proxy the client certificate becomes the forwarded one, or none: the proxy's own connection
+    /// certificate is never taken as the client's. Place it first, before gateway forwarding changes the remote
+    /// address. Does nothing without <see cref="AddMPCoreMutualTls"/>.
     /// </summary>
     /// <param name="app">The application builder.</param>
     public static IApplicationBuilder UseMPCoreCertificateForwarding(this IApplicationBuilder app)
@@ -324,7 +328,10 @@ internal sealed class TrustedCertificateProxies(IOptions<MutualTlsOptions> optio
     }
 }
 
-/// <summary>Takes a forwarded certificate from a trusted proxy, and removes the header from every request.</summary>
+/// <summary>
+/// For a request from a trusted proxy, sets the client certificate to the forwarded one, or to none; removes the
+/// header from every request.
+/// </summary>
 internal sealed class CertificateForwardingMiddleware(
     RequestDelegate next,
     IOptions<MutualTlsOptions> options,
@@ -338,23 +345,27 @@ internal sealed class CertificateForwardingMiddleware(
         ArgumentNullException.ThrowIfNull(context);
         var header = options.Value.ForwardedCertificateHeader;
         var values = context.Request.Headers[header];
+        var fromTrustedProxy = proxies.Contains(context.Connection.RemoteIpAddress);
         if (values.Count > 0)
         {
             context.Request.Headers.Remove(header);
-            if (proxies.Contains(context.Connection.RemoteIpAddress))
+        }
+
+        if (fromTrustedProxy)
+        {
+            // The certificate on a trusted proxy's connection is the proxy's own, never the client's. The client's
+            // is the one the proxy forwards; with none, or one that cannot be read, the request has no certificate,
+            // so a command that requires one is refused. Leaving the connection's certificate would admit any
+            // client through a proxy whose own certificate is a listed workload.
+            context.Connection.ClientCertificate = values.Count == 1 ? Read(values[0]) : null;
+            if (values.Count > 0 && context.Connection.ClientCertificate is null)
             {
-                // The forwarded certificate is the client's; the proxy's own connection is not. An unreadable
-                // one leaves the request with no certificate, so a command that requires one is refused.
-                context.Connection.ClientCertificate = values.Count == 1 ? Read(values[0]) : null;
-                if (context.Connection.ClientCertificate is null)
-                {
-                    logger.LogWarning("A forwarded client certificate could not be read.");
-                }
+                logger.LogWarning("A forwarded client certificate could not be read.");
             }
-            else
-            {
-                logger.LogWarning("A forwarded client certificate from an address that is not a trusted proxy was ignored.");
-            }
+        }
+        else if (values.Count > 0)
+        {
+            logger.LogWarning("A forwarded client certificate from an address that is not a trusted proxy was ignored.");
         }
 
         return next(context);

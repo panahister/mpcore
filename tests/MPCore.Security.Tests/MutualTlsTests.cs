@@ -153,15 +153,27 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
         Assert.Throws<OptionsValidationException>(() => provider.GetRequiredService<IHttpClientFactory>().CreateClient("callee"));
     }
 
-    public static TheoryData<string, string?, string, HttpStatusCode> ForwardedCases() => new()
+    /// <summary>
+    /// Label, the address the request comes from, the certificate the proxy forwards, the certificate presented
+    /// on the peer's own TLS connection, and the outcome. The proxy's own connection certificate is never the
+    /// client's: for a trusted proxy the request has the forwarded certificate or none.
+    /// </summary>
+    public static TheoryData<string, string?, string, string?, HttpStatusCode> ForwardedCases() => new()
     {
-        { "from a listed proxy, a listed certificate", "10.0.0.5", "orders", HttpStatusCode.OK },
-        { "from an address that is not a listed proxy", "10.0.0.9", "orders", HttpStatusCode.Unauthorized },
-        { "from a listed proxy, another authority", "10.0.0.5", "another-authority", HttpStatusCode.Unauthorized },
-        { "from a listed proxy, expired", "10.0.0.5", "expired", HttpStatusCode.Unauthorized },
-        { "from a listed proxy, a name not listed", "10.0.0.5", "billing", HttpStatusCode.Unauthorized },
-        { "from a listed proxy, not a certificate", "10.0.0.5", "garbage", HttpStatusCode.Unauthorized },
-        { "no certificate at all", null, "none", HttpStatusCode.Unauthorized }
+        { "from a listed proxy, a listed certificate", "10.0.0.5", "orders", null, HttpStatusCode.OK },
+        { "from an address that is not a listed proxy", "10.0.0.9", "orders", null, HttpStatusCode.Unauthorized },
+        { "from a listed proxy, another authority", "10.0.0.5", "another-authority", null, HttpStatusCode.Unauthorized },
+        { "from a listed proxy, expired", "10.0.0.5", "expired", null, HttpStatusCode.Unauthorized },
+        { "from a listed proxy, a name not listed", "10.0.0.5", "billing", null, HttpStatusCode.Unauthorized },
+        { "from a listed proxy, not a certificate", "10.0.0.5", "garbage", null, HttpStatusCode.Unauthorized },
+        { "no certificate at all", null, "none", null, HttpStatusCode.Unauthorized },
+        { "from a listed proxy, none forwarded, its own connection certificate a listed workload", "10.0.0.5", "none", "orders", HttpStatusCode.Unauthorized },
+        { "from a listed proxy, none forwarded, its own connection certificate not listed", "10.0.0.5", "none", "billing", HttpStatusCode.Unauthorized },
+        { "from a listed proxy, a listed certificate, its own connection certificate not listed", "10.0.0.5", "orders", "billing", HttpStatusCode.OK },
+        { "from a listed proxy, a name not listed, its own connection certificate a listed workload", "10.0.0.5", "billing", "orders", HttpStatusCode.Unauthorized },
+        { "from a listed proxy, not a certificate, its own connection certificate a listed workload", "10.0.0.5", "garbage", "orders", HttpStatusCode.Unauthorized },
+        { "from an address that is not a listed proxy, its own connection certificate a listed workload", "10.0.0.9", "none", "orders", HttpStatusCode.OK },
+        { "from an address that is not a listed proxy, another forwarded, its own listed certificate stands", "10.0.0.9", "billing", "orders", HttpStatusCode.OK }
     };
 
     [Theory]
@@ -170,6 +182,7 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
         string label,
         string? peer,
         string certificateCase,
+        string? connectionCertificate,
         HttpStatusCode expected)
     {
         await using var host = await ForwardingHost.CreateAsync(_certificates);
@@ -184,8 +197,8 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
             _ => throw new ArgumentOutOfRangeException(nameof(certificateCase), certificateCase, label)
         };
 
-        var response = await host.SendAsync("/workload", peer, header);
-        var plain = await host.SendAsync("/plain", peer, header);
+        var response = await host.SendAsync("/workload", peer, header, connectionCertificate);
+        var plain = await host.SendAsync("/plain", peer, header, connectionCertificate);
         var seen = await plain.Content.ReadFromJsonAsync<JsonElement>();
 
         Assert.Equal(expected, response.StatusCode);
@@ -387,6 +400,7 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
     private sealed class ForwardingHost : IAsyncDisposable
     {
         private const string PeerHeader = "x-test-peer";
+        private const string ConnectionCertificateHeader = "x-test-connection-cert";
         private readonly WebApplication _application;
         private readonly TestIdentityProvider _identity;
         private readonly HttpClient _client;
@@ -425,6 +439,15 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
             application.Use((context, next) =>
             {
                 context.Connection.RemoteIpAddress = IPAddress.Parse(context.Request.Headers[PeerHeader].FirstOrDefault() ?? "192.0.2.1");
+
+                // The certificate a peer presented on its own TLS connection, as Kestrel would have set it.
+                context.Connection.ClientCertificate = context.Request.Headers[ConnectionCertificateHeader].FirstOrDefault() switch
+                {
+                    "orders" => certificates.Orders,
+                    "billing" => certificates.Billing,
+                    _ => null
+                };
+                context.Request.Headers.Remove(ConnectionCertificateHeader);
                 return next(context);
             });
             application.UseMPCoreCertificateForwarding();
@@ -442,7 +465,7 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
             return new ForwardingHost(application, identity);
         }
 
-        public async Task<HttpResponseMessage> SendAsync(string path, string? peer, string? certificate)
+        public async Task<HttpResponseMessage> SendAsync(string path, string? peer, string? certificate, string? connectionCertificate = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(path, UriKind.Relative));
             request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + _identity.CreateToken(
@@ -456,6 +479,11 @@ public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
             if (certificate is not null)
             {
                 request.Headers.TryAddWithoutValidation("X-Client-Cert", certificate);
+            }
+
+            if (connectionCertificate is not null)
+            {
+                request.Headers.TryAddWithoutValidation(ConnectionCertificateHeader, connectionCertificate);
             }
 
             return await _client.SendAsync(request);
