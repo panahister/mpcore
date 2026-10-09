@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -360,6 +361,119 @@ public sealed class MultipleIssuerTests
         Assert.Equal(JwtBearerDefaults.AuthenticationScheme, valid.Scheme);
         Assert.False(foreign.IsValid);
         Assert.Null(foreign.Principal);
+    }
+
+    private static readonly string[] ThreeSchemes = ["first", "second", "third"];
+    private static readonly string[] ThreeIssuers =
+    [
+        "https://identity.invalid/realms/first",
+        "https://identity.invalid/realms/second",
+        "https://identity.invalid/realms/third"
+    ];
+
+    private static readonly string[] ThreeAudiences = ["mpcore-first-api", "mpcore-second-api", "mpcore-third-api"];
+
+    [Fact]
+    public async Task With_three_issuers_a_token_is_accepted_only_by_its_own_issuer_and_no_key_validates_another_issuers_token()
+    {
+        var providers = ThreeSchemes.Select((_, index) => new TestIdentityProvider(ThreeIssuers[index], $"{ThreeSchemes[index]}-key")).ToArray();
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = Environments.Production });
+        builder.WebHost.UseTestServer();
+        builder.Logging.ClearProviders();
+        builder.Services.AddMPCoreBearerIssuers(issuers =>
+        {
+            for (var index = 0; index < ThreeSchemes.Length; index++)
+            {
+                var (issuer, audience) = (ThreeIssuers[index], ThreeAudiences[index]);
+                issuers.Add(ThreeSchemes[index], options =>
+                {
+                    options.Authority = issuer;
+                    options.ValidAudiences.Add(audience);
+                });
+            }
+        });
+        for (var index = 0; index < ThreeSchemes.Length; index++)
+        {
+            var provider = providers[index];
+            builder.Services.PostConfigure<JwtBearerOptions>(ThreeSchemes[index], options =>
+            {
+                options.Configuration = provider.Configuration;
+                options.ConfigurationManager = new StaticConfigurationManager<OpenIdConnectConfiguration>(provider.Configuration);
+            });
+        }
+
+        builder.Services.AddMPCoreAuthorization();
+        await using var application = builder.Build();
+        application.UseRouting();
+        application.UseAuthentication();
+        application.UseAuthorization();
+        application.MapGet("/actor", static (ICurrentActorAccessor accessor) => Results.Ok(new { issuer = accessor.Current.Issuer }));
+
+        // The token is tried against one named scheme, with no selector in between.
+        application.MapGet("/as/{scheme}", static async (HttpContext context, string scheme) =>
+        {
+            var result = await context.AuthenticateAsync(scheme);
+            return result.Succeeded ? Results.Ok() : Results.StatusCode(StatusCodes.Status401Unauthorized);
+        }).AllowAnonymous();
+
+        // The same token as a second token, as product code validates evidence.
+        application.MapGet("/evidence", static async (HttpContext context, IMPCoreBearerTokenValidator validator) =>
+        {
+            var result = await validator.ValidateAsync(context.Request.Headers[EvidenceHeader].ToString(), context.RequestAborted);
+            return Results.Ok(new { valid = result.IsValid, issuer = result.Issuer, scheme = result.Scheme });
+        }).AllowAnonymous();
+        await application.StartAsync();
+        using var client = application.GetTestServer().CreateClient();
+
+        async Task<HttpResponseMessage> GetAsync(string path, string token)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(path, UriKind.Relative));
+            request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {token}");
+            request.Headers.TryAddWithoutValidation(EvidenceHeader, token);
+            return await client.SendAsync(request);
+        }
+
+        // A token of each issuer: accepted by its own scheme and by no other, and by the selector as its own.
+        for (var own = 0; own < ThreeSchemes.Length; own++)
+        {
+            var token = providers[own].CreateToken(audience: ThreeAudiences[own]);
+            for (var scheme = 0; scheme < ThreeSchemes.Length; scheme++)
+            {
+                var response = await GetAsync($"/as/{ThreeSchemes[scheme]}", token);
+                Assert.Equal(own == scheme ? HttpStatusCode.OK : HttpStatusCode.Unauthorized, response.StatusCode);
+            }
+
+            var actorResponse = await GetAsync("/actor", token);
+            Assert.Equal(HttpStatusCode.OK, actorResponse.StatusCode);
+            Assert.Equal(ThreeIssuers[own], (await actorResponse.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("issuer").GetString());
+            var evidence = await (await GetAsync("/evidence", token)).Content.ReadFromJsonAsync<JsonElement>();
+            Assert.True(evidence.GetProperty("valid").GetBoolean(), $"The token of {ThreeSchemes[own]} is not valid as a second token.");
+            Assert.Equal(ThreeSchemes[own], evidence.GetProperty("scheme").GetString());
+        }
+
+        // A key of one issuer never validates a token that names another: all six pairs, the first's key against
+        // the third's name among them. Each forgery carries the audience its target accepts.
+        for (var signer = 0; signer < ThreeSchemes.Length; signer++)
+        {
+            for (var named = 0; named < ThreeSchemes.Length; named++)
+            {
+                if (signer == named)
+                {
+                    continue;
+                }
+
+                var forged = providers[signer].CreateToken(issuer: ThreeIssuers[named], audience: ThreeAudiences[named]);
+                Assert.Equal(HttpStatusCode.Unauthorized, (await GetAsync($"/as/{ThreeSchemes[named]}", forged)).StatusCode);
+                Assert.Equal(HttpStatusCode.Unauthorized, (await GetAsync("/actor", forged)).StatusCode);
+                var evidence = await (await GetAsync("/evidence", forged)).Content.ReadFromJsonAsync<JsonElement>();
+                Assert.False(evidence.GetProperty("valid").GetBoolean(), $"The key of {ThreeSchemes[signer]} validated a token of {ThreeSchemes[named]}.");
+            }
+        }
+
+        foreach (var provider in providers)
+        {
+            provider.Dispose();
+        }
     }
 
     private static string Challenge(HttpResponseMessage response) =>
