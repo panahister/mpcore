@@ -30,8 +30,8 @@ namespace MPCore.Security.Tests;
 /// </summary>
 public sealed class MutualTlsTests : IClassFixture<MutualTlsTests.Certificates>
 {
-    private const string OrdersName = "spiffe://cluster.local/ns/shop/sa/orders";
-    private const string BillingName = "spiffe://cluster.local/ns/shop/sa/billing";
+    internal const string OrdersName = "spiffe://cluster.local/ns/shop/sa/orders";
+    internal const string BillingName = "spiffe://cluster.local/ns/shop/sa/billing";
     private const string ServiceClient = "orders";
     private readonly Certificates _certificates;
 
