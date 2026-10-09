@@ -199,7 +199,9 @@ one; the module guide says how a product keys an aggregate by the thing it decid
 
 ## Amendment 2026-10-08 — no external call under a key, a convention
 
-Accepted by the repository owner on 2026-10-08 (open point B of the review above). Decision 2.11 is a
+Accepted by the repository owner on 2026-10-08 (open point B of the review above), with the recommendation
+for every open point. The review made no explicit recommendation for this point; it stated it, and what the
+owner accepted is the review's statement of it, word for word: "The rule that a handler under a key calls no external system inside its transaction (2.11) has no guard; a handler that does so repeats the external call on the losing attempt." Decision 2.11 is a
 convention, enforced by review; no automated check holds it. Of two attempts with one key both handlers
 run and one commits, so an external call made by the attempt that loses has already happened and happens
 twice. The generated `docs/architecture.md` and the vertical-slice skill say so and name the alternative: a
@@ -208,5 +210,6 @@ message published in the transaction, which the outbox sends after the commit.
 ## Acceptance 2026-10-08
 
 Accepted by the repository owner on 2026-10-08, with the recommendation for every open point (A to E). Open
-points A and C are fixed by the tests named in the review; B is accepted as a convention; D and E are
-decisions recorded in the amendments above, which are part of this record.
+points A and C are fixed by the tests named in the review; B is accepted as a convention, on the words of the
+review that its amendment quotes; D and E are decisions recorded in the amendments above, which are part of
+this record.
