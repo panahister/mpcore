@@ -1656,22 +1656,38 @@ public sealed class TemplateContractTests
         }
 
         var security = Flat(File.ReadAllText(Path.Combine(TemplateRoot, ".mpcore/skills/mpcore-apply-security/SKILL.md")));
+        // The skill states six rules (ADR-019, sections 2 to 7), and each has at least one stem below; the two
+        // that are one sentence of their own, the callers and the idempotent writes, are named by that sentence.
         foreach (var rule in new[]
                  {
                      "Login, signup, OTP, password reset and password change are never implemented here",
                      "administration adapter",
+                     "never calls the provider's administration API itself",
+                     "ADR-019",
+
+                     // 1. A closed catalogue of typed commands.
                      "closed catalogue of typed commands",
                      "no pass-through",
+
+                     // 2. Its own service identity.
                      "its own service identity",
                      "AddMPCoreServiceIdentity",
                      "only the provider roles the catalogue needs",
+
+                     // 3. Every caller authorized for every command.
+                     "every caller authorized for every command",
+
+                     // 4. Every write audited.
                      "every write audited",
                      "IBusinessAuditRecorder",
                      "a refused or failed attempt too",
+
+                     // 5. No administration token in any log.
                      "no administration token",
                      "SensitiveValue",
-                     "never calls the provider's administration API itself",
-                     "ADR-019",
+
+                     // 6. Every write idempotent.
+                     "every write idempotent",
                  })
         {
             // A rule may open its sentence or its bullet, so case is not part of it.

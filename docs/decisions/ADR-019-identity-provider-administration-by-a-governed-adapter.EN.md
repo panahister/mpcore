@@ -33,6 +33,10 @@ The pattern is an **administration adapter**: Alistair Cockburn's adapter of *Po
 in the role Eric Evans calls an anti-corruption layer (*Domain-Driven Design*, 2003): the product's other
 backends speak the product's commands, and only the adapter speaks the provider's administration model.
 
+Section 1 says where the adapter lives. Sections 2 to 7 are its six rules: a closed catalogue of typed
+commands, its own service identity, every caller authorized for every command, every write audited, no
+administration token in any log, and every write idempotent. Section 8 says what MP Core ships.
+
 ### 1. One backend, named by the owner
 
 Administration happens in exactly one backend of a product, the one the owner names as its administration
@@ -141,6 +145,18 @@ Everything else in ADR-007 holds for the adapter as for any host.
 
 ## What was proved
 
-`TemplateContractTests.Identity_provider_administration_is_governed_by_rules_not_refused` fails while any
-of the generated guidance refuses the backend, and while the security skill does not state each rule; it
-was seen failing on the text before this decision, and passes after it.
+`TemplateContractTests.Identity_provider_administration_is_governed_by_rules_not_refused` asserts four things.
+None of the five generated files that carried the refusal (the security skill, the vertical-slice skill,
+`README.md`, `Program.cs`, `docs/architecture.md`) refuses the backend. The security skill carries, case aside,
+16 stems: four about the adapter as a whole (login, signup, OTP, password reset and password change are never
+implemented here; "administration adapter"; any other backend never calls the provider's administration API
+itself; "ADR-019") and 12 for the six rules, at least one for each: a closed catalogue, 2; its own service
+identity, 3; every caller authorized for every command, 1; every write audited, 3; no administration token,
+2; every write idempotent, 1. The vertical-slice skill states the same boundary and points to the security
+skill. This record exists and says what changes in ADR-007.
+
+It was seen failing on the text before this decision, and with a rule dropped from the skill. Until a later
+repair the test named four of the six rules; the stems for callers and for idempotent writes are that repair's.
+With the sentence on callers removed from the skill the test fails with `Not found: "every caller authorized
+for every command"`, and with the sentence on idempotent writes removed, with `Not found: "every write
+idempotent"`.
