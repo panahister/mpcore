@@ -24,6 +24,7 @@ TFM=net10.0
 TEMPLATE_CONTENT="content/content/MPCore.Backend"
 
 FAILURES=0
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # sed in place, the same on macOS and on Linux. BSD sed wants a suffix after -i and GNU sed wants none
 # unless it is attached, so the one form both accept is an attached suffix; the copy it leaves is removed.
@@ -303,9 +304,25 @@ verify_release() {
   done
   # Guidance pointing at one developer's disk, a plugin cache or the governance repository does not travel.
   local leak
-  leak="$(grep -rlE '/Users/|C:\\\\|\.codex/plugins|Payment/Governance|READY_FOR_DEV|Ganjineh|SanaCash|IDR' \
+  leak="$(grep -rlE '/Users/|C:\\\\|\.codex/plugins|Payment/Governance|READY_FOR_DEV' \
     "$AI/.mpcore" "$AI/.agents" "$AI/.claude" "$AI/AGENTS.md" "$AI/CLAUDE.md" 2>/dev/null | grep -c .)"
-  expect_eq "machine-specific or product-specific references in shipped guidance" "$leak" "0"
+  expect_eq "machine-specific references in shipped guidance" "$leak" "0"
+  # A product's name does not travel with the framework either. This repository names no product, so the words
+  # are not written here: they are read, one per line, from a file the repository does not ship
+  # (MPCORE_PRODUCT_TERMS_FILE, or .mpcore-product-terms at the repository root, which git ignores). Without the
+  # file the check cannot run, and says so: a check that is silently off is not a check.
+  local terms="${MPCORE_PRODUCT_TERMS_FILE:-$REPO_ROOT/.mpcore-product-terms}" product_terms
+  product_terms="$(mktemp)"
+  [ -f "$terms" ] && grep -vE '^[[:space:]]*(#|$)' "$terms" > "$product_terms"
+  if [ -s "$product_terms" ]; then
+    local product_leak
+    product_leak="$(grep -rlF -f "$product_terms" \
+      "$AI/.mpcore" "$AI/.agents" "$AI/.claude" "$AI/AGENTS.md" "$AI/CLAUDE.md" 2>/dev/null | grep -c .)"
+    expect_eq "product-specific references in shipped guidance" "$product_leak" "0"
+  else
+    info "product names in shipped guidance: NOT checked; no terms file at $terms (see CONTRIBUTING.md)"
+  fi
+  rm -f "$product_terms"
   # Every MPCORE_ token in shipped guidance must be one the template actually substitutes; an unknown
   # token ships unresolved into a generated repository.
   local unknown_tokens
@@ -563,9 +580,23 @@ self_test() {
   ( cd "$S/case14" && eval "$refreeze" )
   assert_case "case 14 (a package carries a satellite assembly)" "$S/case14" "$V" "carries a satellite assembly" || failed=1
 
+  # 15: a product's name in the guidance a template ships, hashes refrozen. The name is a neutral marker given
+  # through a terms file made for the case: the repository names no product, and the checker must still find
+  # whatever a maintainer's own terms file lists.
+  cp -R "$D" "$S/case15"; local W15="$S/work15"; mkdir -p "$W15"
+  ( cd "$W15" && unzip -qo "$S/case15/MPCore.Templates.$V.nupkg" )
+  local TC15="$TEMPLATE_CONTENT"
+  printf '\nA note that names NEUTRAL-PRODUCT-MARKER.\n' >> "$W15/$TC15/.mpcore/skills/mpcore-apply-security/SKILL.md"
+  rm -f "$S/case15/MPCore.Templates.$V.nupkg"
+  ( cd "$W15" && zip -qr "$S/case15/MPCore.Templates.$V.nupkg" . )
+  ( cd "$S/case15" && eval "$refreeze" )
+  printf '# a neutral marker, for this case only\nNEUTRAL-PRODUCT-MARKER\n' > "$S/product-terms"
+  MPCORE_PRODUCT_TERMS_FILE="$S/product-terms" \
+    assert_case "case 15 (a product's name in shipped guidance)" "$S/case15" "$V" "product-specific references in shipped guidance" || failed=1
+
   rm -rf "$S"
   printf '\n'
-  [ "$failed" -eq 0 ] && { printf 'self-test PASSED: all fourteen bad artifacts rejected by the expected assertions\n'; return 0; }
+  [ "$failed" -eq 0 ] && { printf 'self-test PASSED: all fifteen bad artifacts rejected by the expected assertions\n'; return 0; }
   printf 'self-test FAILED\n'; return 1
 }
 

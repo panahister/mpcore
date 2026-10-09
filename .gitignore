@@ -13,3 +13,6 @@ artifacts/
 
 # ---- python, for the scripts that draw the diagrams ----
 __pycache__/
+
+# ---- words the leak guards look for; the repository names no product, so this file is the maintainer's own ----
+.mpcore-product-terms

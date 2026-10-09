@@ -49,6 +49,15 @@ dotnet test MPCore.sln --configuration Release --no-build --filter "Category!=Ge
 Continuous integration runs the fast set in one job and the slow tests in a job of their own, and the release
 workflow runs every test.
 
+**The names a leak guard looks for are not in this repository.** MP Core names no product, so the guard that keeps a
+product's name out of the guidance a template ships cannot list the names in its own source. A maintainer keeps them,
+one per line, in `.mpcore-product-terms` at the root of the clone (git ignores it, and no package carries it), or in
+the file `MPCORE_PRODUCT_TERMS_FILE` names. With the file, `eng/verify-release-artifacts.sh` and
+`TemplateContractTests.No_shipped_ai_file_names_a_product` fail on a name; without it the script prints
+`NOT checked` and the test is reported as skipped, with its reason, so a run that did not look says so. Both guards
+are proved with a neutral marker, not a real name: self-test case 15 and
+`The_product_name_guard_finds_a_term_it_is_given_in_shipped_guidance`.
+
 On a Mac with Apple Silicon, install a native gRPC code generator once (`brew install protobuf grpc`) or
 Rosetta: the one that ships with .NET's gRPC tools is built for Intel.
 

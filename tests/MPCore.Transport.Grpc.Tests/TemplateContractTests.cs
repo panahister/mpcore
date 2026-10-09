@@ -618,12 +618,7 @@ public sealed class TemplateContractTests
     [Fact]
     public void No_shipped_ai_file_carries_a_machine_specific_path_or_product_business_behaviour()
     {
-        var files = Directory.GetFiles(Path.Combine(TemplateRoot, ".mpcore"), "*", SearchOption.AllDirectories)
-            .Concat(Directory.GetFiles(Path.Combine(TemplateRoot, ".agents"), "*", SearchOption.AllDirectories))
-            .Concat(Directory.GetFiles(Path.Combine(TemplateRoot, ".claude"), "*", SearchOption.AllDirectories))
-            .Concat(new[] { Path.Combine(TemplateRoot, "AGENTS.md"), Path.Combine(TemplateRoot, "CLAUDE.md") });
-
-        foreach (var file in files)
+        foreach (var file in ShippedGuidanceFiles())
         {
             var text = File.ReadAllText(file);
             var name = Path.GetFileName(file);
@@ -636,15 +631,77 @@ public sealed class TemplateContractTests
             Assert.DoesNotContain("Payment/Governance", text, StringComparison.Ordinal);
             Assert.DoesNotContain("READY_FOR_DEV", text, StringComparison.Ordinal);
 
-            // No product may be named, and no example may become generated business logic.
-            foreach (var product in new[] { "Ganjineh", "SanaCash", "IDR" })
-            {
-                Assert.DoesNotContain(product, text, StringComparison.Ordinal);
-            }
-
+            // No example may become generated business logic.
             Assert.False(name.EndsWith(".cs", StringComparison.Ordinal), $"{name} ships code as guidance");
         }
     }
+
+    /// <summary>
+    /// No product is named in shipped guidance. This repository names no product, so the words are not written in
+    /// this test: they come from a file the repository does not ship (see <see cref="ProductTerms"/>). Without
+    /// the file the test is reported as skipped, with its reason, and not as passed.
+    /// </summary>
+    [ProductTermsFact]
+    public void No_shipped_ai_file_names_a_product()
+    {
+        var terms = ProductTerms();
+        var named = ShippedGuidanceFiles()
+            .Select(file => (File: Path.GetRelativePath(TemplateRoot, file), Terms: TermsIn(File.ReadAllText(file), terms)))
+            .Where(static found => found.Terms.Count > 0)
+            .Select(static found => found.File)
+            .ToList();
+
+        Assert.True(named.Count == 0, "Shipped guidance that names a product: " + string.Join(", ", named));
+    }
+
+    private static IEnumerable<string> ShippedGuidanceFiles() =>
+        Directory.GetFiles(Path.Combine(TemplateRoot, ".mpcore"), "*", SearchOption.AllDirectories)
+            .Concat(Directory.GetFiles(Path.Combine(TemplateRoot, ".agents"), "*", SearchOption.AllDirectories))
+            .Concat(Directory.GetFiles(Path.Combine(TemplateRoot, ".claude"), "*", SearchOption.AllDirectories))
+            .Concat(new[] { Path.Combine(TemplateRoot, "AGENTS.md"), Path.Combine(TemplateRoot, "CLAUDE.md") });
+
+    [Fact]
+    public void The_product_name_guard_finds_a_term_it_is_given_in_shipped_guidance()
+    {
+        // The guard's words live in a file this repository does not ship, so the guard is proved with a neutral
+        // marker given through a file made for the case: it finds the marker, finds nothing else, and says nothing
+        // when it is given no words.
+        var directory = Directory.CreateTempSubdirectory("mpcore-terms-").FullName;
+        try
+        {
+            var file = Path.Combine(directory, "terms");
+            File.WriteAllText(file, "# a neutral marker, for this case only\nNEUTRAL-PRODUCT-MARKER\n\n");
+
+            var terms = ProductTerms(file);
+
+            Assert.Equal(["NEUTRAL-PRODUCT-MARKER"], terms);
+            Assert.Equal(["NEUTRAL-PRODUCT-MARKER"], TermsIn("A note that names NEUTRAL-PRODUCT-MARKER.", terms));
+            Assert.Empty(TermsIn("A note that names nothing.", terms));
+            Assert.Empty(TermsIn("A note that names NEUTRAL-PRODUCT-MARKER.", ProductTerms(Path.Combine(directory, "absent"))));
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    /// <summary>
+    /// The words that must not appear in shipped guidance, one per line in a file the repository does not ship:
+    /// <c>MPCORE_PRODUCT_TERMS_FILE</c>, or <c>.mpcore-product-terms</c> at the repository root, which git ignores.
+    /// Without the file there are none, and the guard checks nothing of this kind.
+    /// </summary>
+    private static IReadOnlyList<string> ProductTerms(string? path = null)
+    {
+        path ??= Environment.GetEnvironmentVariable("MPCORE_PRODUCT_TERMS_FILE") is { Length: > 0 } given
+            ? given
+            : Path.Combine(RepositoryRoot, ".mpcore-product-terms");
+        return File.Exists(path)
+            ? [.. File.ReadAllLines(path).Select(static line => line.Trim()).Where(static line => line.Length > 0 && !line.StartsWith('#'))]
+            : [];
+    }
+
+    private static IReadOnlyList<string> TermsIn(string text, IEnumerable<string> terms) =>
+        [.. terms.Where(term => text.Contains(term, StringComparison.Ordinal))];
 
     [Fact]
     public void Consumer_skills_exclude_framework_maintenance_authority()
@@ -1664,6 +1721,26 @@ public sealed class TemplateContractTests
         {
             Assert.Contains(Directory.GetFiles(runtime, "*.cs", SearchOption.AllDirectories), file =>
                 !file.Contains("/obj/", StringComparison.Ordinal) && File.ReadAllText(file).Contains(marker, StringComparison.Ordinal));
+        }
+    }
+}
+
+/// <summary>
+/// A test that needs the maintainer's terms file. Without one it has nothing to look for and is skipped, with its
+/// reason, as the same check in the release verification script says "not checked": a check that is silently
+/// off is not a check.
+/// </summary>
+[AttributeUsage(AttributeTargets.Method)]
+internal sealed class ProductTermsFactAttribute : FactAttribute
+{
+    public ProductTermsFactAttribute()
+    {
+        var path = Environment.GetEnvironmentVariable("MPCORE_PRODUCT_TERMS_FILE") is { Length: > 0 } given
+            ? given
+            : Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../")), ".mpcore-product-terms");
+        if (!File.Exists(path) || !File.ReadAllLines(path).Any(static line => line.Trim() is { Length: > 0 } text && !text.StartsWith('#')))
+        {
+            Skip = $"No product terms: {path} does not exist or lists none. The words are the maintainer's own and are not shipped (CONTRIBUTING.md).";
         }
     }
 }
