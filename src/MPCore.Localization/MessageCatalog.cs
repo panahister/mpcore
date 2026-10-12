@@ -17,6 +17,9 @@ public sealed class MessageCatalogOptions
     /// default text. Defaults to <c>en</c>.
     /// </summary>
     public string DefaultCulture { get; set; } = "en";
+
+    /// <summary>Gets or sets the product's formatter of typed arguments; set by <see cref="MessageCatalogBuilder.UseArgumentFormatter"/>.</summary>
+    internal IMessageArgumentFormatter? ArgumentFormatter { get; set; }
 }
 
 /// <summary>Renders message keys as text and answers which keys exist.</summary>
@@ -27,6 +30,25 @@ public interface IMessageCatalog : IFailureMessageLocalizer
     /// <param name="arguments">The named arguments substituted into the template.</param>
     /// <param name="culture">The culture.</param>
     string? Render(string key, IReadOnlyDictionary<string, string>? arguments, CultureInfo culture);
+
+    /// <summary>
+    /// Renders a key in a culture with typed arguments beside the string arguments, or returns null when no
+    /// source has a template for it. A string argument renders as it is; a typed argument renders as the
+    /// product's <see cref="IMessageArgumentFormatter"/> formats it for <paramref name="culture"/>, or in its
+    /// invariant form. A catalog a product implemented itself renders typed arguments in their invariant
+    /// form unless it implements this member.
+    /// </summary>
+    /// <param name="key">The message key.</param>
+    /// <param name="arguments">The named arguments substituted as they are.</param>
+    /// <param name="typedArguments">The named typed arguments; no name may repeat one of <paramref name="arguments"/>.</param>
+    /// <param name="culture">The culture the caller negotiated.</param>
+    /// <exception cref="ArgumentException">A typed argument repeats the name of a string argument, or is null.</exception>
+    string? Render(
+        string key,
+        IReadOnlyDictionary<string, string>? arguments,
+        IReadOnlyDictionary<string, MessageArgument>? typedArguments,
+        CultureInfo culture) =>
+        Render(key, MessageArgumentSubstitution.Merge(arguments, typedArguments, static (_, value) => value.InvariantValue), culture);
 
     /// <summary>
     /// Determines whether any source has a default text for the key. An administrator can only
@@ -63,6 +85,11 @@ public interface IMessageCatalog : IFailureMessageLocalizer
 /// A placeholder with no argument stays as written. A key with no template anywhere renders nothing:
 /// it is counted on the <c>mpcore.localization.missing</c> metric and logged once per key and culture.
 /// </para>
+/// <para>
+/// A string argument is substituted as it is. A typed argument (<see cref="MessageArgument"/>) is formatted
+/// for the negotiated culture by the product's <see cref="IMessageArgumentFormatter"/>, or substituted in its
+/// invariant form when there is none or it fails; MP Core holds no locale format of its own.
+/// </para>
 /// </remarks>
 public sealed partial class MessageCatalog : IMessageCatalog
 {
@@ -72,11 +99,17 @@ public sealed partial class MessageCatalog : IMessageCatalog
     private static readonly Meter Meter = new(MeterName);
     private static readonly Counter<long> Missing = Meter.CreateCounter<long>(
         "mpcore.localization.missing", unit: "{message}", description: "Messages rendered with no template in any culture of the chain.");
+    private static readonly Counter<long> ArgumentFallback = Meter.CreateCounter<long>(
+        "mpcore.localization.argument_fallback",
+        unit: "{argument}",
+        description: "Typed message arguments rendered in their invariant form because the product's formatter threw, returned no text, or returned a text longer than the value limit.");
 
     private readonly IMessageTemplateSource[] _sources;
     private readonly CultureInfo _defaultCulture;
     private readonly ILogger<MessageCatalog> _logger;
     private readonly ConcurrentDictionary<(string Key, string Culture), bool> _reported = new();
+    private readonly ConcurrentDictionary<(string Key, string Argument, string Reason), bool> _fallbackReported = new();
+    private readonly IMessageArgumentFormatter? _formatter;
     private ReadOnlyCollection<KnownMessageKey>? _knownKeys;
     private object? _knownKeysLock;
 
@@ -93,6 +126,7 @@ public sealed partial class MessageCatalog : IMessageCatalog
         ArgumentNullException.ThrowIfNull(options);
         _sources = [.. sources.OrderByDescending(static source => source.Precedence)];
         _defaultCulture = CultureInfo.GetCultureInfo(options.Value.DefaultCulture);
+        _formatter = options.Value.ArgumentFormatter;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -100,14 +134,23 @@ public sealed partial class MessageCatalog : IMessageCatalog
     public string? Localize(FailureMessageDescriptor message, CultureInfo culture)
     {
         ArgumentNullException.ThrowIfNull(message);
-        return Render(message.Key, message.Arguments, culture);
+        return Render(message.Key, message.Arguments, message.TypedArguments, culture);
     }
 
     /// <inheritdoc />
-    public string? Render(string key, IReadOnlyDictionary<string, string>? arguments, CultureInfo culture)
+    public string? Render(string key, IReadOnlyDictionary<string, string>? arguments, CultureInfo culture) =>
+        Render(key, arguments, typedArguments: null, culture);
+
+    /// <inheritdoc />
+    public string? Render(
+        string key,
+        IReadOnlyDictionary<string, string>? arguments,
+        IReadOnlyDictionary<string, MessageArgument>? typedArguments,
+        CultureInfo culture)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
         ArgumentNullException.ThrowIfNull(culture);
+        MessageArgumentSubstitution.Validate(arguments, typedArguments);
 
         foreach (var candidate in CultureChain(culture))
         {
@@ -115,7 +158,11 @@ public sealed partial class MessageCatalog : IMessageCatalog
             {
                 if (source.TryGetTemplate(key, candidate, out var template))
                 {
-                    return Format(template, arguments);
+                    // The negotiated culture, not the one the template was found in, is the formatter's.
+                    return Format(template, MessageArgumentSubstitution.Merge(
+                        arguments,
+                        typedArguments,
+                        (name, value) => FormatArgument(key, name, value, culture)));
                 }
             }
         }
@@ -209,6 +256,55 @@ public sealed partial class MessageCatalog : IMessageCatalog
         yield return CultureInfo.InvariantCulture;
     }
 
+    /// <summary>
+    /// The product's text for a typed argument, or its invariant form when there is no formatter or the
+    /// formatter fails. A failure is counted and logged once per key, argument and reason, never with the value.
+    /// </summary>
+    private string FormatArgument(string key, string name, MessageArgument value, CultureInfo culture)
+    {
+        if (_formatter is null)
+        {
+            return value.InvariantValue;
+        }
+
+        string? formatted;
+        try
+        {
+            formatted = _formatter.Format(name, value, culture);
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException and not StackOverflowException)
+        {
+            // The exception's message may hold the value, so only its type is logged.
+            return Fallback(key, name, value, culture, "threw", exception.GetType().Name);
+        }
+
+        if (string.IsNullOrWhiteSpace(formatted))
+        {
+            return Fallback(key, name, value, culture, "empty", exceptionType: null);
+        }
+
+        return formatted.Length > FailureMessageDescriptor.MaximumArgumentValueLength
+            ? Fallback(key, name, value, culture, "too_long", exceptionType: null)
+            : formatted;
+    }
+
+    private string Fallback(string key, string name, MessageArgument value, CultureInfo culture, string reason, string? exceptionType)
+    {
+        ArgumentFallback.Add(
+            1,
+            new KeyValuePair<string, object?>("key", key),
+            new KeyValuePair<string, object?>("argument", name),
+            new KeyValuePair<string, object?>("kind", value.Kind.ToString()),
+            new KeyValuePair<string, object?>("reason", reason),
+            new KeyValuePair<string, object?>("culture", culture.Name));
+        if (_fallbackReported.TryAdd((key, name, reason), true))
+        {
+            LogArgumentFallback(_logger, reason, name, key, exceptionType ?? "no exception");
+        }
+
+        return value.InvariantValue;
+    }
+
     private static string Format(string template, IReadOnlyDictionary<string, string>? arguments) =>
         arguments is null || arguments.Count == 0
             ? template
@@ -221,4 +317,8 @@ public sealed partial class MessageCatalog : IMessageCatalog
     [LoggerMessage(EventId = 1, Level = LogLevel.Warning,
         Message = "No template for message key {Key} in culture {Culture} or any fallback culture; the text was omitted.")]
     private static partial void LogMissing(ILogger logger, string key, string culture);
+
+    [LoggerMessage(EventId = 2, Level = LogLevel.Warning,
+        Message = "The message argument formatter {Outcome} for argument {Argument} of message key {Key} ({ExceptionType}); the argument's invariant form was used.")]
+    private static partial void LogArgumentFallback(ILogger logger, string outcome, string argument, string key, string exceptionType);
 }

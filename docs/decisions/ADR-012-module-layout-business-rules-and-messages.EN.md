@@ -407,3 +407,62 @@ default implementation of the interface member. Each of seven deliberate breaks 
 restored: the sources merged lowest precedence first, every text marked as the product's, the list left
 unordered, another placeholder rule, the list computed on every call, the stored translations made listable,
 and a culture file's keys listed.
+
+## Addendum 2026-10-12: typed message arguments (proposed; pending owner acceptance)
+
+**Context.** Section 5 renders a message at the edge, in the culture the caller negotiated, from a key and
+named arguments the application layer chose before the language was known. The arguments were strings from
+the start (`FailureMessageDescriptor` kept `IReadOnlyDictionary<string, string>`), and the catalog substituted
+each as given, without the culture. A date or a number in a message was therefore written once, in one form,
+before the language was known; a product could format it per language only by wrapping the catalog and every
+transport's localizer.
+
+**Decision: a message argument may carry a typed value, and the product formats it.**
+
+| Part | What it is |
+|---|---|
+| `MessageArgument` (`MPCore.Application.Results`) | a typed value: `Date(DateOnly)`, `DateAndTime(DateTimeOffset)`, `Integer(long)`, `Decimal(decimal)`, with its `Kind`, its `Value` and its invariant form, `InvariantValue`: ISO 8601 for a date (`2026-10-12`) and a date and time with its offset (`2026-10-12T09:30:00+04:00`), invariant digits for a number (`-1234`, `1234.50`). A date and time without an offset is refused: the `DateTime` overload of `DateAndTime` is a compile error, and throws when it is reached past the compiler, because `DateTime`'s implicit conversion would take the machine's offset |
+| `FailureMessageDescriptor(key, arguments, typedArguments)` | typed arguments beside the string arguments, in `TypedArguments`. A typed argument's name follows the rule of the string arguments and never repeats one; the two together hold at most 16 arguments, and every invariant form is within the 256-character value limit. The existing constructor is unchanged and gives no typed argument |
+| `IMessageArgumentFormatter` (`MPCore.Localization`) | the product's formatter, registered once with `catalog.UseArgumentFormatter(formatter)` inside `AddMPCoreMessageCatalog`. The catalog calls it once for each typed argument, before substitution, with the argument's name, its typed value and the negotiated culture, for REST `detail`, gRPC `LocalizedMessage` and a direct `Render(key, arguments, typedArguments, culture)` alike |
+| Without a formatter, or when it fails | the invariant form, the same in every culture. A formatter that throws, or returns null, white space or a text longer than the value limit, does not fail the request: the invariant form is used, `mpcore.localization.argument_fallback` counts it (tags `key`, `argument`, `kind`, `reason`, `culture`), and a warning is logged once per key, argument and reason with the exception's type only, never the value |
+
+A string argument renders exactly as before, in every culture: a message with no typed argument takes the same
+path, with the same dictionary, as it did. Templates and stored translations do not change: a typed argument
+is named `{deadline}` like any other. MP Core holds no calendar and no locale format; how a value looks in
+each language is the product's decision.
+
+Of the two ways to carry the type, the code passing a typed argument beside the string arguments was taken,
+so that no template and no translation changes; the template declaring the type, as ICU MessageFormat does
+(`{deadline, date}`) and Java's `java.text.MessageFormat` (`{0,date}`), with the value kept as an invariant
+string, was not. Of the
+two defaults, the invariant form in every culture was taken, so that MP Core keeps no locale policy and only a
+product formats by language; the runtime's own formatting for the negotiated culture was not. The formatter
+has the place .NET gives `ICustomFormatter`, which a format provider supplies to format each argument of a
+composite format. The refusal of a date and time without an offset follows RFC 3339, which profiles ISO 8601
+for timestamps on the Internet and gives every date and time its offset.
+
+**Known limits.**
+
+- A broken business rule's arguments (`IBusinessRule.MessageArguments`) and the limits FluentValidation puts in
+  a field violation stay strings: `MPCore.Domain` depends on nothing, and a validator's limits are written by
+  MP Core. A typed argument is passed through `FailureMessageDescriptor`.
+- A localizer of a product's own, not the catalog, receives typed arguments in `TypedArguments` and renders
+  them only if it reads them. An `IMessageCatalog` of a product's own that does not implement the new `Render`
+  overload receives them in their invariant form.
+- The formatter is an instance given at composition, not resolved from the container; it is shared by every
+  request and called concurrently.
+- The formatter is called for every typed argument of a rendered message, including one its template does not
+  name.
+- Four kinds only: a time of day, a duration or an amount with its currency is passed as the kinds it is made
+  of, or as a string.
+
+**Evidence.** `MessageArgumentTests`, 4 tests, each seen failing against a stub that formatted in the current
+culture, accepted a `DateTime` and ignored typed arguments. `TypedArgumentTests`, 26 tests over a direct
+`Render`, REST and gRPC, with a fake formatter that writes the culture's name: 21 of the first 25 seen failing
+against a stub that ignored typed arguments; the other 4 hold that a string argument renders as before, which a
+stub cannot fail; the 26th, a catalog of a product's own, was seen failing under a planted break. Each of twelve
+deliberate breaks was seen failing and then restored: the formatter given the template's culture, no length
+limit on its text, its exception let through, the fallback not counted, the value logged, a string argument
+that reads as a number formatted, typed arguments dropped on the descriptor's path, dropped by the interface's
+default, the count limit applied to typed arguments alone, a name repeated, a `DateTime` accepted, and a
+decimal's invariant form taken from the current culture.

@@ -25,6 +25,26 @@ public sealed partial record FailureMessageDescriptor
     public FailureMessageDescriptor(
         string key,
         IReadOnlyDictionary<string, string>? arguments = null)
+        : this(key, arguments, typedArguments: null)
+    {
+    }
+
+    /// <summary>
+    /// Creates a message descriptor with typed arguments beside the string arguments: a date, a date and
+    /// time with its offset, an integer or a decimal, which the edge formats for the caller's culture. The
+    /// template names a typed argument as it names any other, <c>{deadline}</c>.
+    /// </summary>
+    /// <param name="key">The lower-case dot-separated message key.</param>
+    /// <param name="arguments">The bounded substitution arguments, rendered as they are.</param>
+    /// <param name="typedArguments">
+    /// The typed arguments. Their names follow the rule of <paramref name="arguments"/> and never repeat one of
+    /// them, and the two together hold at most <see cref="MaximumArgumentCount"/> arguments.
+    /// </param>
+    /// <exception cref="ArgumentException">The key or the arguments exceed the approved limits.</exception>
+    public FailureMessageDescriptor(
+        string key,
+        IReadOnlyDictionary<string, string>? arguments,
+        IReadOnlyDictionary<string, MessageArgument>? typedArguments)
     {
         if (string.IsNullOrWhiteSpace(key) ||
             key.Length > MaximumKeyLength ||
@@ -48,8 +68,25 @@ public sealed partial record FailureMessageDescriptor
             throw new ArgumentException("Message arguments exceed the approved key, count, or length limits.", nameof(arguments));
         }
 
+        var typed = typedArguments is null
+            ? new Dictionary<string, MessageArgument>(StringComparer.Ordinal)
+            : new Dictionary<string, MessageArgument>(typedArguments, StringComparer.Ordinal);
+
+        if (copy.Count + typed.Count > MaximumArgumentCount ||
+            typed.Any(pair =>
+                !ArgumentKeyPattern().IsMatch(pair.Key) ||
+                copy.ContainsKey(pair.Key) ||
+                pair.Value is null ||
+                pair.Value.InvariantValue.Length > MaximumArgumentValueLength))
+        {
+            throw new ArgumentException(
+                "Typed message arguments exceed the approved key, count, or length limits, or repeat the name of a string argument.",
+                nameof(typedArguments));
+        }
+
         Key = key;
         Arguments = new ReadOnlyDictionary<string, string>(copy);
+        TypedArguments = new ReadOnlyDictionary<string, MessageArgument>(typed);
     }
 
     /// <summary>Gets the message key.</summary>
@@ -57,6 +94,12 @@ public sealed partial record FailureMessageDescriptor
 
     /// <summary>Gets the substitution arguments.</summary>
     public IReadOnlyDictionary<string, string> Arguments { get; }
+
+    /// <summary>
+    /// Gets the typed arguments, which the edge formats for the caller's culture. Empty when the message has
+    /// none.
+    /// </summary>
+    public IReadOnlyDictionary<string, MessageArgument> TypedArguments { get; }
 
     /// <summary>The fallback descriptor used when no more specific message exists.</summary>
     public static FailureMessageDescriptor Generic { get; } = new("mpcore.failure");

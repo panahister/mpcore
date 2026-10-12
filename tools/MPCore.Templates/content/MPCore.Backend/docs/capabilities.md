@@ -25,6 +25,7 @@ infrastructure configured before the host will run.
 | Failure messages rendered in the caller's language from resource files | Supported | always — `AddMPCoreMessageCatalog`; MP Core's own messages in English, the languages of this product added here |
 | Translations edited at run time by an administrator | Supported | optional package `MPCore.Localization.EntityFrameworkCore.PostgreSql` |
 | The keys a translation form may offer, with their default text and placeholders, MP Core's among them | Supported | always, through `IMessageCatalog.ListKnownKeys()`, exposed by this product's own query |
+| Dates, times and numbers in a message, formatted for the caller's language | Supported | always: a `MessageArgument` in a `FailureMessageDescriptor`; this product's formatter, `catalog.UseArgumentFormatter(...)`, decides how each looks per language; without one, ISO 8601 and invariant digits |
 | Validators that read the database | **Not available** | — a check that needs state is a business rule in the aggregate |
 | Request idempotency: `Idempotency-Key`, key and result committed with the change, replay of the stored result | Supported | optional package `MPCore.Idempotency.EntityFrameworkCore.PostgreSql`; `IIdempotentExecutor`, `RequireIdempotencyKey()` |
 | Consumer inbox: an integration event delivered twice is processed once | Supported | same package; `UseMPCoreInbox()` |

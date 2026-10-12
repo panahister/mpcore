@@ -33,6 +33,20 @@ public sealed class MessageCatalogBuilder
             new ResourceMessageTemplateSource(new ResourceManager(resourceType), precedence));
         return this;
     }
+
+    /// <summary>
+    /// Registers the product's formatter of typed message arguments: the one place a product decides how a
+    /// date, a date and time or a number looks in each of its languages. Without one, a typed argument renders
+    /// in its invariant form, ISO 8601 or invariant digits, in every culture. A later call replaces an earlier
+    /// one. The formatter is shared by every request and must be safe to call concurrently.
+    /// </summary>
+    /// <param name="formatter">The formatter.</param>
+    public MessageCatalogBuilder UseArgumentFormatter(IMessageArgumentFormatter formatter)
+    {
+        ArgumentNullException.ThrowIfNull(formatter);
+        Services.Configure<MessageCatalogOptions>(options => options.ArgumentFormatter = formatter);
+        return this;
+    }
 }
 
 /// <summary>Registration of the MP Core message catalog.</summary>
