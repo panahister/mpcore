@@ -1,6 +1,6 @@
 # ADR-017 — Workload authentication by client certificate
 
-- Status: Proposed; pending owner acceptance
+- Status: Accepted, 2026-10-12, approved by the repository owner
 - Date: 2026-10-08
 - Extends: ADR-007 (reusable security and current actor), ADR-014 (the identity of a service), ADR-009 (the
   generated host's listeners)
@@ -104,4 +104,5 @@ certificate authorities and certificates created by the test.
 - Nothing about who the caller is changes: tokens, policies, the current actor and the audit trail are as
   before.
 - On macOS, .NET does not download the revocation list of a private authority, so with revocation on a host
-  refuses every client certificate (`Chain:RevocationStatusUnknown`): it fails closed.
+  refuses every client certificate (`Chain:RevocationStatusUnknown`): it fails closed. The tests of this
+  record were run on Linux and macOS; Windows was not run.

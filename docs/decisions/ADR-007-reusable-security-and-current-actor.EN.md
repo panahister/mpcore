@@ -217,7 +217,7 @@ The generated host composes one pipeline for every transport:
 - Health-probe anonymity is a deliberate, documented and bounded exception to default-deny.
 - Actor propagation into asynchronous message handlers, token exchange, UMA permissions and Keycloak Admin behavior remain out of scope and require separate approved contracts.
 
-## Addendum 2026-09-27 — the ambient accessors are singletons (proposed; pending owner acceptance)
+## Addendum 2026-09-27 — the ambient accessors are singletons (accepted by the repository owner, 2026-10-12)
 
 Found by the first consumer that ran a generated host end to end (the Storefront sample).
 
@@ -242,7 +242,7 @@ ADR-011 addendum of the same date.
 **Evidence.** `AmbientAccessorLifetimeTests`, `AuditInterceptorLifetimeTests`; both observed failing
 before the change.
 
-## Addendum 2026-10-08 — several issuers (proposed; pending owner acceptance)
+## Addendum 2026-10-08 — several issuers (accepted by the repository owner, 2026-10-12)
 
 Section 6 configures a single bearer scheme. A host that accepts tokens from several issuers registers one
 scheme per issuer, each configured with every rule of section 6, behind a default scheme that picks the
@@ -250,7 +250,7 @@ issuer a token names; and a second token of any configured issuer can be validat
 parameters without becoming the current actor. The decision, its tests and the alternatives are in
 [ADR-016](ADR-016-several-token-issuers-in-one-resource-server.EN.md). A host with one issuer is unchanged.
 
-## Addendum 2026-10-08 — the authentication time, and claims MP Core does not map (proposed; pending owner acceptance)
+## Addendum 2026-10-08 — the authentication time, and claims MP Core does not map (accepted by the repository owner, 2026-10-12)
 
 **What changes.** Section 3 lists `AuthenticatedAt` among the members of `CurrentActor`, and its
 documentation called it "the authentication instant asserted by the provider". The mapper read it from
@@ -276,7 +276,7 @@ would leave the wrong one as the obvious choice.
 **Evidence.** `AuthenticationTimeAndClaimsTests`, 12 tests; 8 were seen failing against stubs, among them
 `A_token_without_auth_time_has_no_authentication_time_and_is_never_fresh`, which failed on the old mapping.
 
-## Addendum 2026-10-08 — resource keys and a decision port (proposed; pending owner acceptance)
+## Addendum 2026-10-08 — resource keys and a decision port (accepted by the repository owner, 2026-10-12)
 
 **Context.** Section 9 keeps resource and action evaluation product-owned, behind extension points, and MP
 Core authorizes by scope and role only. A product that authorizes each endpoint by a resource key rebuilt

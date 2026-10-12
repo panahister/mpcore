@@ -205,7 +205,7 @@ reconciled in either direction, and no text was edited to make the two agree.
 described its environment as isolated. That claim was false against the §1 definition for the reason
 above, and the lab documents that repeat it are annotated in the lab repository rather than deleted.
 
-## Addendum 2026-10-08 — a version names one commit (proposed; pending owner acceptance)
+## Addendum 2026-10-08 — a version names one commit (accepted by the repository owner, 2026-10-12)
 
 This addendum adds no exception to §1. It makes the rule checkable from the commit history, and lets a
 consumer prove which commit it runs.

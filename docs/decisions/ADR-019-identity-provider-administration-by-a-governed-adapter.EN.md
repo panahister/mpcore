@@ -1,15 +1,11 @@
 # ADR-019 — Identity-provider administration from one backend, by a governed adapter
 
-- Status: Accepted, 2026-10-09: the repository owner chose this pattern. The wording below awaits his review.
+- Status: Accepted, 2026-10-12, approved by the repository owner; he chose the pattern on 2026-10-09
 - Date: 2026-10-09
 - Amends: ADR-007 (reusable security and current actor): its out-of-scope line for the identity
   provider's administration, as "What changes in ADR-007" states precisely
 - Uses: ADR-013 (request idempotency, rule 2.11), ADR-014 (the identity of a service, and the evidence
   of a person), ADR-018 (a sensitive value that never prints)
-- Relies on three decisions that still read Proposed: ADR-018 (a sensitive value that never prints); the
-  addendum of 2026-10-08 to ADR-014 (a person's token as evidence beside the service's identity), for
-  `RequireSubjectEvidence`; the addendum of 2026-10-08 to ADR-007 (resource keys and a decision port), for
-  `RequireResourceKey`. Remove this line when they are accepted.
 
 ## Context
 

@@ -166,7 +166,7 @@ Storefront's does.
 
 ## Addendum, 2026-10-08: a person's token as evidence beside the service's identity
 
-- Status: Proposed; pending owner acceptance
+- Status: Accepted by the owner, 2026-10-12
 
 ### Context
 

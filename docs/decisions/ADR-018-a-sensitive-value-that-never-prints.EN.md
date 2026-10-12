@@ -1,6 +1,6 @@
 # ADR-018 — A sensitive value that never prints
 
-- Status: Proposed; pending owner acceptance
+- Status: Accepted, 2026-10-12, approved by the repository owner
 - Date: 2026-10-08
 - Extends: ADR-005 (OpenTelemetry and logging), ADR-007 (reusable security and current actor)
 

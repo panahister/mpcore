@@ -1,6 +1,6 @@
 # ADR-016 — Several token issuers in one resource server
 
-- Status: Proposed; pending owner acceptance
+- Status: Accepted, 2026-10-12, approved by the repository owner
 - Date: 2026-10-08
 - Extends: ADR-007 (reusable security and current actor), section 6
 

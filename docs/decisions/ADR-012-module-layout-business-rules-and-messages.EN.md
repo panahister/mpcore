@@ -362,7 +362,7 @@ and `MPCoreMessagesCoverageTests`. The test the review table names for 5.2 is re
 `MessageCatalogTests` test above.
 [The language guide](../guide/languages.md) says how a product adds or substitutes its languages.
 
-## Addendum 2026-10-12: the list of known keys (proposed; pending owner acceptance)
+## Addendum 2026-10-12: the list of known keys (accepted by the repository owner, 2026-10-12)
 
 **Context.** Section 5 gives `IsKnownKey` "so an administrator can only translate keys the code uses", and
 leaves the commands and the UI that call the store to the product. The catalog answered one key at a time and
@@ -400,15 +400,21 @@ every key of a resource with its base text beside the translation.
   answered by `IsKnownKey` as before; it is never listed.
 - A resource entry that is not a string is not listed.
 
-**Evidence.** `KnownMessageKeyTests`, 8 tests, and
-`StoredTranslationTests.A_translation_stored_for_an_unknown_key_is_served_but_never_listed_as_a_known_key`,
-against PostgreSQL: 8 of the 9 were seen failing against a stub that listed nothing; the ninth holds the
-default implementation of the interface member. Each of seven deliberate breaks was seen failing and then
-restored: the sources merged lowest precedence first, every text marked as the product's, the list left
-unordered, another placeholder rule, the list computed on every call, the stored translations made listable,
-and a culture file's keys listed.
+**Evidence.** `KnownMessageKeyTests` in `MPCore.Localization.Tests`, and one test of `StoredTranslationTests`
+against PostgreSQL.
 
-## Addendum 2026-10-12: typed message arguments (proposed; pending owner acceptance)
+| Test | What it shows |
+|---|---|
+| `A_host_lists_MP_Cores_keys_and_its_own_once_each_ordered_by_key_with_the_texts_of_the_files` | MP Core's keys and the product's, each once, ordered by key, with the default texts of the files and their origin |
+| `A_key_in_two_sources_is_listed_once_with_the_default_text_rendering_uses` | the sources are merged highest precedence first |
+| `A_text_without_placeholders_lists_none`, `Placeholders_are_parsed_by_the_rule_the_catalog_renders_with` | the placeholders follow the rule the catalog renders with |
+| `A_stored_translation_of_an_unknown_key_is_served_in_its_culture_and_never_listed` | a stored translation is served but adds no key and changes no default text |
+| `The_list_agrees_with_IsKnownKey` | over resource files and stored translations, a key is listed exactly when `IsKnownKey` answers yes |
+| `The_list_is_computed_once_and_asks_no_source_that_does_not_list` | one computation for concurrent callers, kept; a source that does not list is not asked |
+| `A_catalog_of_its_own_that_does_not_list_says_so` | the default implementation throws `NotSupportedException` |
+| `StoredTranslationTests.A_translation_stored_for_an_unknown_key_is_served_but_never_listed_as_a_known_key` | the same, with the translation table in PostgreSQL |
+
+## Addendum 2026-10-12: typed message arguments (accepted by the repository owner, 2026-10-12)
 
 **Context.** Section 5 renders a message at the edge, in the culture the caller negotiated, from a key and
 named arguments the application layer chose before the language was known. The arguments were strings from
@@ -456,13 +462,18 @@ for timestamps on the Internet and gives every date and time its offset.
 - Four kinds only: a time of day, a duration or an amount with its currency is passed as the kinds it is made
   of, or as a string.
 
-**Evidence.** `MessageArgumentTests`, 4 tests, each seen failing against a stub that formatted in the current
-culture, accepted a `DateTime` and ignored typed arguments. `TypedArgumentTests`, 26 tests over a direct
-`Render`, REST and gRPC, with a fake formatter that writes the culture's name: 21 of the first 25 seen failing
-against a stub that ignored typed arguments; the other 4 hold that a string argument renders as before, which a
-stub cannot fail; the 26th, a catalog of a product's own, was seen failing under a planted break. Each of twelve
-deliberate breaks was seen failing and then restored: the formatter given the template's culture, no length
-limit on its text, its exception let through, the fallback not counted, the value logged, a string argument
-that reads as a number formatted, typed arguments dropped on the descriptor's path, dropped by the interface's
-default, the count limit applied to typed arguments alone, a name repeated, a `DateTime` accepted, and a
-decimal's invariant form taken from the current culture.
+**Evidence.** `MessageArgumentTests` in `MPCore.Application.Tests`, and `TypedArgumentTests` in
+`MPCore.Localization.Tests`, over a direct `Render`, REST and gRPC, with a fake formatter that writes the
+culture's name.
+
+| Test | What it shows |
+|---|---|
+| `Each_kind_holds_its_value_and_an_invariant_form_whatever_the_current_culture` | the invariant form of each kind does not depend on the current culture |
+| `A_date_and_time_without_an_offset_is_refused` | the `DateTime` overload is a compile error, and throws when it is reached past the compiler |
+| `A_descriptor_keeps_typed_arguments_beside_string_arguments`, `The_descriptors_limits_hold_for_typed_arguments_too` | the descriptor keeps both; the count limit is of the two together; a typed name follows the rule of the string arguments and never repeats one; every invariant form is within the value limit |
+| `Without_a_formatter_a_typed_argument_renders_in_its_invariant_form_in_every_culture` | the default is the invariant form |
+| `The_products_formatter_formats_each_typed_argument_for_the_negotiated_culture` | the formatter is given the negotiated culture |
+| `A_string_argument_renders_exactly_as_before_in_every_culture` | a string argument that reads as a number is not formatted, with or without a formatter |
+| `A_formatter_that_fails_gives_the_invariant_form_is_counted_and_never_logs_the_value`, `A_formatted_value_of_exactly_the_limit_is_used` | a formatter that throws, returns null, an empty or blank text, or a text over the limit gives the invariant form, counted with its reason; no log carries the value; a text of exactly the limit is used |
+| `Over_REST_the_detail_carries_the_formatted_arguments`, `Over_gRPC_the_localized_message_carries_the_formatted_arguments`, `A_formatter_that_throws_fails_neither_transport` | both transports carry the formatted text, and a failing formatter fails neither |
+| `A_catalog_of_its_own_receives_typed_arguments_in_their_invariant_form` | the interface's default passes the invariant forms to a product's own catalog |
