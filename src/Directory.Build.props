@@ -20,36 +20,76 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <!--
-    API compatibility is checked against a baseline cohort when one is present in artifacts/packages.
-    0.9.0 is the first version published to nuget.org, so until it is published there is no baseline and
-    validation is skipped, loudly. After it is published and the version here has moved on, copy the
-    published cohort into artifacts/packages: every later version is then compared with 0.9.0. What
-    changed between the last internal prerelease and 0.9.0 is in docs/releases/0.9.0.md.
+    The API of every runtime package is validated, on pack, against its package of MPCoreBaselineVersion, the last
+    version published to nuget.org (ADR-010, addendum of 2026-10-12). Validation is never skipped: a build of a
+    runtime project fails unless eng/restore-api-baseline.sh has downloaded that package from nuget.org and proved
+    that nuget.org signed it and that it records the commit of the tag v<baseline>. The proof is the stamp
+    <package>.verified beside it, whose first line is the package's SHA-256; it is compared here with the file, so a
+    package replaced after the check fails the build as well.
 
-    The baseline packages live in the git-ignored artifacts/packages output folder,
-    so they are unavailable in a fresh clone. Requesting the baseline
-    unconditionally makes a cold-cache restore fail with NU1101. The condition therefore tests for
-    the specific baseline package of the project being built, not merely for the folder: a folder
-    that exists but has been cleaned would otherwise pass the guard and still fail restore. When the
-    baseline is genuinely absent the build logs a high-importance message, because a validation gate
-    that disables itself in silence is indistinguishable from one that passed. Once the cohort is
-    published to a real feed this condition should be removed so validation is always on.
+    The package is read from artifacts/packages by its path, never restored through a package source: a NuGet cache
+    shared with other builds can hold a package of the same identity built elsewhere. On 2026-10-12 the user-level
+    cache of the maintainer's machine held MPCore.Domain 0.10.0 restored from a local copy, without nuget.org's
+    signature.
 
-    The message is silent in one case only: while the version being built is the baseline itself. A
-    version has nothing to be compared with but its predecessors, so nothing is being skipped.
+    MPCoreNewInCohort lists, separated by semicolons, the packages that first ship in this cohort and so have no
+    baseline. eng/restore-api-baseline.sh proves that nuget.org has none (the stamp <id>.<baseline>.new) and fails
+    when it has one; a build fails when a listed package has a baseline in the store. A listing therefore cannot
+    switch a package's validation off once its baseline exists.
+
+    One switch builds without a baseline, for work offline: -p:MPCoreOfflineWithoutApiBaseline=true. It warns for
+    every package, and fails on a continuous-integration machine (CI or GITHUB_ACTIONS set to true), so neither CI
+    nor the release workflow can build with it.
   -->
   <PropertyGroup>
     <MPCoreBaselineVersion>0.10.1</MPCoreBaselineVersion>
-    <MPCoreBaselinePackagePath>$(MSBuildThisFileDirectory)../artifacts/packages/$(MSBuildProjectName).$(MPCoreBaselineVersion).nupkg</MPCoreBaselinePackagePath>
+    <MPCoreNewInCohort></MPCoreNewInCohort>
+    <MPCoreBaselineStore>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', 'artifacts', 'packages'))</MPCoreBaselineStore>
+    <MPCoreBaselinePackagePath>$(MPCoreBaselineStore)$(MSBuildProjectName).$(MPCoreBaselineVersion).nupkg</MPCoreBaselinePackagePath>
+    <MPCoreIsNewInCohort>false</MPCoreIsNewInCohort>
+    <MPCoreIsNewInCohort Condition="$([System.String]::Copy(';$(MPCoreNewInCohort);').Contains(';$(MSBuildProjectName);'))">true</MPCoreIsNewInCohort>
   </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(MPCoreBaselinePackagePath)')">
-    <PackageValidationBaselineVersion>$(MPCoreBaselineVersion)</PackageValidationBaselineVersion>
+  <PropertyGroup Condition="'$(MPCoreIsNewInCohort)' != 'true' AND '$(MPCoreOfflineWithoutApiBaseline)' != 'true'">
+    <PackageValidationBaselinePath>$(MPCoreBaselinePackagePath)</PackageValidationBaselinePath>
   </PropertyGroup>
-  <Target Name="WarnWhenMPCoreApiBaselineIsMissing"
-          BeforeTargets="Build"
-          Condition="'$(IsPackable)' == 'true' AND '$(VersionPrefix)' != '$(MPCoreBaselineVersion)' AND !Exists('$(MPCoreBaselinePackagePath)')">
-    <Message Importance="high"
-             Text="MP Core: API compatibility validation is SKIPPED for $(MSBuildProjectName); baseline $(MPCoreBaselineVersion) was not found at $(MPCoreBaselinePackagePath)." />
+  <Target Name="MPCoreRequireVerifiedApiBaseline" BeforeTargets="Build;Pack" Condition="'$(IsPackable)' == 'true'">
+    <PropertyGroup>
+      <_MPCoreBaselineName>$(MSBuildProjectName) $(MPCoreBaselineVersion)</_MPCoreBaselineName>
+      <_MPCoreBaselineStamp>$(MPCoreBaselinePackagePath).verified</_MPCoreBaselineStamp>
+      <_MPCoreBaselineAbsence>$(MPCoreBaselineStore)$(MSBuildProjectName).$(MPCoreBaselineVersion).new</_MPCoreBaselineAbsence>
+      <_MPCoreBaselineHint>Run ./eng/restore-api-baseline.sh: it downloads the baseline from nuget.org and checks its signature and commit. To build offline without it, set -p:MPCoreOfflineWithoutApiBaseline=true; CI and the release refuse that.</_MPCoreBaselineHint>
+      <_MPCoreOnCi>false</_MPCoreOnCi>
+      <_MPCoreOnCi Condition="'$(CI)' == 'true' OR '$(GITHUB_ACTIONS)' == 'true'">true</_MPCoreOnCi>
+      <_MPCoreOffline>false</_MPCoreOffline>
+      <_MPCoreOffline Condition="'$(MPCoreOfflineWithoutApiBaseline)' == 'true'">true</_MPCoreOffline>
+    </PropertyGroup>
+
+    <Error Condition="$(_MPCoreOffline) AND $(_MPCoreOnCi)"
+           Code="MPCORE0001"
+           Text="MP Core: MPCoreOfflineWithoutApiBaseline is set on a continuous-integration machine. CI and the release always validate the API of $(MSBuildProjectName) against its baseline $(MPCoreBaselineVersion)." />
+    <Warning Condition="$(_MPCoreOffline)"
+             Code="MPCORE0002"
+             Text="MP Core: API compatibility validation is OFF for $(MSBuildProjectName): MPCoreOfflineWithoutApiBaseline is set. A package built this way was never compared with $(MPCoreBaselineVersion); never release it." />
+
+    <Error Condition="!$(_MPCoreOffline) AND $(MPCoreIsNewInCohort) AND Exists('$(MPCoreBaselinePackagePath)')"
+           Code="MPCORE0003"
+           Text="MP Core: $(MSBuildProjectName) is listed in MPCoreNewInCohort, but its baseline $(MPCoreBaselineVersion) exists at $(MPCoreBaselinePackagePath). Remove it from the list, so that its API is validated." />
+    <Error Condition="!$(_MPCoreOffline) AND $(MPCoreIsNewInCohort) AND !Exists('$(_MPCoreBaselineAbsence)')"
+           Code="MPCORE0004"
+           Text="MP Core: $(MSBuildProjectName) is listed in MPCoreNewInCohort, and nothing proves that nuget.org has no $(_MPCoreBaselineName). $(_MPCoreBaselineHint)" />
+
+    <Error Condition="!$(_MPCoreOffline) AND !$(MPCoreIsNewInCohort) AND !Exists('$(MPCoreBaselinePackagePath)')"
+           Code="MPCORE0005"
+           Text="MP Core: the API baseline $(_MPCoreBaselineName) is missing at $(MPCoreBaselinePackagePath), so its API cannot be validated. $(_MPCoreBaselineHint)" />
+    <Error Condition="!$(_MPCoreOffline) AND !$(MPCoreIsNewInCohort) AND !Exists('$(_MPCoreBaselineStamp)')"
+           Code="MPCORE0006"
+           Text="MP Core: the API baseline $(_MPCoreBaselineName) at $(MPCoreBaselinePackagePath) was never verified. $(_MPCoreBaselineHint)" />
+    <GetFileHash Condition="!$(_MPCoreOffline) AND !$(MPCoreIsNewInCohort)" Files="$(MPCoreBaselinePackagePath)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_MPCoreBaselineHash" />
+    </GetFileHash>
+    <Error Condition="!$(_MPCoreOffline) AND !$(MPCoreIsNewInCohort) AND !$([System.IO.File]::ReadAllText('$(_MPCoreBaselineStamp)').StartsWith('$(_MPCoreBaselineHash.ToLowerInvariant())'))"
+           Code="MPCORE0007"
+           Text="MP Core: the API baseline $(_MPCoreBaselineName) at $(MPCoreBaselinePackagePath) is not the package that was verified (SHA-256 $(_MPCoreBaselineHash.ToLowerInvariant())). $(_MPCoreBaselineHint)" />
   </Target>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)../docs/nuget/README.md"

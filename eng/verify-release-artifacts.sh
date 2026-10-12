@@ -398,26 +398,33 @@ verify_release() {
   fi
 
   head_ "API compatibility baseline (build-machine context)"
-  # This is the one check that is NOT a property of the frozen artifacts: it inspects the build
-  # machine's baseline store, which is git-ignored. On a clean clone it is simply unavailable, and
-  # reporting that as a failure would make a correct release unverifiable by a second party. It is
-  # therefore advisory when absent and a hard failure only when present-but-incomplete, which is the
-  # case that would mean validation really did skip packages.
-  local ROOT BASE_V missing=0 present=0
+  # The build of every runtime package fails without its checked baseline (src/Directory.Build.props), so a
+  # store that holds the packages was checked when they were built. This is still not a property of the frozen
+  # artifacts: the store is git-ignored, and on a clean clone it is simply unavailable, which a second party
+  # cannot be blamed for. It is advisory when the store is absent and a hard failure when it is present but a
+  # package is missing, was never verified, or is no longer the package that was verified.
+  local ROOT BASE_V missing=0 present=0 store
   ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  store="$ROOT/artifacts/packages"
   BASE_V="$(sed -n 's/.*<MPCoreBaselineVersion>\(.*\)<\/MPCoreBaselineVersion>.*/\1/p' "$ROOT/src/Directory.Build.props" 2>/dev/null | head -1)"
   if [ -z "$BASE_V" ]; then
     info "no MPCoreBaselineVersion declared in this tree - baseline context not evaluated"
-  elif [ ! -d "$ROOT/artifacts/packages" ]; then
+  elif [ ! -d "$store" ]; then
     info "baseline store absent (git-ignored): API-compatibility context cannot be judged from a clean clone; verify on the build machine"
   else
-    local new=0
+    local new=0 stamp
     for id in "${RUNTIME_IDS[@]}"; do
-      if [ -f "$ROOT/artifacts/packages/$id.$BASE_V.nupkg" ]; then present=$((present+1))
-      elif printf '%s\n' ${NEW_IN_COHORT[@]+"${NEW_IN_COHORT[@]}"} | grep -qx "$id"; then info "new in this cohort, no $BASE_V baseline exists: $id"; new=$((new+1))
+      if [ -f "$store/$id.$BASE_V.nupkg" ]; then
+        stamp="$store/$id.$BASE_V.nupkg.verified"
+        if [ ! -f "$stamp" ]; then bad "baseline never verified: $id.$BASE_V.nupkg has no .verified record (run ./eng/restore-api-baseline.sh)"; missing=1
+        elif [ "$(shasum -a 256 "$store/$id.$BASE_V.nupkg" | cut -d' ' -f1)" != "$(head -1 "$stamp")" ]; then bad "baseline changed after it was verified: $id.$BASE_V.nupkg"; missing=1
+        else present=$((present+1)); fi
+      elif printf '%s\n' ${NEW_IN_COHORT[@]+"${NEW_IN_COHORT[@]}"} | grep -qx "$id"; then
+        if [ -f "$store/$id.$BASE_V.new" ]; then info "new in this cohort, nuget.org has no $BASE_V baseline: $id"; new=$((new+1))
+        else bad "new in this cohort, but nothing proves that nuget.org has no $id $BASE_V (run ./eng/restore-api-baseline.sh)"; missing=1; fi
       else bad "baseline missing: $id.$BASE_V.nupkg"; missing=1; fi
     done
-    [ "$missing" -eq 0 ] && ok "$present runtime baselines present at $BASE_V, $new new in this cohort (validation had a baseline wherever one can exist)"
+    [ "$missing" -eq 0 ] && ok "$present runtime baselines verified at $BASE_V, $new new in this cohort (validation had a checked baseline wherever one can exist)"
   fi
 
   rm -rf "$T" "$C"

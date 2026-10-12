@@ -57,8 +57,13 @@ A commit of `main` may also be published as a prerelease, `<declared>-main.<n>`,
    (`.signature.p7s`) to every package after upload, so a downloaded file has another SHA-256. To check a
    download, verify its signatures with `dotnet nuget verify --all <file>` and compare its entries other than
    `.signature.p7s` with the built package. It holds for 0.9.3 as well.
-7. Seed the next API baseline by copying the cohort into `artifacts/packages`, and name it in
-   `MPCoreBaselineVersion`.
+7. After the release is published, name it in `MPCoreBaselineVersion`, in a commit of its own that moves no
+   code, and run `./eng/restore-api-baseline.sh`: it downloads each package of that version from nuget.org
+   and accepts it only with nuget.org's repository signature and the commit of the tag `v<version>`
+   (ADR-010, addendum of 2026-10-12). Without that package, or after it was changed, a build of a runtime
+   project fails. `-p:MPCoreOfflineWithoutApiBaseline=true` builds without it for work offline, warns, and
+   fails in CI. Say in the release notes whether CI and the release ran require mode for the whole restore
+   or the per-package check alone.
 8. Stop. Publication, commit, tag and push each require explicit authority. To publish, the owner asks
    for `release.yml` to be run with "publish", and approves the waiting job himself. Never approve it for
    him, never ask for an API key, and never handle one.

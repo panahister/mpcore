@@ -240,3 +240,49 @@ prerelease labels and treats a published version as immutable. The .NET Foundati
 artifact per commit stops being something a consumer can restore. A prerelease for each commit published
 automatically on every push: publication stays the owner's act (ADR-004, addendum on publication). The
 commit as build metadata (`0.10.0+48045c7`): ignored by NuGet for identity, as §1 already says.
+
+## Addendum 2026-10-12: package validation is never skipped (proposed; pending owner acceptance)
+
+**What went wrong.** API validation of a package ran only when its baseline package happened to be in a git-ignored
+folder. Otherwise the build printed "validation is SKIPPED" and passed, so a clean checkout validated nothing and
+four packages went unvalidated from 0.9.0 on. The script that filled the folder downloaded each package from
+nuget.org and checked neither its signature nor its commit. A NuGet cache shared with other builds could answer
+for the same identity too: on 2026-10-12 the maintainer's user-level cache held `MPCore.Domain` 0.10.0 restored from
+a local copy, without nuget.org's signature.
+
+**Decision.** The API of every runtime package is validated, on pack, against its package of the last published
+version, and a build of a runtime project fails unless that package is present and was checked.
+
+| Rule | Held by |
+|---|---|
+| A build fails without the baseline package, without the record that it was checked (`<package>.verified`, whose first line is its SHA-256), and when the file is no longer the one that was checked. The message names `./eng/restore-api-baseline.sh` | `src/Directory.Build.props`, target `MPCoreRequireVerifiedApiBaseline`, errors `MPCORE0005` to `MPCORE0007`; `ApiBaselineGateTests` |
+| The only way to build without it is `-p:MPCoreOfflineWithoutApiBaseline=true`: a warning for every package, and an error on a machine that sets `CI` or `GITHUB_ACTIONS`, so CI and the release cannot use it. No workflow names it | `MPCORE0001`, `MPCORE0002`; `ApiBaselineGateTests`; `TemplateContractTests` |
+| The package comes from nuget.org and from no other feed. It is accepted only if `dotnet nuget verify --all` passes with a repository signature whose certificate is one of the fingerprints nuget.org lists in its service index (`RepositorySignatures`), if the signature names nuget.org's service index, and if the commit its nuspec records is the commit of the tag `v<version>` | `eng/restore-api-baseline.sh`, and its `--self-test`, run before it is trusted in CI and in the release: it refuses a package re-zipped without its signature, a signature of a certificate nuget.org does not list, a recorded commit that is not the tag's, and another package's identity |
+| The folder is no package source and the package is read by its path, not restored through NuGet's cache | `NuGet.config`; `src/Directory.Build.props` |
+| A package that first ships in this cohort is listed in `MPCoreNewInCohort`. The script proves that nuget.org has no baseline for it (`<package>.new`) and fails when it has one; the build fails when a listed package has a baseline in the store, or when nothing proves the absence | `MPCORE0003`, `MPCORE0004`; the script (`STALE`); `eng/verify-release-artifacts.sh` |
+| Every job that builds restores and checks the baseline first, with the tags | `TemplateContractTests.Every_job_that_builds_restores_and_checks_the_api_baseline_first_and_none_may_switch_it_off` |
+
+**Not decided here: require mode for the whole restore.** NuGet's trust policy in require mode, with nuget.org as
+the trusted signer, fails on macOS for four third-party packages whose signatures have expired (`ImTools` 4.0.0,
+`NetTopologySuite` 2.5.0, `NetTopologySuite.IO.PostGis` 2.1.0, `System.CodeDom` 6.0.0): their timestamps come from a
+chain that macOS distrusts (`NU3037`, `NU3028`); default verification fails the same way for `ImTools`. The same
+restore passes in a Linux container; GitHub's runner was not run. The baseline is therefore checked package by
+package, on every operating system, and the restore of everything else keeps NuGet's default. Require mode for the
+whole restore is switched on in the CI and release jobs on GitHub's Linux runner only after a first run there
+passes; until then those jobs run the per-package check alone, and the release notes of each version say which
+ran. The script is bash and was run on macOS and Linux; Windows was not run.
+
+**Sources.** *Package validation* (Microsoft Learn, ".NET SDK"): `EnablePackageValidation` compares a package with a
+baseline package at pack. *Repository signatures* and *dotnet nuget verify* (Microsoft Learn, NuGet): nuget.org signs
+every package it hosts and lists its signing certificates in the `RepositorySignatures` resource of its service
+index; `--certificate-fingerprint` accepts a package only when its signer is one of those. That a
+check that can switch itself off proves nothing is why validation has no skip, and it is a condition of MP Core 1.0.
+
+**Alternatives that were not taken.**
+
+| Alternative | Why not |
+|---|---|
+| Let NuGet restore the baseline (`PackageDownload`) into its global packages folder | The folder is shared: a package of the same identity restored from elsewhere, as on 2026-10-12, answers without a signature |
+| Require mode for the whole restore on every operating system | Fails on macOS for the four packages above |
+| Move the four dependencies to versions signed after 2024 | Not chosen; each depends on a package that pulls it in |
+| Keep the skip, with a louder message | A gate that can switch itself off is indistinguishable from one that passed |

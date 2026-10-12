@@ -148,8 +148,15 @@ jobs:
           status="$(curl -s -o /dev/null -w '%{http_code}' "https://api.nuget.org/v3-flatcontainer/mpcore.domain/$VERSION/mpcore.domain.nuspec")"
           echo "nuget.org answers $status for MPCore.Domain $VERSION"
           [ "$status" = "404" ]
-      - name: Restore the API-compatibility baseline from nuget.org
-        run: ./eng/restore-api-baseline.sh
+      # Every package's API is validated against its last published version, and the build fails without that
+      # package (ADR-010, addendum of 2026-10-12). The script downloads it from nuget.org and refuses it unless
+      # nuget.org's repository signature and the commit of the tag of that version are on it; the self-test first
+      # proves it refuses a package for each reason. Restore keeps NuGet's default verification for everything
+      # else: require mode for the whole restore is not switched on in this job.
+      - name: Restore the API-compatibility baseline from nuget.org, and check each package
+        run: |
+          ./eng/restore-api-baseline.sh --self-test
+          ./eng/restore-api-baseline.sh
       - name: Restore (locked)
         run: dotnet restore MPCore.sln --locked-mode
       - name: Build (warnings are errors)

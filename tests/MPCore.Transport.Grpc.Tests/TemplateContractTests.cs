@@ -343,11 +343,57 @@ public sealed class TemplateContractTests
         Assert.Matches(
             new Regex(@"\[Trait\(""Category"", ""Packaging""\)\]\s*public async Task The_packed_localization_package_carries_no_satellite_assembly"),
             packaging);
+        Assert.Matches(
+            new Regex(@"\[Trait\(""Category"", ""Packaging""\)\]\s*public sealed partial class ApiBaselineGateTests"),
+            File.ReadAllText(Path.Combine(RepositoryRoot, "tests/MPCore.Transport.Grpc.Tests/ApiBaselineGateTests.cs")));
 
         // No test step of the release gate has a filter: every test runs before anything is packed.
         var testSteps = Regex.Matches(release, @"dotnet test [^\n]*").Select(static match => match.Value).ToList();
         Assert.NotEmpty(testSteps);
         Assert.All(testSteps, static step => Assert.DoesNotContain("--filter", step, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Every_job_that_builds_restores_and_checks_the_api_baseline_first_and_none_may_switch_it_off()
+    {
+        // ADR-010, addendum of 2026-10-12: the API of every runtime package is validated against the last
+        // published version, and a build fails without that package. The script that puts it there downloads it
+        // from nuget.org and checks it, so a job that builds without having run the script cannot succeed, and a
+        // job that sets the offline switch would build without validation.
+        foreach (var name in new[] { "ci.yml", "release.yml" })
+        {
+            var text = File.ReadAllText(Path.Combine(RepositoryRoot, ".github/workflows", name)).ReplaceLineEndings("\n");
+            var jobs = Regex.Split(text[text.IndexOf("\njobs:\n", StringComparison.Ordinal)..], @"\n  (?=[a-z][a-z-]*:\n)").Skip(1).ToList();
+            Assert.NotEmpty(jobs);
+
+            foreach (var job in jobs)
+            {
+                var build = job.IndexOf("dotnet build", StringComparison.Ordinal);
+                if (build < 0)
+                {
+                    continue;
+                }
+
+                var restore = job.IndexOf("./eng/restore-api-baseline.sh", StringComparison.Ordinal);
+                Assert.True(restore >= 0 && restore < build, $"{name}: a job builds before it restores and checks the API baseline:\n{job[..Math.Min(60, job.Length)]}");
+                Assert.Contains("fetch-depth: 0", job[..restore], StringComparison.Ordinal);
+            }
+
+            Assert.DoesNotContain("MPCoreOfflineWithoutApiBaseline", text, StringComparison.Ordinal);
+        }
+
+        // Both gates run the script's self-test before they trust the script.
+        Assert.Contains("./eng/restore-api-baseline.sh --self-test", File.ReadAllText(Path.Combine(RepositoryRoot, ".github/workflows/ci.yml")), StringComparison.Ordinal);
+        Assert.Contains("./eng/restore-api-baseline.sh --self-test", File.ReadAllText(Path.Combine(RepositoryRoot, ".github/workflows/release.yml")), StringComparison.Ordinal);
+
+        // Validation is never skipped in silence, and the baseline is no package source.
+        var props = File.ReadAllText(Path.Combine(RepositoryRoot, "src/Directory.Build.props"));
+        Assert.DoesNotContain("SKIPPED", props, StringComparison.Ordinal);
+        Assert.Contains("<Error Condition=\"!$(_MPCoreOffline) AND !$(MPCoreIsNewInCohort) AND !Exists('$(MPCoreBaselinePackagePath)')\"", props, StringComparison.Ordinal);
+        var sources = File.ReadAllText(Path.Combine(RepositoryRoot, "NuGet.config"));
+        Assert.Contains("https://api.nuget.org/v3/index.json", sources, StringComparison.Ordinal);
+        Assert.DoesNotContain("artifacts/packages\"", sources, StringComparison.Ordinal);
+        Assert.Single(Regex.Matches(sources, @"<add key="));
     }
 
     [Fact]

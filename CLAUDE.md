@@ -20,7 +20,8 @@ and must never gain any.
   the next unused version. See ADR-010.
 - The CLI, the template and the runtime packages ship as one cohort under one version.
 - Releases pack into `artifacts/release/<version>`. `artifacts/packages` is the API-compatibility
-  baseline store and is never a publication source.
+  baseline store and is never a publication source. `./eng/restore-api-baseline.sh` fills it from nuget.org
+  and checks each package; a build of a runtime package fails without its checked baseline (ADR-010).
 - Commit, tag, push and publication each need explicit owner authority. Never assume it.
 - No credential, realm URL or connection string belongs in this repository.
 - Documentation is English. A convention it introduces or explains names its source.

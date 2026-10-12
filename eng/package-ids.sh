@@ -12,8 +12,12 @@ RUNTIME_IDS=(
   MPCore.Transport.Http MPCore.Validation.FluentValidation
 )
 TOOL_IDS=(MPCore.Cli MPCore.Templates)
-# Packages that first ship in this cohort. They have no baseline at MPCoreBaselineVersion by
-# definition, so their absence from the baseline store is expected, not a skipped validation.
-# Empty this list when the next cohort is frozen and these packages have a baseline of their own:
-# eng/restore-api-baseline.sh fails while a package listed here is published at the baseline version.
+# Packages that first ship in this cohort, read from MPCoreNewInCohort in src/Directory.Build.props, the one list
+# the build reads as well. They have no baseline at MPCoreBaselineVersion by definition, so their absence from the
+# baseline store is expected, not a skipped validation. eng/restore-api-baseline.sh fails, and so does the build,
+# while a package listed there has a baseline: empty the list when the next cohort is frozen.
 NEW_IN_COHORT=()
+_mpcore_new_in_cohort="$(sed -n 's/.*<MPCoreNewInCohort>\(.*\)<\/MPCoreNewInCohort>.*/\1/p' \
+  "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/src/Directory.Build.props" | head -1)"
+if [ -n "$_mpcore_new_in_cohort" ]; then IFS=';' read -r -a NEW_IN_COHORT <<< "$_mpcore_new_in_cohort"; fi
+unset _mpcore_new_in_cohort
