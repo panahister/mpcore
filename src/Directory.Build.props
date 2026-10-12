@@ -4,7 +4,7 @@
     <IsPackable>true</IsPackable>
     <!-- Authored XML documentation must actually ship inside every package. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <VersionPrefix>0.10.1</VersionPrefix>
+    <VersionPrefix>0.10.2</VersionPrefix>
     <Authors>Mehdi Panahi</Authors>
     <Copyright>Copyright (c) The MP Core contributors</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -39,7 +39,7 @@
     version has nothing to be compared with but its predecessors, so nothing is being skipped.
   -->
   <PropertyGroup>
-    <MPCoreBaselineVersion>0.10.0</MPCoreBaselineVersion>
+    <MPCoreBaselineVersion>0.10.1</MPCoreBaselineVersion>
     <MPCoreBaselinePackagePath>$(MSBuildThisFileDirectory)../artifacts/packages/$(MSBuildProjectName).$(MPCoreBaselineVersion).nupkg</MPCoreBaselinePackagePath>
   </PropertyGroup>
   <PropertyGroup Condition="Exists('$(MPCoreBaselinePackagePath)')">
