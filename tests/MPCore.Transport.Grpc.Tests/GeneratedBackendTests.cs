@@ -160,6 +160,35 @@ public sealed partial class GeneratedBackendTests
         Assert.True(File.Exists(Path.Combine(workspace.Backend, ".mpcore/template-manifest.json")));
     }
 
+    /// <summary>
+    /// <c>mpcore configure</c> regenerates the template to tell a file it owns from one the developer edited. Every
+    /// generation writes a new random user secrets id into the host project, so an untouched repository was reported
+    /// as edited the moment a capability changed (exit code 7), and applying the change would have replaced the id,
+    /// orphaning the secrets stored under the old one.
+    /// </summary>
+    [Fact]
+    public async Task Configure_changes_the_cache_of_an_untouched_repository_and_keeps_its_user_secrets_id()
+    {
+        using var workspace = await Workspace.GenerateWithCliAsync(useMPCoreSource: false);
+        var host = Path.Combine(workspace.Backend, "src/Acme.Ledger.Api/Acme.Ledger.Api.csproj");
+        var before = UserSecretsId(host);
+        var cli = Workspace.CliAssembly();
+
+        var plan = await workspace.RunDotnetAsync(workspace.Root, cli, "configure", "--project", workspace.Backend, "--cache", "redis", "--business-audit", "postgresql");
+        var apply = await workspace.RunDotnetAsync(workspace.Root, cli, "configure", "--project", workspace.Backend, "--cache", "redis", "--business-audit", "postgresql", "--apply");
+        var again = await workspace.RunDotnetAsync(workspace.Root, cli, "configure", "--project", workspace.Backend, "--cache", "redis", "--business-audit", "postgresql");
+
+        Assert.True(plan.ExitCode == 0, "The plan stopped:\n" + plan.Output);
+        Assert.Contains("Plan (nothing has been changed", plan.Output, StringComparison.Ordinal);
+        Assert.True(apply.ExitCode == 0, "The change stopped:\n" + apply.Output);
+        Assert.Equal(before, UserSecretsId(host));
+        Assert.Contains("\"cache\": \"redis\"", File.ReadAllText(Path.Combine(workspace.Backend, ".mpcore/template-manifest.json")), StringComparison.Ordinal);
+        Assert.True(again.ExitCode == 0, again.Output);
+        Assert.Contains("Already in the requested state", again.Output, StringComparison.Ordinal);
+
+        static string UserSecretsId(string project) => Regex.Match(File.ReadAllText(project), "<UserSecretsId>([^<]+)</UserSecretsId>").Groups[1].Value;
+    }
+
     /// <summary>The control of the test above: without its solution file, the root build has nothing to build.</summary>
     [Fact]
     public async Task Without_its_solution_file_a_generated_backend_does_not_build_from_its_root()
@@ -413,6 +442,37 @@ public sealed partial class GeneratedBackendTests
 
         public string Backend { get; }
 
+        /// <summary>The directory that holds the template home and, beside it, the generated backend.</summary>
+        public string Root => _root;
+
+        /// <summary>The built command line tool of this checkout.</summary>
+        public static string CliAssembly()
+        {
+            var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
+            var cli = Path.Combine(RepositoryRoot, "tools/MPCore.Cli/bin", configuration, "net10.0/MPCore.Cli.dll");
+            Assert.True(File.Exists(cli), $"{cli} is missing: build the solution first.");
+            return cli;
+        }
+
+        /// <summary>A workspace with the template installed from source into a home of its own, and nothing generated.</summary>
+        public static async Task<Workspace> WithTemplateAsync()
+        {
+            var workspace = new Workspace(Directory.CreateTempSubdirectory("mpcore-generated-").FullName);
+            try
+            {
+                await workspace.RunOrThrowAsync(workspace._root, "new", "install", TemplateRoot);
+                return workspace;
+            }
+            catch
+            {
+                workspace.Dispose();
+                throw;
+            }
+        }
+
+        /// <summary>Runs <c>dotnet</c> in a directory, with this workspace's home; the output is both streams.</summary>
+        public Task<(int ExitCode, string Output)> RunDotnetAsync(string directory, params string[] arguments) => RunAsync(directory, arguments);
+
         public static async Task<Workspace> GenerateAsync(string shape, string transport = "rest")
         {
             var workspace = new Workspace(Directory.CreateTempSubdirectory("mpcore-generated-").FullName);
@@ -468,21 +528,22 @@ public sealed partial class GeneratedBackendTests
         /// from source into the home of this workspace. The tool's own restore and build are skipped: it would
         /// restore the packages of this version from nuget.org, and MP Core is referenced as projects here.
         /// </summary>
-        public static async Task<Workspace> GenerateWithCliAsync()
+        public static async Task<Workspace> GenerateWithCliAsync(bool useMPCoreSource = true)
         {
             var workspace = new Workspace(Directory.CreateTempSubdirectory("mpcore-generated-").FullName);
             try
             {
-                var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
-                var cli = Path.Combine(RepositoryRoot, "tools/MPCore.Cli/bin", configuration, "net10.0/MPCore.Cli.dll");
-                Assert.True(File.Exists(cli), $"{cli} is missing: build the solution first.");
                 await workspace.RunOrThrowAsync(workspace._root, "new", "install", TemplateRoot);
                 await workspace.RunOrThrowAsync(
                     workspace._root,
-                    cli, "new", "backend", "--organization", "Acme", "--component", "Ledger", "--shape", "service",
+                    CliAssembly(), "new", "backend", "--organization", "Acme", "--component", "Ledger", "--shape", "service",
                     "--transport", "rest", "--messaging", "none", "--ai-tooling", "none", "--mpcore-version", CohortVersion(),
                     "--output", workspace.Backend, "--skip-verify", "--non-interactive");
-                workspace.UseMPCoreSource();
+                if (useMPCoreSource)
+                {
+                    workspace.UseMPCoreSource();
+                }
+
                 return workspace;
             }
             catch

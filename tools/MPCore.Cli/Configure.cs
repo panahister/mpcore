@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
@@ -14,7 +15,7 @@ using System.Text.RegularExpressions;
 /// the files it changed from a backup taken in the same run. Git is never used to recover, because a
 /// developer's uncommitted work is not the tool's to discard.
 /// </summary>
-internal static class Configure
+internal static partial class Configure
 {
     private const string ManifestPath = ".mpcore/template-manifest.json";
     private const int SupportedSchemaVersion = 4;
@@ -204,7 +205,7 @@ internal static class Configure
             // The pristine output for the settings this repository currently records. Comparing against
             // it is the only reliable way to tell a file the generator owns from one the developer has
             // since edited: a name proves nothing about whether the content is still ours.
-            baseline = await MaterializeTemplateAsync(manifest, currentAi, manifest.Get("mpcoreVersion"));
+            baseline = await MaterializeTemplateAsync(project, manifest, currentAi, manifest.Get("mpcoreVersion"));
             if (baseline is null)
             {
                 return 4;
@@ -215,7 +216,7 @@ internal static class Configure
         {
             // The complete requested state, so a combined request (say --cache with --mpcore-version)
             // plans each file once, with its final content.
-            final = await MaterializeTemplateAsync(manifest, requestedAi,
+            final = await MaterializeTemplateAsync(project, manifest, requestedAi,
                 manifestUpdates.GetValueOrDefault("mpcoreVersion", manifest.Get("mpcoreVersion")),
                 requestedCache, requestedAudit, requestedTimeseries);
             if (final is null)
@@ -247,7 +248,7 @@ internal static class Configure
 
         if (aiChanged)
         {
-            materialized = await MaterializeTemplateAsync(manifest, requestedAi,
+            materialized = await MaterializeTemplateAsync(project, manifest, requestedAi,
                 manifestUpdates.GetValueOrDefault("mpcoreVersion", manifest.Get("mpcoreVersion")));
             if (materialized is null)
             {
@@ -267,7 +268,7 @@ internal static class Configure
         {
             // Files that embed the version must move with it, or the repository documents a version it
             // no longer pins.
-            var refreshed = materialized ?? await MaterializeTemplateAsync(manifest, currentAi,
+            var refreshed = materialized ?? await MaterializeTemplateAsync(project, manifest, currentAi,
                 manifestUpdates["mpcoreVersion"]);
             if (refreshed is null)
             {
@@ -753,7 +754,7 @@ internal static class Configure
     /// the skills and entry points come from the installed template rather than from a copy embedded in
     /// this tool. The template/CLI version gate applies here exactly as it does during generation.
     /// </summary>
-    private static async Task<string?> MaterializeTemplateAsync(JsonNodeManifest manifest, string aiTooling, string mpcoreVersion,
+    private static async Task<string?> MaterializeTemplateAsync(string project, JsonNodeManifest manifest, string aiTooling, string mpcoreVersion,
         string? cache = null, string? businessAudit = null, string? timeseries = null)
     {
         var temp = Path.Combine(Path.GetTempPath(), $"mpcore-configure-{Guid.NewGuid():N}");
@@ -810,7 +811,36 @@ internal static class Configure
         }
 
         File.Delete(marker);
+        KeepUserSecretsIds(project, temp);
         return temp;
+    }
+
+    [GeneratedRegex("<UserSecretsId>[^<]*</UserSecretsId>")]
+    private static partial Regex UserSecretsIdPattern();
+
+    /// <summary>
+    /// Every generation writes a new random <c>UserSecretsId</c> into the host project, so the regenerated reference
+    /// would differ from the repository's own file in that line alone: a file nobody edited would be reported as
+    /// edited, and applying a change would give the project another id and orphan the secrets stored under the old
+    /// one. The reference takes the repository's id, so that it differs only where the settings differ.
+    /// </summary>
+    private static void KeepUserSecretsIds(string project, string generated)
+    {
+        foreach (var file in Directory.GetFiles(generated, "*.csproj", SearchOption.AllDirectories))
+        {
+            var text = Encoding.UTF8.GetString(File.ReadAllBytes(file));
+            var existing = Path.Combine(project, Path.GetRelativePath(generated, file));
+            if (!UserSecretsIdPattern().IsMatch(text) || !File.Exists(existing))
+            {
+                continue;
+            }
+
+            var current = UserSecretsIdPattern().Match(Encoding.UTF8.GetString(File.ReadAllBytes(existing)));
+            if (current.Success)
+            {
+                File.WriteAllBytes(file, Encoding.UTF8.GetBytes(UserSecretsIdPattern().Replace(text, current.Value, 1)));
+            }
+        }
     }
 
     /// <summary>
