@@ -435,9 +435,39 @@ these variables name them:
 
 ## Versioning
 
-MP Core follows [Semantic Versioning](https://semver.org). While the major version is `0`, a minor
-version may change the public API; release notes say what changed and how to move. Three rules hold
-([ADR-010](docs/decisions/ADR-010-immutable-cohort-identity-and-template-compatibility-gate.EN.md)):
+MP Core follows [Semantic Versioning](https://semver.org). From 1.0.0 the rules below are a promise to the
+products that depend on it. [ADR-020](docs/decisions/ADR-020-the-compatibility-promise-of-1-0.EN.md) gives the
+reasons and the alternatives that were not taken.
+
+**What is promised.** The public API is the `PublicAPI.Shipped.txt` of each runtime package, which
+[the review of 1.0](docs/api/1.0-review.md) decided type by type; the command line tool and the template as
+recorded in [`docs/contracts`](docs/contracts/README.md); and the behaviour the guides document.
+
+**How a version may change it.**
+
+- A patch version fixes. A minor version adds. A change that breaks the API, the tool or the template waits for
+  the next major version.
+- A member is marked `[Obsolete]`, with the one to use instead, for at least one minor version before the next
+  major version removes it.
+- After a new major version is released, the previous major version gets security fixes, and fixes of defects
+  that lose data or break security, for 12 months, and never past the end of support of the .NET version it
+  targets.
+
+**What holds it.** The build fails on an undeclared change of a runtime package's public API
+(Microsoft.CodeAnalysis.PublicApiAnalyzers), and package validation compares each package with the last
+published version. Tests compare the tool and the template with their recorded contracts, and keep the review of the
+public API and its suppressions in step with the inventories. The `[Obsolete]` rule and the behaviour of the guides
+are held by review and by the tests that name them, not by a check of their own.
+
+**What it does not cover.** The text of log messages. Internal types, and anything not named above. An API marked
+`[Experimental]`, each with a diagnostic id of its own that is listed here:
+
+| Diagnostic id | Experimental API |
+|---|---|
+| none at 1.0.0 | |
+
+Three rules of [ADR-010](docs/decisions/ADR-010-immutable-cohort-identity-and-template-compatibility-gate.EN.md)
+also hold:
 
 - A published version is never rebuilt with different bytes. A corrected build takes the next version.
 - The runtime packages, the CLI and the template ship together, as one cohort under one version.

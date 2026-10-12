@@ -288,6 +288,11 @@ mpcore configure --project . --ai-tooling both
 | `shape` | ❌ manual | restructures every project and namespace |
 | `organization` / `component` | ❌ manual | renames every namespace, assembly and project reference |
 
+What a new version of MP Core may change, and how long the version before it is supported, is the
+[compatibility policy](https://github.com/panahister/mpcore#versioning), with its reasons in
+[ADR-020](https://github.com/panahister/mpcore/blob/main/docs/decisions/ADR-020-the-compatibility-promise-of-1-0.EN.md);
+read the release notes of the version you move to before you change `--mpcore-version`.
+
 For the unsupported ones the command refuses and explains why rather than half-performing a
 migration. Nothing is deleted without you seeing the list first, and an `--apply` that fails restores
 the files it changed from a backup it took in the same run.

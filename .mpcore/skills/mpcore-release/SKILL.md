@@ -17,7 +17,9 @@ takes the next unused version. Verifying unchanged artifacts in an isolated envi
 and document-only changes outside the package need no bump.
 
 While the major version is `0`, a minor version may change the public API. Say what changed and how to
-move, in `docs/releases/<version>.md`.
+move, in `docs/releases/<version>.md`. From 1.0.0 the compatibility promise holds (README, Versioning;
+ADR-020): a patch fixes, a minor adds, a break waits for the next major, and the release notes list every
+behaviour change with what to do.
 
 A version names one commit (ADR-010, addendum of 2026-10-08). Once a version is published, the next change
 to shipped code moves `VersionPrefix` to the next unused version in the same change; continuous
