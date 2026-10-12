@@ -28,6 +28,9 @@ scope change, not a convenience.
 
 ## Restore and build
 
+From the repository's root, where `MPCore.Backend.slnx` lists every project generated for the options
+this repository was created with:
+
 ```bash
 dotnet restore
 ```
@@ -39,7 +42,7 @@ dotnet build --configuration Release
 ## Test
 
 ```bash
-dotnet test tests/MPCore.Backend.Tests
+dotnet test
 ```
 
 `tests/MPCore.Backend.Tests` needs no database, no broker and no identity provider: `HostHealthChecksTests`

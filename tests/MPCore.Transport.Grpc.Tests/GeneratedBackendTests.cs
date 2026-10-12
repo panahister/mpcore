@@ -101,6 +101,60 @@ public sealed partial class GeneratedBackendTests
     }
 
     /// <summary>
+    /// Every shape with every transport, the other options at the template's defaults, and then each value of
+    /// another option that is not its default, once. Each is a combination the generator offers.
+    /// </summary>
+    public static TheoryData<string, string, string> RootBuilds() => new()
+    {
+        { "service", "rest", "" },
+        { "service", "grpc", "" },
+        { "service", "both", "" },
+        { "modular-monolith", "rest", "" },
+        { "modular-monolith", "grpc", "" },
+        { "modular-monolith", "both", "" },
+        { "service", "both", "--messaging rabbitmq" },
+        { "service", "both", "--messaging none" },
+        { "service", "both", "--businessAudit postgresql" },
+        { "service", "both", "--cache none" },
+        { "service", "both", "--cache redis" },
+        { "service", "both", "--cache hybrid" },
+        { "service", "both", "--timeseries timescale" },
+    };
+
+    /// <summary>
+    /// A generated backend builds and tests from its root with the commands its own guide gives: its solution
+    /// file lists exactly the projects generated for its options.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(RootBuilds))]
+    public async Task A_generated_backend_builds_and_tests_from_its_root(string shape, string transport, string options)
+    {
+        using var workspace = await Workspace.GenerateWithAsync(["--shape", shape, "--transport", transport, .. options.Split(' ', StringSplitOptions.RemoveEmptyEntries)]);
+
+        var listed = workspace.SolutionProjects();
+        var generated = workspace.GeneratedProjects();
+        var build = await workspace.RunAtRootAsync("build", "--configuration", "Release", "-nodeReuse:false");
+        var test = await workspace.RunAtRootAsync("test", "--configuration", "Release", "--no-build", "-nodeReuse:false");
+
+        Assert.Equal(generated, listed);
+        Assert.True(build.ExitCode == 0, "dotnet build at the root failed:\n" + build.Output);
+        Assert.True(test.ExitCode == 0, "dotnet test at the root failed:\n" + test.Output);
+    }
+
+    /// <summary>The control of the test above: without its solution file, the root build has nothing to build.</summary>
+    [Fact]
+    public async Task Without_its_solution_file_a_generated_backend_does_not_build_from_its_root()
+    {
+        using var workspace = await Workspace.GenerateWithAsync(["--shape", "service", "--transport", "rest"]);
+        workspace.RemoveSolutionFile();
+
+        var build = await workspace.RunAtRootAsync("build", "--configuration", "Release", "-nodeReuse:false");
+
+        Assert.NotEqual(0, build.ExitCode);
+        Assert.Contains("MSB1003", build.Output, StringComparison.Ordinal);
+    }
+
+    /// <summary>
     /// The security skill shows how the client to the identity provider is registered and how a test captures
     /// the log of one call (ADR-019, section 6). That example is compiled and run here, as it stands in the
     /// skill, inside a generated backend's tests project.
@@ -362,6 +416,52 @@ public sealed partial class GeneratedBackendTests
                 throw;
             }
         }
+
+        /// <summary>
+        /// A backend generated with the template's defaults except the options given; only what a generation
+        /// needs to run unattended is added.
+        /// </summary>
+        public static async Task<Workspace> GenerateWithAsync(IReadOnlyList<string> options)
+        {
+            var workspace = new Workspace(Directory.CreateTempSubdirectory("mpcore-generated-").FullName);
+            try
+            {
+                await workspace.RunOrThrowAsync(workspace._root, "new", "install", TemplateRoot);
+                await workspace.RunOrThrowAsync(
+                    workspace._root,
+                    [
+                        "new", "mpcore-backend", "--name", "Acme.Ledger", "--output", workspace.Backend,
+                        "--organization", "Acme", "--component", "Ledger", "--aiTooling", "none",
+                        "--mpcoreVersion", CohortVersion(), .. options,
+                    ]);
+                workspace.UseMPCoreSource();
+                return workspace;
+            }
+            catch
+            {
+                workspace.Dispose();
+                throw;
+            }
+        }
+
+        /// <summary>The projects the solution file at the root lists, relative and ordered.</summary>
+        public IReadOnlyList<string> SolutionProjects()
+        {
+            var solution = Assert.Single(Directory.GetFiles(Backend, "*.slnx"));
+            return [.. XDocument.Load(solution).Descendants("Project")
+                .Select(static project => project.Attribute("Path")!.Value.Replace('\\', '/'))
+                .Order(StringComparer.Ordinal)];
+        }
+
+        /// <summary>Every project file the generation wrote, relative and ordered.</summary>
+        public IReadOnlyList<string> GeneratedProjects() =>
+            [.. Directory.GetFiles(Backend, "*.csproj", SearchOption.AllDirectories)
+                .Select(path => Path.GetRelativePath(Backend, path).Replace('\\', '/'))
+                .Order(StringComparer.Ordinal)];
+
+        public void RemoveSolutionFile() => File.Delete(Assert.Single(Directory.GetFiles(Backend, "*.slnx")));
+
+        public Task<(int ExitCode, string Output)> RunAtRootAsync(params string[] arguments) => RunAsync(Backend, arguments);
 
         public void Write(string relativePath, string content)
         {

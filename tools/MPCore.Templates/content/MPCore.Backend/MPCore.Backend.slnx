@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MPCore.Backend.Api/MPCore.Backend.Api.csproj" />
+<!--#if (shape == "service") -->
+    <Project Path="src/MPCore.Backend.Application/MPCore.Backend.Application.csproj" />
+    <Project Path="src/MPCore.Backend.Domain/MPCore.Backend.Domain.csproj" />
+<!--#endif -->
+    <Project Path="src/MPCore.Backend.Infrastructure/MPCore.Backend.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MPCore.Backend.Tests/MPCore.Backend.Tests.csproj" />
+  </Folder>
+</Solution>
