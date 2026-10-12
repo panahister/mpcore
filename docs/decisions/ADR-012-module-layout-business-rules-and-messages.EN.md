@@ -361,3 +361,49 @@ each part seen failing with the guarded code broken), `MessageCatalogTests.MP_Co
 and `MPCoreMessagesCoverageTests`. The test the review table names for 5.2 is replaced by the
 `MessageCatalogTests` test above.
 [The language guide](../guide/languages.md) says how a product adds or substitutes its languages.
+
+## Addendum 2026-10-12: the list of known keys (proposed; pending owner acceptance)
+
+**Context.** Section 5 gives `IsKnownKey` "so an administrator can only translate keys the code uses", and
+leaves the commands and the UI that call the store to the product. The catalog answered one key at a time and
+listed none, a template source could not be asked for its keys, and MP Core's own texts were out of a product's
+reach, their marker class internal. A product's translation form had no way to show the keys it may offer,
+their default texts or their placeholders.
+
+**Decision: the catalog lists every key that has a default text.**
+
+| Part | What it is |
+|---|---|
+| `IListableMessageTemplateSource` (`MPCore.Localization`) | an optional interface a template source may implement, beside `IMessageTemplateSource`: `ListDefaultTemplates()` returns every key the source has a default text for, exactly the keys `TryGetTemplate` finds in the invariant culture, with that text. `ResourceMessageTemplateSource` implements it. The stored translations do not, so a translation never defines a key |
+| `IMessageCatalog.ListKnownKeys()` | every listed key once, ordered by key (ordinal), each a `KnownMessageKey(Key, DefaultText, Placeholders, Origin)`. The sources are merged in the order rendering asks them, highest precedence first, so a key in several sources keeps the default text rendering falls back to. `Placeholders` are parsed by the rule the catalog renders with (`{name}`: a lower-case letter, then lower-case letters, digits or underscores), each once, in the order they first appear. `Origin` is `MPCore` for MP Core's own file and `Product` for every other source. The list reads no database and no network; it is computed on the first call and kept |
+
+Rendering and `IsKnownKey` are unchanged, and MP Core's texts with them. MP Core adds no endpoint: the product
+exposes the list through its own commands, as it does the store. An `IMessageCatalog` a product implemented
+itself compiles unchanged; the member's default implementation throws `NotSupportedException`.
+
+Of the two places for the listing, an optional interface implemented by the resource-file source and one
+method on the catalog was taken, so that every existing custom source keeps compiling; a member added to
+`IMessageTemplateSource` with a default implementation was not. Of the two forms, the runtime call only was
+taken, the smaller surface: a product that wants a file writes its own from the call, in a test or a tool. A
+file extracted at build time, as GNU gettext's `xgettext` writes a `.pot` template of every translatable string
+for translators, was not. The list is what ABP Framework's Language Management module shows an administrator:
+every key of a resource with its base text beside the translation.
+
+**Known limits.**
+
+- A source that does not implement the interface adds no key, while `IsKnownKey` still asks every source. A
+  source of a product that holds default texts implements it, or the two disagree. Over resource files and
+  stored translations they agree, and a test holds it.
+- The list is computed once per catalog, a singleton of its host. A source whose default texts change while
+  the process runs is not read again; resource files cannot change.
+- A row written into the translation table under the invariant culture, past the store, which refuses it, is
+  answered by `IsKnownKey` as before; it is never listed.
+- A resource entry that is not a string is not listed.
+
+**Evidence.** `KnownMessageKeyTests`, 8 tests, and
+`StoredTranslationTests.A_translation_stored_for_an_unknown_key_is_served_but_never_listed_as_a_known_key`,
+against PostgreSQL: 8 of the 9 were seen failing against a stub that listed nothing; the ninth holds the
+default implementation of the interface member. Each of seven deliberate breaks was seen failing and then
+restored: the sources merged lowest precedence first, every text marked as the product's, the list left
+unordered, another placeholder rule, the list computed on every call, the stored translations made listable,
+and a culture file's keys listed.

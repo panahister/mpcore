@@ -212,6 +212,21 @@ public sealed class StoredTranslationTests : IAsyncLifetime
     }
 
     [PostgreSqlFact]
+    public async Task A_translation_stored_for_an_unknown_key_is_served_but_never_listed_as_a_known_key()
+    {
+        // The store does not ask whether the key is known; the product's command does. Even so, the list of
+        // known keys, computed here only after the translation is served, never takes a key from the table.
+        await InTransactionAsync(store => store.SetAsync("orders.invented", "en-GB", "en-GB fixture, stored: invented.", CancellationToken.None));
+        Assert.True(await RefreshAsync());
+        var catalog = _provider.GetRequiredService<IMessageCatalog>();
+
+        Assert.Equal("en-GB fixture, stored: invented.", catalog.Render("orders.invented", null, Fixture));
+        Assert.False(catalog.IsKnownKey("orders.invented"));
+        Assert.DoesNotContain(catalog.ListKnownKeys(), static entry => entry.Key == "orders.invented");
+        Assert.Contains(catalog.ListKnownKeys(), static entry => entry.Key == "orders.limit_exceeded");
+    }
+
+    [PostgreSqlFact]
     public async Task Malformed_input_is_refused_before_it_reaches_the_database()
     {
         await using var scope = _provider.CreateAsyncScope();

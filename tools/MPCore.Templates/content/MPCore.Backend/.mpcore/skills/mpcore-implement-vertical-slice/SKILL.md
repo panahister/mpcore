@@ -27,7 +27,10 @@ found. Ask about them. Proceeding on a guess produces work that has to be delete
    never reads the database. Return a failure descriptor for expected outcomes — not-found, conflict,
    precondition, forbidden. Reserve exceptions for genuinely unexpected states and broken rules.
    Never write a sentence in code: every failure, rule and validator carries a message key, and the key
-   gets a text in the module's resource file for every supported language.
+   gets a text in the module's resource file for every supported language. A slice that lets an
+   administrator translate texts takes its keys from `IMessageCatalog.ListKnownKeys()`, never from a list
+   of its own, and its command stores a text only for a key `IsKnownKey` knows and only when the text keeps
+   every placeholder that list gives for the key; the store checks neither.
 3. Persistence: use the repository and unit-of-work ports. One transaction per command, owned by the
    middleware. An event the aggregate raised through `Raise(...)` is taken by the framework when the
    change is saved and delivered after the commit; publish through `IMessagePublisher` only for a

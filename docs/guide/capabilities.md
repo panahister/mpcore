@@ -127,6 +127,7 @@ live backends on every change. A line with neither says so.
 | A chain of fallback: the culture, its parents, the default | `MPCore.Localization` | Tests |
 | Several sources with a precedence: resource files of the product, MP Core's own texts in English, the only language MP Core carries | the same | Tests: `MessageCatalogTests`, `EnglishOnlyTests` |
 | A text that exists nowhere is counted on a metric and logged once | the same | Tests |
+| The keys a product may offer for translation: every key with a default text, once, ordered by key, with that text, its placeholders and whether the text is MP Core's or the product's; a stored translation never adds one (next version, `0.10.1`, not yet released; ADR-012 addendum of 2026-10-12) | the same (`IMessageCatalog.ListKnownKeys`) | Tests: `KnownMessageKeyTests`, seen failing |
 | Translations stored in the backend's database, edited while it runs, seen by every instance | `MPCore.Localization.EntityFrameworkCore.PostgreSql` | Tests against PostgreSQL; sample S13 |
 
 ## 10. Data and cache

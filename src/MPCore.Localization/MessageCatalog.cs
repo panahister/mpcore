@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -33,6 +34,17 @@ public interface IMessageCatalog : IFailureMessageLocalizer
     /// </summary>
     /// <param name="key">The message key.</param>
     bool IsKnownKey(string key);
+
+    /// <summary>
+    /// Lists every key that has a default text, once each and ordered by key (ordinal), with its neutral
+    /// default text, the names of its placeholders and whether the text is MP Core's own or the product's.
+    /// It is what an administrator's form offers for translation. Only sources that implement
+    /// <see cref="IListableMessageTemplateSource"/> are listed, the resource files among them; a stored
+    /// translation never adds a key. The list reads no database and no network and is computed once.
+    /// </summary>
+    /// <exception cref="NotSupportedException">This catalog does not list its keys.</exception>
+    IReadOnlyList<KnownMessageKey> ListKnownKeys() =>
+        throw new NotSupportedException($"{GetType().Name} does not list its keys; {nameof(MessageCatalog)} does.");
 }
 
 /// <summary>
@@ -65,6 +77,8 @@ public sealed partial class MessageCatalog : IMessageCatalog
     private readonly CultureInfo _defaultCulture;
     private readonly ILogger<MessageCatalog> _logger;
     private readonly ConcurrentDictionary<(string Key, string Culture), bool> _reported = new();
+    private ReadOnlyCollection<KnownMessageKey>? _knownKeys;
+    private object? _knownKeysLock;
 
     /// <summary>Creates the catalog.</summary>
     /// <param name="sources">Every registered template source.</param>
@@ -133,6 +147,50 @@ public sealed partial class MessageCatalog : IMessageCatalog
 
         return false;
     }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The sources are merged in the order rendering asks them, highest precedence first, so a key defined
+    /// in several sources keeps the default text rendering falls back to. The list is computed on the first
+    /// call and kept: the catalog is a singleton of its host, and the sources it lists are files compiled
+    /// into the product.
+    /// </remarks>
+    public IReadOnlyList<KnownMessageKey> ListKnownKeys() =>
+        LazyInitializer.EnsureInitialized(ref _knownKeys, ref _knownKeysLock, ListFromSources);
+
+    private ReadOnlyCollection<KnownMessageKey> ListFromSources()
+    {
+        var known = new Dictionary<string, KnownMessageKey>(StringComparer.Ordinal);
+        foreach (var source in _sources)
+        {
+            // A source that does not list its keys, the stored translations among them, adds no key.
+            if (source is not IListableMessageTemplateSource listing)
+            {
+                continue;
+            }
+
+            var origin = source is ResourceMessageTemplateSource { IsMPCoreDefaults: true }
+                ? MessageTextOrigin.MPCore
+                : MessageTextOrigin.Product;
+            foreach (var (key, text) in listing.ListDefaultTemplates())
+            {
+                if (!string.IsNullOrWhiteSpace(key) && text is not null && !known.ContainsKey(key))
+                {
+                    known.Add(key, new KnownMessageKey(key, text, PlaceholdersOf(text), origin));
+                }
+            }
+        }
+
+        return known.Values.OrderBy(static entry => entry.Key, StringComparer.Ordinal).ToList().AsReadOnly();
+    }
+
+    /// <summary>The placeholders of a template by the rule <see cref="Format"/> substitutes them with.</summary>
+    private static ReadOnlyCollection<string> PlaceholdersOf(string template) =>
+        Placeholder().Matches(template)
+            .Select(static match => match.Groups[1].Value)
+            .Distinct(StringComparer.Ordinal)
+            .ToList()
+            .AsReadOnly();
 
     private IEnumerable<CultureInfo> CultureChain(CultureInfo requested)
     {

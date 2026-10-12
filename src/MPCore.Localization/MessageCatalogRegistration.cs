@@ -67,7 +67,11 @@ public static class MessageCatalogServiceCollectionExtensions
         if (!services.Any(static descriptor => descriptor.ServiceType == typeof(MPCoreDefaultsMarker)))
         {
             services.AddSingleton<MPCoreDefaultsMarker>();
-            builder.AddResources<MPCoreMessages>(MPCoreDefaultsPrecedence);
+            services.AddSingleton<IMessageTemplateSource>(
+                new ResourceMessageTemplateSource(new ResourceManager(typeof(MPCoreMessages)), MPCoreDefaultsPrecedence)
+                {
+                    IsMPCoreDefaults = true,
+                });
         }
 
         configure?.Invoke(builder);

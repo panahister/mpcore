@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A product's second resource file, registered above the first one; see ListingFixture.cs. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="mpcore.permission_denied" xml:space="preserve">
+    <value>Fixture: {name} may not do this.</value>
+  </data>
+  <data name="orders.limit_exceeded" xml:space="preserve">
+    <value>Fixture: at most {limit} per {period}.</value>
+  </data>
+  <data name="orders.mixed_braces" xml:space="preserve">
+    <value>Hello {name}; {Name}, {0} and {first-name} stay as written, {first_name} does not, nor {name} again.</value>
+  </data>
+</root>
