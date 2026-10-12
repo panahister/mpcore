@@ -7,7 +7,7 @@ namespace MPCore.Idempotency.EntityFrameworkCore;
 
 /// <summary>Signals that the key was completed by another attempt while this one was running.</summary>
 /// <param name="key">The key.</param>
-public sealed class IdempotencyKeyConflictException(string key)
+internal sealed class IdempotencyKeyConflictException(string key)
     : InvalidOperationException($"Idempotency key '{key}' was completed by another attempt; this attempt is rolled back.")
 {
 }
@@ -21,7 +21,7 @@ public sealed class IdempotencyKeyConflictException(string key)
 /// a crash after it leaves both. Of two concurrent attempts with one key, the second fails on the primary
 /// key and its whole transaction rolls back.
 /// </remarks>
-public sealed class IdempotencySaveChangesInterceptor(TimeProvider clock, IdempotencyOptions options) : SaveChangesInterceptor
+internal sealed class IdempotencySaveChangesInterceptor(TimeProvider clock, IdempotencyOptions options) : SaveChangesInterceptor
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 

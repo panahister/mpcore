@@ -1,40 +1,7 @@
 #nullable enable
-MPCore.Application.Idempotency.IIdempotencyKeySource
-MPCore.Application.Idempotency.IIdempotencyKeySource.MarkReplayed() -> void
-MPCore.Application.Idempotency.IIdempotencyKeySource.Read() -> MPCore.Application.Idempotency.IdempotencyKeyReading
-MPCore.Application.Idempotency.IIdempotencyScopeProvider
-MPCore.Application.Idempotency.IIdempotencyScopeProvider.GetScope() -> string!
-MPCore.Application.Idempotency.IIdempotencyStore
-MPCore.Application.Idempotency.IIdempotencyStore.FindAsync(string! scope, string! key, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Idempotency.IdempotencyEntry?>!
 MPCore.Application.Idempotency.IIdempotentExecutor
 MPCore.Application.Idempotency.IIdempotentExecutor.ExecuteAsync(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!
 MPCore.Application.Idempotency.IIdempotentExecutor.ExecuteAsync<TValue>(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!
-MPCore.Application.Idempotency.IdempotencyContext
-MPCore.Application.Idempotency.IdempotencyContext.Capture(object? response) -> void
-MPCore.Application.Idempotency.IdempotencyContext.Dispose() -> void
-MPCore.Application.Idempotency.IdempotencyContext.Forget() -> void
-MPCore.Application.Idempotency.IdempotencyContext.HasResponse.get -> bool
-MPCore.Application.Idempotency.IdempotencyContext.MarkRecorded() -> void
-MPCore.Application.Idempotency.IdempotencyContext.Recorded.get -> bool
-MPCore.Application.Idempotency.IdempotencyContext.Request.get -> MPCore.Application.Idempotency.IdempotencyRequest!
-MPCore.Application.Idempotency.IdempotencyContext.Response.get -> object?
-MPCore.Application.Idempotency.IdempotencyEntry
-MPCore.Application.Idempotency.IdempotencyEntry.<Clone>$() -> MPCore.Application.Idempotency.IdempotencyEntry!
-MPCore.Application.Idempotency.IdempotencyEntry.CreatedOnUtc.get -> System.DateTimeOffset
-MPCore.Application.Idempotency.IdempotencyEntry.CreatedOnUtc.init -> void
-MPCore.Application.Idempotency.IdempotencyEntry.Deconstruct(out string! Scope, out string! Key, out string! Operation, out string! RequestHash, out string? ResponseJson, out System.DateTimeOffset CreatedOnUtc) -> void
-MPCore.Application.Idempotency.IdempotencyEntry.Equals(MPCore.Application.Idempotency.IdempotencyEntry? other) -> bool
-MPCore.Application.Idempotency.IdempotencyEntry.IdempotencyEntry(string! Scope, string! Key, string! Operation, string! RequestHash, string? ResponseJson, System.DateTimeOffset CreatedOnUtc) -> void
-MPCore.Application.Idempotency.IdempotencyEntry.Key.get -> string!
-MPCore.Application.Idempotency.IdempotencyEntry.Key.init -> void
-MPCore.Application.Idempotency.IdempotencyEntry.Operation.get -> string!
-MPCore.Application.Idempotency.IdempotencyEntry.Operation.init -> void
-MPCore.Application.Idempotency.IdempotencyEntry.RequestHash.get -> string!
-MPCore.Application.Idempotency.IdempotencyEntry.RequestHash.init -> void
-MPCore.Application.Idempotency.IdempotencyEntry.ResponseJson.get -> string?
-MPCore.Application.Idempotency.IdempotencyEntry.ResponseJson.init -> void
-MPCore.Application.Idempotency.IdempotencyEntry.Scope.get -> string!
-MPCore.Application.Idempotency.IdempotencyEntry.Scope.init -> void
 MPCore.Application.Idempotency.IdempotencyFailures
 MPCore.Application.Idempotency.IdempotencyKeyReading
 MPCore.Application.Idempotency.IdempotencyKeyReading.Deconstruct(out string? Key, out bool Required) -> void
@@ -55,28 +22,6 @@ MPCore.Application.Idempotency.IdempotencyOptions.PurgeInterval.get -> System.Ti
 MPCore.Application.Idempotency.IdempotencyOptions.PurgeInterval.set -> void
 MPCore.Application.Idempotency.IdempotencyOptions.Retention.get -> System.TimeSpan
 MPCore.Application.Idempotency.IdempotencyOptions.Retention.set -> void
-MPCore.Application.Idempotency.IdempotencyRequest
-MPCore.Application.Idempotency.IdempotencyRequest.<Clone>$() -> MPCore.Application.Idempotency.IdempotencyRequest!
-MPCore.Application.Idempotency.IdempotencyRequest.Deconstruct(out string! Scope, out string! Operation, out string! Key, out string! RequestHash) -> void
-MPCore.Application.Idempotency.IdempotencyRequest.Equals(MPCore.Application.Idempotency.IdempotencyRequest? other) -> bool
-MPCore.Application.Idempotency.IdempotencyRequest.IdempotencyRequest(string! Scope, string! Operation, string! Key, string! RequestHash) -> void
-MPCore.Application.Idempotency.IdempotencyRequest.Key.get -> string!
-MPCore.Application.Idempotency.IdempotencyRequest.Key.init -> void
-MPCore.Application.Idempotency.IdempotencyRequest.Operation.get -> string!
-MPCore.Application.Idempotency.IdempotencyRequest.Operation.init -> void
-MPCore.Application.Idempotency.IdempotencyRequest.RequestHash.get -> string!
-MPCore.Application.Idempotency.IdempotencyRequest.RequestHash.init -> void
-MPCore.Application.Idempotency.IdempotencyRequest.Scope.get -> string!
-MPCore.Application.Idempotency.IdempotencyRequest.Scope.init -> void
-MPCore.Application.Idempotency.IdempotencyServiceCollectionExtensions
-MPCore.Application.Idempotency.IdempotentExecutor
-MPCore.Application.Idempotency.IdempotentExecutor.ExecuteAsync(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!
-MPCore.Application.Idempotency.IdempotentExecutor.ExecuteAsync<TValue>(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!
-MPCore.Application.Idempotency.IdempotentExecutor.IdempotentExecutor(MPCore.Application.Idempotency.IIdempotencyKeySource! keys, MPCore.Application.Idempotency.IIdempotencyScopeProvider! scopes, MPCore.Application.Idempotency.IIdempotencyStore! store) -> void
-MPCore.Application.Idempotency.NoIdempotencyKeySource
-MPCore.Application.Idempotency.NoIdempotencyKeySource.MarkReplayed() -> void
-MPCore.Application.Idempotency.NoIdempotencyKeySource.NoIdempotencyKeySource() -> void
-MPCore.Application.Idempotency.NoIdempotencyKeySource.Read() -> MPCore.Application.Idempotency.IdempotencyKeyReading
 MPCore.Application.Idempotency.RequireIdempotencyKeyAttribute
 MPCore.Application.Idempotency.RequireIdempotencyKeyAttribute.RequireIdempotencyKeyAttribute() -> void
 MPCore.Application.Messaging.ICommand
@@ -248,11 +193,6 @@ MPCore.Application.Results.ValidationFailureDetail
 MPCore.Application.Results.ValidationFailureDetail.Equals(MPCore.Application.Results.ValidationFailureDetail? other) -> bool
 MPCore.Application.Results.ValidationFailureDetail.ValidationFailureDetail(System.Collections.Generic.IEnumerable<MPCore.Application.Results.FieldViolation!>! violations) -> void
 MPCore.Application.Results.ValidationFailureDetail.Violations.get -> System.Collections.Generic.IReadOnlyList<MPCore.Application.Results.FieldViolation!>!
-MPCore.Application.Sensitive.SensitiveMessageTypes
-MPCore.Application.Sensitive.SensitiveMessageTypes.Add(System.Type! type) -> void
-MPCore.Application.Sensitive.SensitiveMessageTypes.Contains(System.Type! type) -> bool
-MPCore.Application.Sensitive.SensitiveMessageTypes.IsEmpty.get -> bool
-MPCore.Application.Sensitive.SensitiveMessageTypes.SensitiveMessageTypes() -> void
 MPCore.Application.Sensitive.SensitiveMessageTypesRegistration
 MPCore.Application.Sensitive.SensitiveValue
 MPCore.Application.Sensitive.SensitiveValue.Equals(MPCore.Application.Sensitive.SensitiveValue? other) -> bool
@@ -266,7 +206,6 @@ MPCore.Application.Time.SystemClock.SystemClock(System.TimeProvider! timeProvide
 MPCore.Application.Time.SystemClock.UtcNow.get -> System.DateTimeOffset
 abstract MPCore.Application.Results.FailureDetail.<Clone>$() -> MPCore.Application.Results.FailureDetail!
 const MPCore.Application.Idempotency.IdempotencyFailures.Domain = "mpcore.idempotency" -> string!
-const MPCore.Application.Idempotency.IdempotencyRequest.MaximumKeyLength = 255 -> int
 const MPCore.Application.Querying.PageRequest.DefaultSize = 20 -> int
 const MPCore.Application.Querying.PageRequest.MaximumSize = 200 -> int
 const MPCore.Application.Querying.SortAllowlist.FailureCode = "SORT_FIELD_NOT_ALLOWED" -> string!
@@ -277,13 +216,7 @@ const MPCore.Application.Results.FailureMessageDescriptor.MaximumArgumentCount =
 const MPCore.Application.Results.FailureMessageDescriptor.MaximumArgumentValueLength = 256 -> int
 const MPCore.Application.Results.FailureMessageDescriptor.MaximumKeyLength = 160 -> int
 const MPCore.Application.Sensitive.SensitiveValue.Mask = "***" -> string!
-override MPCore.Application.Idempotency.IdempotencyEntry.Equals(object? obj) -> bool
-override MPCore.Application.Idempotency.IdempotencyEntry.GetHashCode() -> int
-override MPCore.Application.Idempotency.IdempotencyEntry.ToString() -> string!
 override MPCore.Application.Idempotency.IdempotencyKeyReading.GetHashCode() -> int
-override MPCore.Application.Idempotency.IdempotencyRequest.Equals(object? obj) -> bool
-override MPCore.Application.Idempotency.IdempotencyRequest.GetHashCode() -> int
-override MPCore.Application.Idempotency.IdempotencyRequest.ToString() -> string!
 override MPCore.Application.Querying.Page<TItem>.Equals(object? obj) -> bool
 override MPCore.Application.Querying.Page<TItem>.GetHashCode() -> int
 override MPCore.Application.Querying.Page<TItem>.ToString() -> string!
@@ -346,20 +279,11 @@ override sealed MPCore.Application.Results.PreconditionFailureDetail.Equals(MPCo
 override sealed MPCore.Application.Results.QuotaFailureDetail.Equals(MPCore.Application.Results.FailureDetail? other) -> bool
 override sealed MPCore.Application.Results.ResourceFailureDetail.Equals(MPCore.Application.Results.FailureDetail? other) -> bool
 override sealed MPCore.Application.Results.ValidationFailureDetail.Equals(MPCore.Application.Results.FailureDetail? other) -> bool
-static MPCore.Application.Idempotency.IdempotencyContext.Current.get -> MPCore.Application.Idempotency.IdempotencyContext?
-static MPCore.Application.Idempotency.IdempotencyContext.Enter(MPCore.Application.Idempotency.IdempotencyRequest! request) -> MPCore.Application.Idempotency.IdempotencyContext!
-static MPCore.Application.Idempotency.IdempotencyEntry.operator !=(MPCore.Application.Idempotency.IdempotencyEntry? left, MPCore.Application.Idempotency.IdempotencyEntry? right) -> bool
-static MPCore.Application.Idempotency.IdempotencyEntry.operator ==(MPCore.Application.Idempotency.IdempotencyEntry? left, MPCore.Application.Idempotency.IdempotencyEntry? right) -> bool
 static MPCore.Application.Idempotency.IdempotencyFailures.KeyInvalid() -> MPCore.Application.Results.FailureDescriptor!
 static MPCore.Application.Idempotency.IdempotencyFailures.KeyRequired() -> MPCore.Application.Results.FailureDescriptor!
 static MPCore.Application.Idempotency.IdempotencyFailures.KeyReused() -> MPCore.Application.Results.FailureDescriptor!
 static MPCore.Application.Idempotency.IdempotencyKeyReading.operator !=(MPCore.Application.Idempotency.IdempotencyKeyReading left, MPCore.Application.Idempotency.IdempotencyKeyReading right) -> bool
 static MPCore.Application.Idempotency.IdempotencyKeyReading.operator ==(MPCore.Application.Idempotency.IdempotencyKeyReading left, MPCore.Application.Idempotency.IdempotencyKeyReading right) -> bool
-static MPCore.Application.Idempotency.IdempotencyRequest.For(string! scope, object! message, string! key) -> MPCore.Application.Idempotency.IdempotencyRequest!
-static MPCore.Application.Idempotency.IdempotencyRequest.IsValidKey(string? key) -> bool
-static MPCore.Application.Idempotency.IdempotencyRequest.operator !=(MPCore.Application.Idempotency.IdempotencyRequest? left, MPCore.Application.Idempotency.IdempotencyRequest? right) -> bool
-static MPCore.Application.Idempotency.IdempotencyRequest.operator ==(MPCore.Application.Idempotency.IdempotencyRequest? left, MPCore.Application.Idempotency.IdempotencyRequest? right) -> bool
-static MPCore.Application.Idempotency.IdempotencyServiceCollectionExtensions.AddMPCoreIdempotentExecution(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 static MPCore.Application.Querying.Page<TItem>.Empty(MPCore.Application.Querying.PageRequest! request) -> MPCore.Application.Querying.Page<TItem>!
 static MPCore.Application.Querying.Page<TItem>.operator !=(MPCore.Application.Querying.Page<TItem>? left, MPCore.Application.Querying.Page<TItem>? right) -> bool
 static MPCore.Application.Querying.Page<TItem>.operator ==(MPCore.Application.Querying.Page<TItem>? left, MPCore.Application.Querying.Page<TItem>? right) -> bool

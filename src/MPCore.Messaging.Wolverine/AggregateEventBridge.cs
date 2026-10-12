@@ -43,7 +43,7 @@ public sealed class WolverineAggregateEventSink(IMessagePublisher publisher) : I
 }
 
 /// <summary>Registration for the aggregate event bridge.</summary>
-public static class AggregateEventBridgeExtensions
+internal static class AggregateEventBridgeExtensions
 {
     /// <summary>
     /// Sends the events aggregates record to Wolverine, in the transaction that saves the change.

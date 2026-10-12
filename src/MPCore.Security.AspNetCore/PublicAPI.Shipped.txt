@@ -78,9 +78,6 @@ MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult.IsValid.get -> bool
 MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult.Issuer.get -> string?
 MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult.Principal.get -> System.Security.Claims.ClaimsPrincipal?
 MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult.Scheme.get -> string?
-MPCore.Security.AspNetCore.MPCoreRoleRequirement
-MPCore.Security.AspNetCore.MPCoreRoleRequirement.MPCoreRoleRequirement(params string![]! roles) -> void
-MPCore.Security.AspNetCore.MPCoreRoleRequirement.Roles.get -> System.Collections.Generic.IReadOnlyList<string!>!
 MPCore.Security.AspNetCore.MutualTlsExtensions
 MPCore.Security.AspNetCore.MutualTlsOptions
 MPCore.Security.AspNetCore.MutualTlsOptions.AllowedWorkloadNames.get -> System.Collections.Generic.ISet<string!>!
@@ -92,24 +89,11 @@ MPCore.Security.AspNetCore.MutualTlsOptions.MutualTlsOptions() -> void
 MPCore.Security.AspNetCore.MutualTlsOptions.RevocationMode.get -> System.Security.Cryptography.X509Certificates.X509RevocationMode
 MPCore.Security.AspNetCore.MutualTlsOptions.RevocationMode.set -> void
 MPCore.Security.AspNetCore.MutualTlsOptions.TrustedProxies.get -> System.Collections.Generic.IList<string!>!
-MPCore.Security.AspNetCore.ResourceKeyAttribute
-MPCore.Security.AspNetCore.ResourceKeyAttribute.AuthenticationSchemes.get -> string?
-MPCore.Security.AspNetCore.ResourceKeyAttribute.AuthenticationSchemes.set -> void
-MPCore.Security.AspNetCore.ResourceKeyAttribute.Key.get -> string!
-MPCore.Security.AspNetCore.ResourceKeyAttribute.Policy.get -> string?
-MPCore.Security.AspNetCore.ResourceKeyAttribute.Policy.set -> void
-MPCore.Security.AspNetCore.ResourceKeyAttribute.ResourceKeyAttribute(string! key) -> void
-MPCore.Security.AspNetCore.ResourceKeyAttribute.Roles.get -> string?
-MPCore.Security.AspNetCore.ResourceKeyAttribute.Roles.set -> void
-MPCore.Security.AspNetCore.ResourceKeyExemptAttribute
-MPCore.Security.AspNetCore.ResourceKeyExemptAttribute.ResourceKeyExemptAttribute() -> void
 MPCore.Security.AspNetCore.ResourceKeyExtensions
 MPCore.Security.AspNetCore.ResourceKeyOptions
 MPCore.Security.AspNetCore.ResourceKeyOptions.ResourceKeyOptions() -> void
 MPCore.Security.AspNetCore.ResourceKeyOptions.Timeout.get -> System.TimeSpan
 MPCore.Security.AspNetCore.ResourceKeyOptions.Timeout.set -> void
-MPCore.Security.AspNetCore.ResourceKeyRequirement
-MPCore.Security.AspNetCore.ResourceKeyRequirement.ResourceKeyRequirement() -> void
 MPCore.Security.AspNetCore.RoleClaimSource
 MPCore.Security.AspNetCore.RoleClaimSource.LiteralPrefix.get -> string?
 MPCore.Security.AspNetCore.RoleClaimSource.LiteralPrefix.set -> void
@@ -124,16 +108,12 @@ MPCore.Security.AspNetCore.RolePrefixMode
 MPCore.Security.AspNetCore.RolePrefixMode.Literal = 2 -> MPCore.Security.AspNetCore.RolePrefixMode
 MPCore.Security.AspNetCore.RolePrefixMode.None = 0 -> MPCore.Security.AspNetCore.RolePrefixMode
 MPCore.Security.AspNetCore.RolePrefixMode.WildcardSegment = 1 -> MPCore.Security.AspNetCore.RolePrefixMode
-MPCore.Security.AspNetCore.ScopeRequirement
-MPCore.Security.AspNetCore.ScopeRequirement.ScopeRequirement(params string![]! scopes) -> void
-MPCore.Security.AspNetCore.ScopeRequirement.Scopes.get -> System.Collections.Generic.IReadOnlyList<string!>!
 MPCore.Security.AspNetCore.SecurityRegistrationExtensions
 MPCore.Security.AspNetCore.SubjectEvidenceExtensions
 MPCore.Security.AspNetCore.SubjectEvidenceForwardingOptions
 MPCore.Security.AspNetCore.SubjectEvidenceForwardingOptions.RequireHttps.get -> bool
 MPCore.Security.AspNetCore.SubjectEvidenceForwardingOptions.RequireHttps.set -> void
 MPCore.Security.AspNetCore.SubjectEvidenceForwardingOptions.SubjectEvidenceForwardingOptions() -> void
-MPCore.Security.AspNetCore.SubjectEvidenceHeader
 MPCore.Security.AspNetCore.SubjectEvidenceOptions
 MPCore.Security.AspNetCore.SubjectEvidenceOptions.AllowedAuthorizedParties.get -> System.Collections.Generic.ISet<string!>!
 MPCore.Security.AspNetCore.SubjectEvidenceOptions.MaximumAuthenticationAge.get -> System.TimeSpan
@@ -142,23 +122,17 @@ MPCore.Security.AspNetCore.SubjectEvidenceOptions.RequiredTokenType.get -> strin
 MPCore.Security.AspNetCore.SubjectEvidenceOptions.RequiredTokenType.set -> void
 MPCore.Security.AspNetCore.SubjectEvidenceOptions.SubjectEvidenceOptions() -> void
 MPCore.Security.AspNetCore.SubjectEvidenceOptions.TrustedServiceClients.get -> System.Collections.Generic.ISet<string!>!
-MPCore.Security.AspNetCore.SubjectEvidenceRequirement
-MPCore.Security.AspNetCore.SubjectEvidenceRequirement.IssuerSchemes.get -> System.Collections.Generic.IReadOnlyList<string!>!
-MPCore.Security.AspNetCore.SubjectEvidenceRequirement.SubjectEvidenceRequirement(params string![]! issuerSchemes) -> void
 MPCore.Security.AspNetCore.TenancyRegistrationExtensions
 MPCore.Security.AspNetCore.TenantClaimOptions
 MPCore.Security.AspNetCore.TenantClaimOptions.ClaimType.get -> string!
 MPCore.Security.AspNetCore.TenantClaimOptions.ClaimType.set -> void
 MPCore.Security.AspNetCore.TenantClaimOptions.TenantClaimOptions() -> void
 MPCore.Security.AspNetCore.TenantClaimOptions.TrustedServiceClients.get -> System.Collections.Generic.ISet<string!>!
-MPCore.Security.AspNetCore.WorkloadCertificateRequirement
-MPCore.Security.AspNetCore.WorkloadCertificateRequirement.WorkloadCertificateRequirement() -> void
 const MPCore.Security.AspNetCore.ActorClaimMappingOptions.MaximumRoleSources = 8 -> int
 const MPCore.Security.AspNetCore.MPCoreAuthorizationPolicies.Authenticated = "MPCore.Authenticated" -> string!
 const MPCore.Security.AspNetCore.MPCoreAuthorizationPolicies.ResourceKey = "MPCore.ResourceKey" -> string!
 const MPCore.Security.AspNetCore.MPCoreBearerOptions.RejectedDefaultAudience = "account" -> string!
 const MPCore.Security.AspNetCore.RoleClaimSource.MaximumSegments = 8 -> int
-const MPCore.Security.AspNetCore.SubjectEvidenceHeader.Name = "x-subject-token" -> string!
 static MPCore.Security.AspNetCore.GatewayForwardingExtensions.AddMPCoreGatewayForwarding(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.GatewayForwardingOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 static MPCore.Security.AspNetCore.GatewayForwardingExtensions.UseMPCoreGatewayForwarding(this Microsoft.AspNetCore.Builder.IApplicationBuilder! app) -> Microsoft.AspNetCore.Builder.IApplicationBuilder!
 static MPCore.Security.AspNetCore.MPCoreAuthorizationPolicies.RequireRole(params string![]! roles) -> Microsoft.AspNetCore.Authorization.AuthorizationPolicy!

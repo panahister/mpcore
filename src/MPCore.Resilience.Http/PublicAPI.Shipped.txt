@@ -1,8 +1,5 @@
 #nullable enable
 MPCore.Resilience.Http.ClientCertificate
-MPCore.Resilience.Http.IServiceTokenSource
-MPCore.Resilience.Http.IServiceTokenSource.Forget(string! token) -> void
-MPCore.Resilience.Http.IServiceTokenSource.GetTokenAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<string!>
 MPCore.Resilience.Http.ITokenIntrospector
 MPCore.Resilience.Http.ITokenIntrospector.IntrospectAsync(string! token, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MPCore.Resilience.Http.TokenIntrospectionResult!>!
 MPCore.Resilience.Http.MutualTlsClientOptions

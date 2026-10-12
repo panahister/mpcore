@@ -128,7 +128,7 @@ public sealed class AuditPolicy
 }
 
 /// <summary>Name-based safety net. Applies regardless of what a policy says.</summary>
-public static class AuditMasking
+internal static class AuditMasking
 {
     private static readonly string[] HardExcluded =
         ["password", "passwd", "pwd", "secret", "token", "apikey", "api_key", "clientsecret", "cvv", "cvc", "pin", "otp", "privatekey"];

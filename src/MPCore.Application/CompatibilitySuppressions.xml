@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://learn.microsoft.com/dotnet/fundamentals/package-validation/diagnostic-ids -->
+<Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <!-- 1.0 review: IdempotencyContext is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. The cohort packages Idempotency.EntityFrameworkCore.PostgreSql, Messaging.Wolverine share it through InternalsVisibleTo. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Idempotency.IdempotencyContext</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IdempotencyEntry is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. The cohort packages Idempotency.EntityFrameworkCore.PostgreSql share it through InternalsVisibleTo. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Idempotency.IdempotencyEntry</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IdempotencyRequest is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Idempotency.IdempotencyRequest</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IdempotencyServiceCollectionExtensions is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Idempotency.IdempotencyServiceCollectionExtensions</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IdempotentExecutor is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Idempotency.IdempotentExecutor</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IIdempotencyKeySource is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. The cohort packages Transport.Grpc, Transport.Http share it through InternalsVisibleTo. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Idempotency.IIdempotencyKeySource</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IIdempotencyScopeProvider is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. The cohort packages Idempotency.EntityFrameworkCore.PostgreSql share it through InternalsVisibleTo. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Idempotency.IIdempotencyScopeProvider</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IIdempotencyStore is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. The cohort packages Idempotency.EntityFrameworkCore.PostgreSql share it through InternalsVisibleTo. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Idempotency.IIdempotencyStore</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: NoIdempotencyKeySource is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Idempotency.NoIdempotencyKeySource</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: SensitiveMessageTypes is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. The cohort packages Observability, Transport.Grpc share it through InternalsVisibleTo. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Application.Sensitive.SensitiveMessageTypes</Target>
+    <Left>lib/net10.0/MPCore.Application.dll</Left>
+    <Right>lib/net10.0/MPCore.Application.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+</Suppressions>

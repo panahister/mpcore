@@ -1,5 +1,4 @@
 #nullable enable
-MPCore.Messaging.Wolverine.AggregateEventBridgeExtensions
 MPCore.Messaging.Wolverine.HandlerActorMiddleware
 MPCore.Messaging.Wolverine.HandlerActorScope
 MPCore.Messaging.Wolverine.HandlerActorScope.Dispose() -> void
@@ -41,7 +40,6 @@ MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher
 MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher.PublishAsync(object! message, MPCore.Messaging.Abstractions.MessageDeliveryContext! delivery, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
 MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher.PublishAsync(object! message, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
 MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher.WolverineTenantMessagePublisher(Wolverine.IMessageBus! messageBus, MPCore.Tenancy.ITenantContext? tenants = null) -> void
-static MPCore.Messaging.Wolverine.AggregateEventBridgeExtensions.AddMPCoreAggregateEventBridge(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 static MPCore.Messaging.Wolverine.HandlerActorMiddleware.Before(Wolverine.Envelope! envelope) -> MPCore.Messaging.Wolverine.HandlerActorScope!
 static MPCore.Messaging.Wolverine.HandlerActorMiddleware.Finally(MPCore.Messaging.Wolverine.HandlerActorScope! actor) -> void
 static MPCore.Messaging.Wolverine.HandlerActorScope.ActorName(Wolverine.Envelope! envelope) -> string!

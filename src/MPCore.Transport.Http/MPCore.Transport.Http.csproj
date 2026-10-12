@@ -11,4 +11,7 @@
     <!-- Microsoft.Extensions.Options and Microsoft.Extensions.Logging.Abstractions arrive with the
          Microsoft.AspNetCore.App framework reference and must not be referenced explicitly. -->
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="MPCore.Idempotency.Tests" />
+  </ItemGroup>
 </Project>

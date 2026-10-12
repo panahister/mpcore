@@ -27,7 +27,7 @@ public sealed class IdempotencyOptions
 public readonly record struct IdempotencyKeyReading(string? Key, bool Required);
 
 /// <summary>The transport's side of idempotency: where the key comes from, and how a replay is announced.</summary>
-public interface IIdempotencyKeySource
+internal interface IIdempotencyKeySource
 {
     /// <summary>Reads the key of the current request and whether its endpoint requires one.</summary>
     IdempotencyKeyReading Read();
@@ -37,7 +37,7 @@ public interface IIdempotencyKeySource
 }
 
 /// <summary>Whose key it is. Two callers using the same key never see each other's responses.</summary>
-public interface IIdempotencyScopeProvider
+internal interface IIdempotencyScopeProvider
 {
     /// <summary>Returns the scope of the current caller, for example <c>user:42</c>.</summary>
     string GetScope();
@@ -50,11 +50,11 @@ public interface IIdempotencyScopeProvider
 /// <param name="RequestHash">The hash of the request it was used with.</param>
 /// <param name="ResponseJson">The value the operation returned, as JSON; null for an operation that returns none.</param>
 /// <param name="CreatedOnUtc">When the operation committed.</param>
-public sealed record IdempotencyEntry(
+internal sealed record IdempotencyEntry(
     string Scope, string Key, string Operation, string RequestHash, string? ResponseJson, DateTimeOffset CreatedOnUtc);
 
 /// <summary>The read side of the key store. The write happens inside the business transaction, not through this port.</summary>
-public interface IIdempotencyStore
+internal interface IIdempotencyStore
 {
     /// <summary>Finds a key that has not expired.</summary>
     Task<IdempotencyEntry?> FindAsync(string scope, string key, CancellationToken cancellationToken);
@@ -65,7 +65,7 @@ public interface IIdempotencyStore
 /// <param name="Operation">The command's type name.</param>
 /// <param name="Key">The key.</param>
 /// <param name="RequestHash">SHA-256 of the command's type and content.</param>
-public sealed record IdempotencyRequest(string Scope, string Operation, string Key, string RequestHash)
+internal sealed record IdempotencyRequest(string Scope, string Operation, string Key, string RequestHash)
 {
     /// <summary>The longest key accepted.</summary>
     public const int MaximumKeyLength = 255;

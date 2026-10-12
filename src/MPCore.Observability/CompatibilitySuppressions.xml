@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://learn.microsoft.com/dotnet/fundamentals/package-validation/diagnostic-ids -->
+<Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <!-- 1.0 review: ObservabilityPlan is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Observability.ObservabilityPlan</Target>
+    <Left>lib/net10.0/MPCore.Observability.dll</Left>
+    <Right>lib/net10.0/MPCore.Observability.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: ResolvedDestination is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Observability.ResolvedDestination</Target>
+    <Left>lib/net10.0/MPCore.Observability.dll</Left>
+    <Right>lib/net10.0/MPCore.Observability.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: SensitiveActivityProcessor is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Observability.SensitiveActivityProcessor</Target>
+    <Left>lib/net10.0/MPCore.Observability.dll</Left>
+    <Right>lib/net10.0/MPCore.Observability.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: SensitiveDataPolicy is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Observability.SensitiveDataPolicy</Target>
+    <Left>lib/net10.0/MPCore.Observability.dll</Left>
+    <Right>lib/net10.0/MPCore.Observability.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: SensitiveLogRecordProcessor is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Observability.SensitiveLogRecordProcessor</Target>
+    <Left>lib/net10.0/MPCore.Observability.dll</Left>
+    <Right>lib/net10.0/MPCore.Observability.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+</Suppressions>

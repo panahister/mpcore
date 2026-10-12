@@ -6,4 +6,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="MPCore.Transport.Grpc" />
+    <InternalsVisibleTo Include="MPCore.Transport.Http" />
+    <InternalsVisibleTo Include="MPCore.Application.Tests" />
+    <InternalsVisibleTo Include="MPCore.Idempotency.EntityFrameworkCore.PostgreSql" />
+    <InternalsVisibleTo Include="MPCore.Messaging.Wolverine" />
+    <InternalsVisibleTo Include="MPCore.Observability" />
+    <InternalsVisibleTo Include="MPCore.Idempotency.Tests" />
+    <InternalsVisibleTo Include="MPCore.Transport.Grpc.Tests" />
+  </ItemGroup>
 </Project>

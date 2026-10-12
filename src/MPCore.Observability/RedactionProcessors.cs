@@ -12,7 +12,7 @@ namespace MPCore.Observability;
 /// inside, to a bounded depth. A <see cref="SensitiveValue"/>, and an object of a type in the host's
 /// <see cref="SensitiveMessageTypes"/>, is masked whole whatever its name.
 /// </remarks>
-public sealed class SensitiveLogRecordProcessor : BaseProcessor<LogRecord>
+internal sealed class SensitiveLogRecordProcessor : BaseProcessor<LogRecord>
 {
     /// <summary>Marker written in place of a sensitive value.</summary>
     public const string Mask = "***";
@@ -72,7 +72,7 @@ public sealed class SensitiveLogRecordProcessor : BaseProcessor<LogRecord>
 
 /// <summary>Replaces the value of any sensitive trace tag with a marker before export.</summary>
 /// <remarks>The same rules as <see cref="SensitiveLogRecordProcessor"/>.</remarks>
-public sealed class SensitiveActivityProcessor : BaseProcessor<Activity>
+internal sealed class SensitiveActivityProcessor : BaseProcessor<Activity>
 {
     private readonly IReadOnlySet<string> _fields;
     private readonly SensitiveMessageTypes _messageTypes;

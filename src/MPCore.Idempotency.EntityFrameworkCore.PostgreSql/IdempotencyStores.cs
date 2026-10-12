@@ -10,7 +10,7 @@ namespace MPCore.Idempotency.EntityFrameworkCore;
 /// <param name="context">The context.</param>
 /// <param name="clock">The clock.</param>
 /// <param name="options">The options.</param>
-public sealed class EntityFrameworkIdempotencyStore<TContext>(TContext context, TimeProvider clock, IdempotencyOptions options)
+internal sealed class EntityFrameworkIdempotencyStore<TContext>(TContext context, TimeProvider clock, IdempotencyOptions options)
     : IIdempotencyStore
     where TContext : DbContext
 {
@@ -29,7 +29,7 @@ public sealed class EntityFrameworkIdempotencyStore<TContext>(TContext context, 
 
 /// <summary>The scope of a key is the caller: a user, or a service by its client.</summary>
 /// <param name="actor">The current actor.</param>
-public sealed class CurrentActorIdempotencyScope(ICurrentActorAccessor actor) : IIdempotencyScopeProvider
+internal sealed class CurrentActorIdempotencyScope(ICurrentActorAccessor actor) : IIdempotencyScopeProvider
 {
     /// <inheritdoc />
     public string GetScope()

@@ -1,20 +1,9 @@
 #nullable enable
-MPCore.Idempotency.EntityFrameworkCore.CurrentActorIdempotencyScope
-MPCore.Idempotency.EntityFrameworkCore.CurrentActorIdempotencyScope.CurrentActorIdempotencyScope(MPCore.Security.ICurrentActorAccessor! actor) -> void
-MPCore.Idempotency.EntityFrameworkCore.CurrentActorIdempotencyScope.GetScope() -> string!
-MPCore.Idempotency.EntityFrameworkCore.EntityFrameworkIdempotencyStore<TContext>
-MPCore.Idempotency.EntityFrameworkCore.EntityFrameworkIdempotencyStore<TContext>.EntityFrameworkIdempotencyStore(TContext! context, System.TimeProvider! clock, MPCore.Application.Idempotency.IdempotencyOptions! options) -> void
-MPCore.Idempotency.EntityFrameworkCore.EntityFrameworkIdempotencyStore<TContext>.FindAsync(string! scope, string! key, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Idempotency.IdempotencyEntry?>!
 MPCore.Idempotency.EntityFrameworkCore.EntityFrameworkMessageInbox<TContext>
 MPCore.Idempotency.EntityFrameworkCore.EntityFrameworkMessageInbox<TContext>.EntityFrameworkMessageInbox(TContext! context, System.TimeProvider! clock) -> void
 MPCore.Idempotency.EntityFrameworkCore.EntityFrameworkMessageInbox<TContext>.TryBeginAsync(string! consumer, string! messageId, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<bool>!
 MPCore.Idempotency.EntityFrameworkCore.IdempotencyEntityFrameworkExtensions
-MPCore.Idempotency.EntityFrameworkCore.IdempotencyKeyConflictException
-MPCore.Idempotency.EntityFrameworkCore.IdempotencyKeyConflictException.IdempotencyKeyConflictException(string! key) -> void
 MPCore.Idempotency.EntityFrameworkCore.IdempotencyModelBuilderExtensions
-MPCore.Idempotency.EntityFrameworkCore.IdempotencyPurger<TContext>
-MPCore.Idempotency.EntityFrameworkCore.IdempotencyPurger<TContext>.IdempotencyPurger(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory! scopes, MPCore.Application.Idempotency.IdempotencyOptions! options, System.TimeProvider! clock, Microsoft.Extensions.Logging.ILogger<MPCore.Idempotency.EntityFrameworkCore.IdempotencyPurger<TContext!>!>! logger) -> void
-MPCore.Idempotency.EntityFrameworkCore.IdempotencyPurger<TContext>.PurgeOnceAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<int>!
 MPCore.Idempotency.EntityFrameworkCore.IdempotencyRecord
 MPCore.Idempotency.EntityFrameworkCore.IdempotencyRecord.CreatedOnUtc.get -> System.DateTimeOffset
 MPCore.Idempotency.EntityFrameworkCore.IdempotencyRecord.CreatedOnUtc.set -> void
@@ -29,8 +18,6 @@ MPCore.Idempotency.EntityFrameworkCore.IdempotencyRecord.Response.get -> string?
 MPCore.Idempotency.EntityFrameworkCore.IdempotencyRecord.Response.set -> void
 MPCore.Idempotency.EntityFrameworkCore.IdempotencyRecord.Scope.get -> string!
 MPCore.Idempotency.EntityFrameworkCore.IdempotencyRecord.Scope.set -> void
-MPCore.Idempotency.EntityFrameworkCore.IdempotencySaveChangesInterceptor
-MPCore.Idempotency.EntityFrameworkCore.IdempotencySaveChangesInterceptor.IdempotencySaveChangesInterceptor(System.TimeProvider! clock, MPCore.Application.Idempotency.IdempotencyOptions! options) -> void
 MPCore.Idempotency.EntityFrameworkCore.ProcessedMessageRecord
 MPCore.Idempotency.EntityFrameworkCore.ProcessedMessageRecord.Consumer.get -> string!
 MPCore.Idempotency.EntityFrameworkCore.ProcessedMessageRecord.Consumer.set -> void
@@ -40,10 +27,6 @@ MPCore.Idempotency.EntityFrameworkCore.ProcessedMessageRecord.ProcessedMessageRe
 MPCore.Idempotency.EntityFrameworkCore.ProcessedMessageRecord.ProcessedOnUtc.get -> System.DateTimeOffset
 MPCore.Idempotency.EntityFrameworkCore.ProcessedMessageRecord.ProcessedOnUtc.set -> void
 const MPCore.Idempotency.EntityFrameworkCore.IdempotencyModelBuilderExtensions.Schema = "idempotency" -> string!
-override MPCore.Idempotency.EntityFrameworkCore.IdempotencySaveChangesInterceptor.SavedChanges(Microsoft.EntityFrameworkCore.Diagnostics.SaveChangesCompletedEventData! eventData, int result) -> int
-override MPCore.Idempotency.EntityFrameworkCore.IdempotencySaveChangesInterceptor.SavedChangesAsync(Microsoft.EntityFrameworkCore.Diagnostics.SaveChangesCompletedEventData! eventData, int result, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
-override MPCore.Idempotency.EntityFrameworkCore.IdempotencySaveChangesInterceptor.SavingChanges(Microsoft.EntityFrameworkCore.Diagnostics.DbContextEventData! eventData, Microsoft.EntityFrameworkCore.Diagnostics.InterceptionResult<int> result) -> Microsoft.EntityFrameworkCore.Diagnostics.InterceptionResult<int>
-override MPCore.Idempotency.EntityFrameworkCore.IdempotencySaveChangesInterceptor.SavingChangesAsync(Microsoft.EntityFrameworkCore.Diagnostics.DbContextEventData! eventData, Microsoft.EntityFrameworkCore.Diagnostics.InterceptionResult<int> result, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Microsoft.EntityFrameworkCore.Diagnostics.InterceptionResult<int>>
 static MPCore.Idempotency.EntityFrameworkCore.IdempotencyEntityFrameworkExtensions.AddMPCoreIdempotency<TContext>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Application.Idempotency.IdempotencyOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 static MPCore.Idempotency.EntityFrameworkCore.IdempotencyEntityFrameworkExtensions.UseMPCoreIdempotency(this Microsoft.EntityFrameworkCore.DbContextOptionsBuilder! options, System.IServiceProvider! provider) -> Microsoft.EntityFrameworkCore.DbContextOptionsBuilder!
 static MPCore.Idempotency.EntityFrameworkCore.IdempotencyModelBuilderExtensions.ApplyMPCoreIdempotency(this Microsoft.EntityFrameworkCore.ModelBuilder! modelBuilder) -> Microsoft.EntityFrameworkCore.ModelBuilder!

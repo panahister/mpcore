@@ -64,7 +64,7 @@ public sealed class DatabaseMessageTemplateSource : IMessageTemplateSource
 /// and the latest modification time, which together change on every insert, update and delete.
 /// </summary>
 /// <typeparam name="TContext">The product's context.</typeparam>
-public sealed partial class MessageTranslationRefresher<TContext> : BackgroundService
+internal sealed partial class MessageTranslationRefresher<TContext> : BackgroundService
     where TContext : DbContext
 {
     private readonly IServiceScopeFactory _scopes;

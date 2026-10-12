@@ -8,7 +8,7 @@ namespace MPCore.Idempotency.EntityFrameworkCore;
 
 /// <summary>Deletes keys and inbox entries that are older than their retention.</summary>
 /// <typeparam name="TContext">The product's context.</typeparam>
-public sealed partial class IdempotencyPurger<TContext> : BackgroundService
+internal sealed partial class IdempotencyPurger<TContext> : BackgroundService
     where TContext : DbContext
 {
     private readonly IServiceScopeFactory _scopes;

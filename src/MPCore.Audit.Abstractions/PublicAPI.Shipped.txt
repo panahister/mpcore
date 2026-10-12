@@ -83,7 +83,6 @@ MPCore.Audit.AuditFieldChange.Deconstruct(out string! Name, out string? Before, 
 MPCore.Audit.AuditFieldChange.Equals(MPCore.Audit.AuditFieldChange? other) -> bool
 MPCore.Audit.AuditFieldChange.Name.get -> string!
 MPCore.Audit.AuditFieldChange.Name.init -> void
-MPCore.Audit.AuditMasking
 MPCore.Audit.AuditOutcome
 MPCore.Audit.AuditOutcome.Failed = 2 -> MPCore.Audit.AuditOutcome
 MPCore.Audit.AuditOutcome.Rejected = 1 -> MPCore.Audit.AuditOutcome
@@ -184,9 +183,6 @@ static MPCore.Audit.AuditFailure.operator !=(MPCore.Audit.AuditFailure? left, MP
 static MPCore.Audit.AuditFailure.operator ==(MPCore.Audit.AuditFailure? left, MPCore.Audit.AuditFailure? right) -> bool
 static MPCore.Audit.AuditFieldChange.operator !=(MPCore.Audit.AuditFieldChange? left, MPCore.Audit.AuditFieldChange? right) -> bool
 static MPCore.Audit.AuditFieldChange.operator ==(MPCore.Audit.AuditFieldChange? left, MPCore.Audit.AuditFieldChange? right) -> bool
-static MPCore.Audit.AuditMasking.Apply(string? value, MPCore.Audit.MaskStyle? style) -> string?
-static MPCore.Audit.AuditMasking.IsHardExcluded(string! propertyName) -> bool
-static MPCore.Audit.AuditMasking.RequiresMask(string! propertyName) -> bool
 static MPCore.Audit.AuditPage.operator !=(MPCore.Audit.AuditPage? left, MPCore.Audit.AuditPage? right) -> bool
 static MPCore.Audit.AuditPage.operator ==(MPCore.Audit.AuditPage? left, MPCore.Audit.AuditPage? right) -> bool
 static MPCore.Audit.AuditPageRequest.operator !=(MPCore.Audit.AuditPageRequest? left, MPCore.Audit.AuditPageRequest? right) -> bool

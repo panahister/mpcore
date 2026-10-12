@@ -12,7 +12,7 @@ using MPCore.Application.Sensitive;
 namespace MPCore.Transport.Grpc;
 
 /// <summary>The gRPC services whose request and response messages are kept out of the logs.</summary>
-public sealed class GrpcSensitiveMessageOptions
+internal sealed class GrpcSensitiveMessageOptions
 {
     /// <summary>Full service names, as the protocol names them: <c>package.Service</c>.</summary>
     public ISet<string> Services { get; } = new HashSet<string>(StringComparer.Ordinal);

@@ -25,9 +25,6 @@ MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.ModifiedOnUtc.g
 MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.ModifiedOnUtc.set -> void
 MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.Text.get -> string!
 MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.Text.set -> void
-MPCore.Localization.EntityFrameworkCore.MessageTranslationRefresher<TContext>
-MPCore.Localization.EntityFrameworkCore.MessageTranslationRefresher<TContext>.MessageTranslationRefresher(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory! scopes, MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource! source, Microsoft.Extensions.Options.IOptions<MPCore.Localization.EntityFrameworkCore.MessageTranslationOptions!>! options, Microsoft.Extensions.Logging.ILogger<MPCore.Localization.EntityFrameworkCore.MessageTranslationRefresher<TContext!>!>! logger) -> void
-MPCore.Localization.EntityFrameworkCore.MessageTranslationRefresher<TContext>.RefreshOnceAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<bool>!
 MPCore.Localization.EntityFrameworkCore.MessageTranslationServiceCollectionExtensions
 const MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource.OverridePrecedence = 100 -> int
 const MPCore.Localization.EntityFrameworkCore.LocalizationModelBuilderExtensions.MaximumTextLength = 2000 -> int

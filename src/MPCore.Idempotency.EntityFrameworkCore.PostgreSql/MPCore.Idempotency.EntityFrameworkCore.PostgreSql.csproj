@@ -15,4 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="MPCore.Idempotency.Tests" />
+  </ItemGroup>
 </Project>

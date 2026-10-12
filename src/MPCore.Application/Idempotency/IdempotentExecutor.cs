@@ -9,7 +9,7 @@ namespace MPCore.Application.Idempotency;
 /// <param name="keys">Where the key comes from.</param>
 /// <param name="scopes">Whose key it is.</param>
 /// <param name="store">The remembered keys.</param>
-public sealed class IdempotentExecutor(IIdempotencyKeySource keys, IIdempotencyScopeProvider scopes, IIdempotencyStore store)
+internal sealed class IdempotentExecutor(IIdempotencyKeySource keys, IIdempotencyScopeProvider scopes, IIdempotencyStore store)
     : IIdempotentExecutor
 {
     private readonly record struct Outcome(Result? Ran, IdempotencyEntry? Replayed, FailureDescriptor? Failure);
@@ -129,7 +129,7 @@ public sealed class IdempotentExecutor(IIdempotencyKeySource keys, IIdempotencyS
 }
 
 /// <summary>Used when no transport registered a key source: no request ever carries a key.</summary>
-public sealed class NoIdempotencyKeySource : IIdempotencyKeySource
+internal sealed class NoIdempotencyKeySource : IIdempotencyKeySource
 {
     /// <inheritdoc />
     public IdempotencyKeyReading Read() => new(null, false);
@@ -141,7 +141,7 @@ public sealed class NoIdempotencyKeySource : IIdempotencyKeySource
 }
 
 /// <summary>Registration of the transport-neutral part of request idempotency.</summary>
-public static class IdempotencyServiceCollectionExtensions
+internal static class IdempotencyServiceCollectionExtensions
 {
     /// <summary>
     /// Registers the executor. The store and the scope provider come from a persistence adapter, such as

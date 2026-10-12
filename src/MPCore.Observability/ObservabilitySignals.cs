@@ -94,13 +94,13 @@ public sealed class MPCoreObservabilitySignals
 /// <param name="Endpoint">Effective absolute endpoint, or null for environment defaults.</param>
 /// <param name="Protocol">Effective protocol.</param>
 /// <param name="Headers">Effective headers; never logged.</param>
-public sealed record ResolvedDestination(SignalExporter Exporter, Uri? Endpoint, OtlpTransport Protocol, string? Headers);
+internal sealed record ResolvedDestination(SignalExporter Exporter, Uri? Endpoint, OtlpTransport Protocol, string? Headers);
 
 /// <summary>
 /// The composition decided from options, computed before anything is registered so it can be
 /// inspected and tested without starting a pipeline.
 /// </summary>
-public sealed class ObservabilityPlan
+internal sealed class ObservabilityPlan
 {
     /// <summary>Named OTLP options for logs.</summary>
     public const string LogsExporterName = "mpcore-logs";

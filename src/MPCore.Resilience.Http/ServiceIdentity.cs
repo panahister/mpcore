@@ -103,7 +103,7 @@ public sealed class ServiceIdentityException : HttpRequestException
 }
 
 /// <summary>The token a service presents when it calls another service.</summary>
-public interface IServiceTokenSource
+internal interface IServiceTokenSource
 {
     /// <summary>The current token; a new one is asked for when there is none or it is about to expire.</summary>
     ValueTask<string> GetTokenAsync(CancellationToken cancellationToken = default);

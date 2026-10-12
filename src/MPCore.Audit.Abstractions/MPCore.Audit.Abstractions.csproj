@@ -3,4 +3,8 @@
     <PackageId>MPCore.Audit.Abstractions</PackageId>
     <Description>Business audit contracts: entity-change and business-action records, capture policy with allowlisting and masking, sink and query ports. BCL-only.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="MPCore.Audit.EntityFrameworkCore.PostgreSql" />
+    <InternalsVisibleTo Include="MPCore.Audit.Tests" />
+  </ItemGroup>
 </Project>

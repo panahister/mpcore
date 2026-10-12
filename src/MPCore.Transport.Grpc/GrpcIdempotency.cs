@@ -10,7 +10,7 @@ namespace MPCore.Transport.Grpc;
 /// </summary>
 /// <param name="accessor">The HTTP context accessor.</param>
 /// <param name="options">The idempotency options, when a store registered them.</param>
-public sealed class GrpcIdempotencyKeySource(IHttpContextAccessor accessor, IEnumerable<IdempotencyOptions> options) : IIdempotencyKeySource
+internal sealed class GrpcIdempotencyKeySource(IHttpContextAccessor accessor, IEnumerable<IdempotencyOptions> options) : IIdempotencyKeySource
 {
     /// <summary>The response header that marks a stored response.</summary>
     public const string ReplayedHeaderName = "idempotency-replayed";

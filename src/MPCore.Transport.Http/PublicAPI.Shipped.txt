@@ -18,10 +18,6 @@ MPCore.Transport.Http.HttpFailureOptions.RequestIdHeaderName.set -> void
 MPCore.Transport.Http.HttpFailureOptions.ScopeRequirementTypeNames.get -> System.Collections.Generic.IList<string!>!
 MPCore.Transport.Http.HttpFailureOptions.SupportedCultures.get -> System.Collections.Generic.IList<string!>!
 MPCore.Transport.Http.HttpFailureRegistrationExtensions
-MPCore.Transport.Http.HttpIdempotencyKeySource
-MPCore.Transport.Http.HttpIdempotencyKeySource.HttpIdempotencyKeySource(Microsoft.AspNetCore.Http.IHttpContextAccessor! accessor, System.Collections.Generic.IEnumerable<MPCore.Application.Idempotency.IdempotencyOptions!>! options) -> void
-MPCore.Transport.Http.HttpIdempotencyKeySource.MarkReplayed() -> void
-MPCore.Transport.Http.HttpIdempotencyKeySource.Read() -> MPCore.Application.Idempotency.IdempotencyKeyReading
 MPCore.Transport.Http.HttpResultExtensions
 MPCore.Transport.Http.IHttpExceptionMapper
 MPCore.Transport.Http.IHttpExceptionMapper.Map(System.Exception! exception, Microsoft.AspNetCore.Http.HttpContext! context) -> MPCore.Application.Results.FailureDescriptor?
@@ -40,7 +36,6 @@ MPCore.Transport.Http.ProblemDetailsEnrichmentContext.TryAdd(string! member, obj
 const MPCore.Transport.Http.HttpFailureOptions.DefaultProblemTypeUriTemplate = "urn:mpcore:error:{domain}:{code}" -> string!
 const MPCore.Transport.Http.HttpFailureOptions.MaximumProblemDocumentBytes = 6144 -> int
 const MPCore.Transport.Http.HttpFailureOptions.MinimumProblemDocumentBytes = 1024 -> int
-const MPCore.Transport.Http.HttpIdempotencyKeySource.ReplayedHeaderName = "Idempotency-Replayed" -> string!
 const MPCore.Transport.Http.ProblemDetailsEnrichmentContext.MaximumExtensionCount = 16 -> int
 static MPCore.Transport.Http.HttpFailureRegistrationExtensions.AddHttpExceptionMapper<TMapper>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 static MPCore.Transport.Http.HttpFailureRegistrationExtensions.AddMPCoreHttpFailureHandling(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Transport.Http.HttpFailureOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

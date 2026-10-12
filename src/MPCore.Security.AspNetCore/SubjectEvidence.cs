@@ -16,7 +16,7 @@ namespace MPCore.Security.AspNetCore;
 /// service's own token (ADR-014, section 3), and the called host decides with the evidence only after it has
 /// admitted the service. On gRPC the header is a metadata entry.
 /// </remarks>
-public static class SubjectEvidenceHeader
+internal static class SubjectEvidenceHeader
 {
     /// <summary>The header name, <c>x-subject-token</c>.</summary>
     public const string Name = "x-subject-token";
@@ -64,7 +64,7 @@ public sealed class SubjectEvidenceForwardingOptions
 /// Requires valid evidence of a person, carried by a listed service, from one of the named issuer schemes
 /// (any configured issuer when none is named).
 /// </summary>
-public sealed class SubjectEvidenceRequirement : IAuthorizationRequirement
+internal sealed class SubjectEvidenceRequirement : IAuthorizationRequirement
 {
     /// <summary>Creates the requirement.</summary>
     /// <param name="issuerSchemes">The issuer schemes whose evidence this command accepts; none means any.</param>

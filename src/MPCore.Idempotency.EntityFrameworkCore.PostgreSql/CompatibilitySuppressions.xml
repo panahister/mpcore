@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://learn.microsoft.com/dotnet/fundamentals/package-validation/diagnostic-ids -->
+<Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <!-- 1.0 review: CurrentActorIdempotencyScope is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Idempotency.EntityFrameworkCore.CurrentActorIdempotencyScope</Target>
+    <Left>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Left>
+    <Right>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: EntityFrameworkIdempotencyStore is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Idempotency.EntityFrameworkCore.EntityFrameworkIdempotencyStore`1</Target>
+    <Left>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Left>
+    <Right>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IdempotencyKeyConflictException is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Idempotency.EntityFrameworkCore.IdempotencyKeyConflictException</Target>
+    <Left>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Left>
+    <Right>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IdempotencyPurger is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Idempotency.EntityFrameworkCore.IdempotencyPurger`1</Target>
+    <Left>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Left>
+    <Right>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <!-- 1.0 review: IdempotencySaveChangesInterceptor is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:MPCore.Idempotency.EntityFrameworkCore.IdempotencySaveChangesInterceptor</Target>
+    <Left>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Left>
+    <Right>lib/net10.0/MPCore.Idempotency.EntityFrameworkCore.PostgreSql.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+</Suppressions>

@@ -150,7 +150,7 @@ public static class ObservabilityExtensions
 /// The field names that must never be emitted to a log, span or metric. The list is advisory to
 /// products and is deliberately conservative.
 /// </summary>
-public static class SensitiveDataPolicy
+internal static class SensitiveDataPolicy
 {
     /// <summary>The default set of field names treated as sensitive.</summary>
     public static readonly ISet<string> DefaultSensitiveFields = new HashSet<string>(

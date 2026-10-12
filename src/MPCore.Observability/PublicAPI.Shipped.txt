@@ -29,16 +29,6 @@ MPCore.Observability.MetricSignalOptions.MetricSignalOptions() -> void
 MPCore.Observability.MetricSignalOptions.Prometheus.get -> MPCore.Observability.PrometheusScrapeOptions!
 MPCore.Observability.MetricSignalOptions.Prometheus.set -> void
 MPCore.Observability.ObservabilityExtensions
-MPCore.Observability.ObservabilityPlan
-MPCore.Observability.ObservabilityPlan.ConsoleLogsEnabled.get -> bool
-MPCore.Observability.ObservabilityPlan.Logs.get -> MPCore.Observability.ResolvedDestination!
-MPCore.Observability.ObservabilityPlan.Metrics.get -> MPCore.Observability.ResolvedDestination!
-MPCore.Observability.ObservabilityPlan.PrometheusScrapeEnabled.get -> bool
-MPCore.Observability.ObservabilityPlan.PrometheusScrapePath.get -> string!
-MPCore.Observability.ObservabilityPlan.RedactionEnabled.get -> bool
-MPCore.Observability.ObservabilityPlan.SamplingRatio.get -> double
-MPCore.Observability.ObservabilityPlan.SensitiveFields.get -> System.Collections.Generic.IReadOnlySet<string!>!
-MPCore.Observability.ObservabilityPlan.Traces.get -> MPCore.Observability.ResolvedDestination!
 MPCore.Observability.OtlpTransport
 MPCore.Observability.OtlpTransport.Grpc = 0 -> MPCore.Observability.OtlpTransport
 MPCore.Observability.OtlpTransport.HttpProtobuf = 1 -> MPCore.Observability.OtlpTransport
@@ -54,26 +44,6 @@ MPCore.Observability.RedactionOptions.AdditionalSensitiveFields.set -> void
 MPCore.Observability.RedactionOptions.Enabled.get -> bool
 MPCore.Observability.RedactionOptions.Enabled.set -> void
 MPCore.Observability.RedactionOptions.RedactionOptions() -> void
-MPCore.Observability.ResolvedDestination
-MPCore.Observability.ResolvedDestination.<Clone>$() -> MPCore.Observability.ResolvedDestination!
-MPCore.Observability.ResolvedDestination.Deconstruct(out MPCore.Observability.SignalExporter Exporter, out System.Uri? Endpoint, out MPCore.Observability.OtlpTransport Protocol, out string? Headers) -> void
-MPCore.Observability.ResolvedDestination.Endpoint.get -> System.Uri?
-MPCore.Observability.ResolvedDestination.Endpoint.init -> void
-MPCore.Observability.ResolvedDestination.Equals(MPCore.Observability.ResolvedDestination? other) -> bool
-MPCore.Observability.ResolvedDestination.Exporter.get -> MPCore.Observability.SignalExporter
-MPCore.Observability.ResolvedDestination.Exporter.init -> void
-MPCore.Observability.ResolvedDestination.Headers.get -> string?
-MPCore.Observability.ResolvedDestination.Headers.init -> void
-MPCore.Observability.ResolvedDestination.Protocol.get -> MPCore.Observability.OtlpTransport
-MPCore.Observability.ResolvedDestination.Protocol.init -> void
-MPCore.Observability.ResolvedDestination.ResolvedDestination(MPCore.Observability.SignalExporter Exporter, System.Uri? Endpoint, MPCore.Observability.OtlpTransport Protocol, string? Headers) -> void
-MPCore.Observability.SensitiveActivityProcessor
-MPCore.Observability.SensitiveActivityProcessor.SensitiveActivityProcessor(System.Collections.Generic.IReadOnlySet<string!>! fields) -> void
-MPCore.Observability.SensitiveActivityProcessor.SensitiveActivityProcessor(System.Collections.Generic.IReadOnlySet<string!>! fields, MPCore.Application.Sensitive.SensitiveMessageTypes! messageTypes) -> void
-MPCore.Observability.SensitiveDataPolicy
-MPCore.Observability.SensitiveLogRecordProcessor
-MPCore.Observability.SensitiveLogRecordProcessor.SensitiveLogRecordProcessor(System.Collections.Generic.IReadOnlySet<string!>! fields) -> void
-MPCore.Observability.SensitiveLogRecordProcessor.SensitiveLogRecordProcessor(System.Collections.Generic.IReadOnlySet<string!>! fields, MPCore.Application.Sensitive.SensitiveMessageTypes! messageTypes) -> void
 MPCore.Observability.SignalDestination
 MPCore.Observability.SignalDestination.Endpoint.get -> string?
 MPCore.Observability.SignalDestination.Endpoint.set -> void
@@ -91,17 +61,4 @@ MPCore.Observability.TraceSignalOptions
 MPCore.Observability.TraceSignalOptions.SamplingRatio.get -> double
 MPCore.Observability.TraceSignalOptions.SamplingRatio.set -> void
 MPCore.Observability.TraceSignalOptions.TraceSignalOptions() -> void
-const MPCore.Observability.ObservabilityPlan.LogsExporterName = "mpcore-logs" -> string!
-const MPCore.Observability.ObservabilityPlan.MetricsExporterName = "mpcore-metrics" -> string!
-const MPCore.Observability.ObservabilityPlan.TracesExporterName = "mpcore-traces" -> string!
-const MPCore.Observability.SensitiveLogRecordProcessor.Mask = "***" -> string!
-override MPCore.Observability.ResolvedDestination.Equals(object? obj) -> bool
-override MPCore.Observability.ResolvedDestination.GetHashCode() -> int
-override MPCore.Observability.ResolvedDestination.ToString() -> string!
-override MPCore.Observability.SensitiveActivityProcessor.OnEnd(System.Diagnostics.Activity! data) -> void
-override MPCore.Observability.SensitiveLogRecordProcessor.OnEnd(OpenTelemetry.Logs.LogRecord! data) -> void
 static MPCore.Observability.ObservabilityExtensions.AddMPCoreObservability(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, MPCore.Observability.MPCoreObservabilityOptions! options) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
-static MPCore.Observability.ObservabilityPlan.Resolve(MPCore.Observability.MPCoreObservabilityOptions! options) -> MPCore.Observability.ObservabilityPlan!
-static MPCore.Observability.ResolvedDestination.operator !=(MPCore.Observability.ResolvedDestination? left, MPCore.Observability.ResolvedDestination? right) -> bool
-static MPCore.Observability.ResolvedDestination.operator ==(MPCore.Observability.ResolvedDestination? left, MPCore.Observability.ResolvedDestination? right) -> bool
-static readonly MPCore.Observability.SensitiveDataPolicy.DefaultSensitiveFields -> System.Collections.Generic.ISet<string!>!

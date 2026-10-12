@@ -15,7 +15,7 @@ namespace MPCore.Application.Sensitive;
 /// methods of a named gRPC service, or by the host for any other type with
 /// <see cref="SensitiveMessageTypesRegistration.AddMPCoreSensitiveMessageTypes"/>. A type is never removed.
 /// </remarks>
-public sealed class SensitiveMessageTypes
+internal sealed class SensitiveMessageTypes
 {
     private readonly ConcurrentDictionary<Type, byte> _types = new();
 

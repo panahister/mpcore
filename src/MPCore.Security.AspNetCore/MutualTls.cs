@@ -54,7 +54,7 @@ public sealed class MutualTlsOptions
 }
 
 /// <summary>Requires a client certificate from a configured authority with a listed workload name.</summary>
-public sealed class WorkloadCertificateRequirement : IAuthorizationRequirement;
+internal sealed class WorkloadCertificateRequirement : IAuthorizationRequirement;
 
 /// <summary>Registration of mutual TLS on a called host.</summary>
 public static class MutualTlsExtensions

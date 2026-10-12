@@ -5,7 +5,7 @@ namespace MPCore.Application.Idempotency;
 /// the messaging adapter hands it the handler's result; the persistence adapter writes key and result in
 /// the transaction that commits the change and reports back that it did.
 /// </summary>
-public sealed class IdempotencyContext : IDisposable
+internal sealed class IdempotencyContext : IDisposable
 {
     private static readonly AsyncLocal<IdempotencyContext?> Ambient = new();
     private readonly IdempotencyContext? _previous;

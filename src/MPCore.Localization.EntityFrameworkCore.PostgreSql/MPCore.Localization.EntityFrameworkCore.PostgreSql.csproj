@@ -15,4 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="MPCore.Localization.Tests" />
+  </ItemGroup>
 </Project>

@@ -16,4 +16,8 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="MPCore.Observability.Tests" />
+    <InternalsVisibleTo Include="MPCore.Transport.Grpc.Tests" />
+  </ItemGroup>
 </Project>

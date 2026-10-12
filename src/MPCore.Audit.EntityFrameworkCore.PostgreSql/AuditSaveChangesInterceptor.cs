@@ -9,7 +9,7 @@ namespace MPCore.Audit.EntityFrameworkCore;
 /// Captures policy-covered entity changes and adds their audit records to the same context before
 /// it saves, so they commit with the change — and disappear with it if the transaction rolls back.
 /// </summary>
-public sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
+internal sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
 {
     private readonly AuditPolicy _policy;
     private readonly IAuditContext _context;

@@ -77,7 +77,7 @@ public static class MPCoreAuthorizationPolicyBuilderExtensions
 }
 
 /// <summary>Requires that the caller's token carries every listed OAuth scope.</summary>
-public sealed class ScopeRequirement : IAuthorizationRequirement
+internal sealed class ScopeRequirement : IAuthorizationRequirement
 {
     /// <summary>Creates the requirement.</summary>
     /// <param name="scopes">The scopes that must all be present.</param>
@@ -104,7 +104,7 @@ public sealed class ScopeRequirement : IAuthorizationRequirement
 }
 
 /// <summary>Requires that the caller carries at least one of the listed normalized roles.</summary>
-public sealed class MPCoreRoleRequirement : IAuthorizationRequirement
+internal sealed class MPCoreRoleRequirement : IAuthorizationRequirement
 {
     /// <summary>Creates the requirement.</summary>
     /// <param name="roles">The accepted roles.</param>
