@@ -1435,7 +1435,9 @@ public sealed class TemplateContractTests
     {
         var configure = File.ReadAllText(Path.Combine(RepositoryRoot, "tools/MPCore.Cli/Configure.cs"));
         Assert.Contains("PlanCapabilitySwitch(project, baseline!, final,", configure, StringComparison.Ordinal);
-        Assert.Contains("MaterializeTemplateAsync(JsonNodeManifest manifest, string aiTooling, string mpcoreVersion,\n        string? cache = null, string? businessAudit = null, string? timeseries = null)", configure, StringComparison.Ordinal);
+        Assert.Contains("MaterializeTemplateAsync(string project, JsonNodeManifest manifest, string aiTooling, string mpcoreVersion,\n        string? cache = null, string? businessAudit = null, string? timeseries = null)", configure, StringComparison.Ordinal);
+        // Every reference it regenerates keeps the repository's own user secrets id, or an untouched file would differ.
+        Assert.Contains("KeepUserSecretsIds(project, temp);", configure, StringComparison.Ordinal);
         // The switch plans updates and deletes, and both go through the conflict filter above it.
         var plan = configure.IndexOf("PlanCapabilitySwitch(project, baseline!, final,", StringComparison.Ordinal);
         var conflict = configure.IndexOf("refuse to destroy work the developer has done", StringComparison.Ordinal);
