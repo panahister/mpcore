@@ -1,0 +1,13 @@
+#nullable enable
+MPCore.Persistence.Timescale.TimescaleMigrationBuilderExtensions
+MPCore.Persistence.Timescale.TimescaleSql
+const MPCore.Persistence.Timescale.TimescaleSql.CreateExtension = "CREATE EXTENSION IF NOT EXISTS timescaledb;" -> string!
+static MPCore.Persistence.Timescale.TimescaleMigrationBuilderExtensions.AddCompression(this Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder! migrationBuilder, string! table, string! orderBy, string! compressOlderThan, string? segmentBy = null, string? schema = null) -> Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder!
+static MPCore.Persistence.Timescale.TimescaleMigrationBuilderExtensions.AddRetentionPolicy(this Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder! migrationBuilder, string! table, string! olderThan, string? schema = null) -> Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder!
+static MPCore.Persistence.Timescale.TimescaleMigrationBuilderExtensions.CreateHypertable(this Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder! migrationBuilder, string! table, string! timeColumn, string? schema = null, string! chunkInterval = "7 days", bool migrateData = true) -> Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder!
+static MPCore.Persistence.Timescale.TimescaleMigrationBuilderExtensions.EnsureTimescale(this Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder! migrationBuilder) -> Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder!
+static MPCore.Persistence.Timescale.TimescaleSql.AddCompressionPolicy(string! table, string! olderThan, string? schema = null) -> string!
+static MPCore.Persistence.Timescale.TimescaleSql.AddRetentionPolicy(string! table, string! olderThan, string? schema = null) -> string!
+static MPCore.Persistence.Timescale.TimescaleSql.CreateHypertable(string! table, string! timeColumn, string? schema = null, string! chunkInterval = "7 days", bool migrateData = true) -> string!
+static MPCore.Persistence.Timescale.TimescaleSql.EnableCompression(string! table, string! orderBy, string? segmentBy = null, string? schema = null) -> string!
+static MPCore.Persistence.Timescale.TimescaleSql.Identifier(string! name) -> string!

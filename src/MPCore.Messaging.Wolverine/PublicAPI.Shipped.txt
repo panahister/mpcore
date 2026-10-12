@@ -1,0 +1,63 @@
+#nullable enable
+MPCore.Messaging.Wolverine.AggregateEventBridgeExtensions
+MPCore.Messaging.Wolverine.HandlerActorMiddleware
+MPCore.Messaging.Wolverine.HandlerActorScope
+MPCore.Messaging.Wolverine.HandlerActorScope.Dispose() -> void
+MPCore.Messaging.Wolverine.HandlerAttempt
+MPCore.Messaging.Wolverine.HandlerAttempt.Complete() -> void
+MPCore.Messaging.Wolverine.HandlerAttempt.Completed.get -> bool
+MPCore.Messaging.Wolverine.HandlerAttempt.HandlerAttempt() -> void
+MPCore.Messaging.Wolverine.HandlerAttemptCompletion
+MPCore.Messaging.Wolverine.HandlerAttemptMiddleware
+MPCore.Messaging.Wolverine.HandlerTenantMiddleware
+MPCore.Messaging.Wolverine.HandlerTenantScope
+MPCore.Messaging.Wolverine.HandlerTenantScope.Dispose() -> void
+MPCore.Messaging.Wolverine.MessageInboxExtensions
+MPCore.Messaging.Wolverine.MessageInboxMiddleware
+MPCore.Messaging.Wolverine.ResultFailureRollback
+MPCore.Messaging.Wolverine.ResultFailureRollback<TValue>
+MPCore.Messaging.Wolverine.WolverineAggregateEventSink
+MPCore.Messaging.Wolverine.WolverineAggregateEventSink.CollectAsync(System.Collections.Generic.IReadOnlyList<MPCore.Domain.Events.IDomainEvent!>! domainEvents, System.Collections.Generic.IReadOnlyList<MPCore.Domain.Events.IIntegrationEvent!>! integrationEvents, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Messaging.Wolverine.WolverineAggregateEventSink.WolverineAggregateEventSink(MPCore.Messaging.Abstractions.IMessagePublisher! publisher) -> void
+MPCore.Messaging.Wolverine.WolverineDbContextExtensions
+MPCore.Messaging.Wolverine.WolverineDiscoveryExtensions
+MPCore.Messaging.Wolverine.WolverineFoundationExtensions
+MPCore.Messaging.Wolverine.WolverineFoundationOptions
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.ApplicationAssembly.get -> System.Reflection.Assembly?
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.ApplicationAssembly.init -> void
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.PersistenceConnectionString.get -> string!
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.PersistenceConnectionString.init -> void
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.PersistenceSchemaName.get -> string!
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.PersistenceSchemaName.init -> void
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.ServiceName.get -> string!
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.ServiceName.init -> void
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.Validate() -> void
+MPCore.Messaging.Wolverine.WolverineFoundationOptions.WolverineFoundationOptions() -> void
+MPCore.Messaging.Wolverine.WolverineMessagePublisher
+MPCore.Messaging.Wolverine.WolverineMessagePublisher.PublishAsync(object! message, MPCore.Messaging.Abstractions.MessageDeliveryContext! delivery, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Messaging.Wolverine.WolverineMessagePublisher.PublishAsync(object! message, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Messaging.Wolverine.WolverineMessagePublisher.WolverineMessagePublisher(Wolverine.IMessageBus! messageBus) -> void
+MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher
+MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher.PublishAsync(object! message, MPCore.Messaging.Abstractions.MessageDeliveryContext! delivery, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher.PublishAsync(object! message, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher.WolverineTenantMessagePublisher(Wolverine.IMessageBus! messageBus, MPCore.Tenancy.ITenantContext? tenants = null) -> void
+static MPCore.Messaging.Wolverine.AggregateEventBridgeExtensions.AddMPCoreAggregateEventBridge(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Messaging.Wolverine.HandlerActorMiddleware.Before(Wolverine.Envelope! envelope) -> MPCore.Messaging.Wolverine.HandlerActorScope!
+static MPCore.Messaging.Wolverine.HandlerActorMiddleware.Finally(MPCore.Messaging.Wolverine.HandlerActorScope! actor) -> void
+static MPCore.Messaging.Wolverine.HandlerActorScope.ActorName(Wolverine.Envelope! envelope) -> string!
+static MPCore.Messaging.Wolverine.HandlerAttemptCompletion.After(MPCore.Messaging.Wolverine.HandlerAttempt! attempt) -> void
+static MPCore.Messaging.Wolverine.HandlerAttemptMiddleware.Before() -> MPCore.Messaging.Wolverine.HandlerAttempt!
+static MPCore.Messaging.Wolverine.HandlerAttemptMiddleware.Finally(MPCore.Messaging.Wolverine.HandlerAttempt! attempt, Wolverine.Runtime.MessageContext! context) -> System.Threading.Tasks.ValueTask
+static MPCore.Messaging.Wolverine.HandlerTenantMiddleware.Before(Wolverine.Envelope! envelope) -> MPCore.Messaging.Wolverine.HandlerTenantScope!
+static MPCore.Messaging.Wolverine.HandlerTenantMiddleware.Finally(MPCore.Messaging.Wolverine.HandlerTenantScope! tenant) -> void
+static MPCore.Messaging.Wolverine.HandlerTenantScope.TenantOf(Wolverine.Envelope! envelope) -> string?
+static MPCore.Messaging.Wolverine.MessageInboxExtensions.UseMPCoreInbox(this Wolverine.WolverineOptions! options) -> Wolverine.WolverineOptions!
+static MPCore.Messaging.Wolverine.MessageInboxMiddleware.BeforeAsync(MPCore.Domain.Events.IIntegrationEvent! message, MPCore.Messaging.Abstractions.IMessageInbox! inbox, MPCore.Messaging.Wolverine.WolverineFoundationOptions! foundation, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Wolverine.HandlerContinuation>!
+static MPCore.Messaging.Wolverine.ResultFailureRollback.After(MPCore.Application.Results.Result! result, MPCore.Persistence.Abstractions.IUnitOfWork! unitOfWork) -> void
+static MPCore.Messaging.Wolverine.ResultFailureRollback<TValue>.After(MPCore.Application.Results.Result<TValue>! result, MPCore.Persistence.Abstractions.IUnitOfWork! unitOfWork) -> void
+static MPCore.Messaging.Wolverine.WolverineDbContextExtensions.AddMPCoreWolverineDbContext<TContext>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<System.IServiceProvider!, Microsoft.EntityFrameworkCore.DbContextOptionsBuilder!>! configure, string? wolverineDatabaseSchema = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Messaging.Wolverine.WolverineDbContextExtensions.UseMPCoreUnitOfWorkTransactions<TContext>(this Wolverine.WolverineOptions! options) -> Wolverine.WolverineOptions!
+static MPCore.Messaging.Wolverine.WolverineDiscoveryExtensions.DiscoverHandlersIn(this Wolverine.WolverineOptions! options, System.Collections.Generic.IEnumerable<System.Reflection.Assembly!>! assemblies) -> Wolverine.WolverineOptions!
+static MPCore.Messaging.Wolverine.WolverineDiscoveryExtensions.DiscoverHandlersIn(this Wolverine.WolverineOptions! options, params System.Reflection.Assembly![]! assemblies) -> Wolverine.WolverineOptions!
+static MPCore.Messaging.Wolverine.WolverineFoundationExtensions.UseMPCoreWolverine(this Microsoft.Extensions.Hosting.IHostBuilder! hostBuilder, MPCore.Messaging.Wolverine.WolverineFoundationOptions! foundation, System.Action<Wolverine.WolverineOptions!>? configure = null) -> Microsoft.Extensions.Hosting.IHostBuilder!
+static MPCore.Messaging.Wolverine.WolverineFoundationExtensions.UseMPCoreWolverine<TContext>(this Microsoft.Extensions.Hosting.IHostBuilder! hostBuilder, MPCore.Messaging.Wolverine.WolverineFoundationOptions! foundation, System.Action<Wolverine.WolverineOptions!>? configure = null) -> Microsoft.Extensions.Hosting.IHostBuilder!

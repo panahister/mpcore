@@ -1,0 +1,195 @@
+#nullable enable
+MPCore.Audit.AuditActor
+MPCore.Audit.AuditActor.<Clone>$() -> MPCore.Audit.AuditActor!
+MPCore.Audit.AuditActor.AuditActor(MPCore.Audit.AuditActorKind Kind, string? SubjectId, string? ClientId, string? UserName) -> void
+MPCore.Audit.AuditActor.ClientId.get -> string?
+MPCore.Audit.AuditActor.ClientId.init -> void
+MPCore.Audit.AuditActor.Deconstruct(out MPCore.Audit.AuditActorKind Kind, out string? SubjectId, out string? ClientId, out string? UserName) -> void
+MPCore.Audit.AuditActor.Equals(MPCore.Audit.AuditActor? other) -> bool
+MPCore.Audit.AuditActor.Kind.get -> MPCore.Audit.AuditActorKind
+MPCore.Audit.AuditActor.Kind.init -> void
+MPCore.Audit.AuditActor.SubjectId.get -> string?
+MPCore.Audit.AuditActor.SubjectId.init -> void
+MPCore.Audit.AuditActor.UserName.get -> string?
+MPCore.Audit.AuditActor.UserName.init -> void
+MPCore.Audit.AuditActorKind
+MPCore.Audit.AuditActorKind.Anonymous = 0 -> MPCore.Audit.AuditActorKind
+MPCore.Audit.AuditActorKind.Service = 2 -> MPCore.Audit.AuditActorKind
+MPCore.Audit.AuditActorKind.System = 3 -> MPCore.Audit.AuditActorKind
+MPCore.Audit.AuditActorKind.User = 1 -> MPCore.Audit.AuditActorKind
+MPCore.Audit.AuditCategory
+MPCore.Audit.AuditCategory.BusinessAction = 1 -> MPCore.Audit.AuditCategory
+MPCore.Audit.AuditCategory.EntityChange = 0 -> MPCore.Audit.AuditCategory
+MPCore.Audit.AuditEntityPolicy
+MPCore.Audit.AuditEntityPolicy.EntityType.get -> System.Type!
+MPCore.Audit.AuditEntityPolicy.Module.get -> string!
+MPCore.Audit.AuditEntityPolicy.Properties.get -> System.Collections.Generic.IReadOnlyDictionary<string!, MPCore.Audit.MaskStyle?>!
+MPCore.Audit.AuditEntityPolicy.Required.get -> bool
+MPCore.Audit.AuditEntityPolicyBuilder<TEntity>
+MPCore.Audit.AuditEntityPolicyBuilder<TEntity>.BestEffort() -> MPCore.Audit.AuditEntityPolicyBuilder<TEntity>!
+MPCore.Audit.AuditEntityPolicyBuilder<TEntity>.Include(System.Linq.Expressions.Expression<System.Func<TEntity, object?>!>! property) -> MPCore.Audit.AuditEntityPolicyBuilder<TEntity>!
+MPCore.Audit.AuditEntityPolicyBuilder<TEntity>.Mask(System.Linq.Expressions.Expression<System.Func<TEntity, object?>!>! property, MPCore.Audit.MaskStyle style = MPCore.Audit.MaskStyle.Redact) -> MPCore.Audit.AuditEntityPolicyBuilder<TEntity>!
+MPCore.Audit.AuditEntry
+MPCore.Audit.AuditEntry.<Clone>$() -> MPCore.Audit.AuditEntry!
+MPCore.Audit.AuditEntry.Action.get -> string!
+MPCore.Audit.AuditEntry.Action.init -> void
+MPCore.Audit.AuditEntry.Actor.get -> MPCore.Audit.AuditActor!
+MPCore.Audit.AuditEntry.Actor.init -> void
+MPCore.Audit.AuditEntry.AuditEntry() -> void
+MPCore.Audit.AuditEntry.Category.get -> MPCore.Audit.AuditCategory
+MPCore.Audit.AuditEntry.Category.init -> void
+MPCore.Audit.AuditEntry.Changes.get -> System.Collections.Generic.IReadOnlyList<MPCore.Audit.AuditFieldChange!>!
+MPCore.Audit.AuditEntry.Changes.init -> void
+MPCore.Audit.AuditEntry.CorrelationId.get -> string?
+MPCore.Audit.AuditEntry.CorrelationId.init -> void
+MPCore.Audit.AuditEntry.EntityId.get -> string?
+MPCore.Audit.AuditEntry.EntityId.init -> void
+MPCore.Audit.AuditEntry.EntityType.get -> string?
+MPCore.Audit.AuditEntry.EntityType.init -> void
+MPCore.Audit.AuditEntry.Equals(MPCore.Audit.AuditEntry? other) -> bool
+MPCore.Audit.AuditEntry.Failure.get -> MPCore.Audit.AuditFailure?
+MPCore.Audit.AuditEntry.Failure.init -> void
+MPCore.Audit.AuditEntry.Metadata.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+MPCore.Audit.AuditEntry.Metadata.init -> void
+MPCore.Audit.AuditEntry.Module.get -> string!
+MPCore.Audit.AuditEntry.Module.init -> void
+MPCore.Audit.AuditEntry.OccurredAtUtc.get -> System.DateTimeOffset
+MPCore.Audit.AuditEntry.OccurredAtUtc.init -> void
+MPCore.Audit.AuditEntry.OperationId.get -> string?
+MPCore.Audit.AuditEntry.OperationId.init -> void
+MPCore.Audit.AuditEntry.Outcome.get -> MPCore.Audit.AuditOutcome
+MPCore.Audit.AuditEntry.Outcome.init -> void
+MPCore.Audit.AuditEntry.Reason.get -> string?
+MPCore.Audit.AuditEntry.Reason.init -> void
+MPCore.Audit.AuditEntry.TenantId.get -> string?
+MPCore.Audit.AuditEntry.TenantId.init -> void
+MPCore.Audit.AuditFailure
+MPCore.Audit.AuditFailure.<Clone>$() -> MPCore.Audit.AuditFailure!
+MPCore.Audit.AuditFailure.AuditFailure(string! Domain, string! Code) -> void
+MPCore.Audit.AuditFailure.Code.get -> string!
+MPCore.Audit.AuditFailure.Code.init -> void
+MPCore.Audit.AuditFailure.Deconstruct(out string! Domain, out string! Code) -> void
+MPCore.Audit.AuditFailure.Domain.get -> string!
+MPCore.Audit.AuditFailure.Domain.init -> void
+MPCore.Audit.AuditFailure.Equals(MPCore.Audit.AuditFailure? other) -> bool
+MPCore.Audit.AuditFieldChange
+MPCore.Audit.AuditFieldChange.<Clone>$() -> MPCore.Audit.AuditFieldChange!
+MPCore.Audit.AuditFieldChange.After.get -> string?
+MPCore.Audit.AuditFieldChange.After.init -> void
+MPCore.Audit.AuditFieldChange.AuditFieldChange(string! Name, string? Before, string? After) -> void
+MPCore.Audit.AuditFieldChange.Before.get -> string?
+MPCore.Audit.AuditFieldChange.Before.init -> void
+MPCore.Audit.AuditFieldChange.Deconstruct(out string! Name, out string? Before, out string? After) -> void
+MPCore.Audit.AuditFieldChange.Equals(MPCore.Audit.AuditFieldChange? other) -> bool
+MPCore.Audit.AuditFieldChange.Name.get -> string!
+MPCore.Audit.AuditFieldChange.Name.init -> void
+MPCore.Audit.AuditMasking
+MPCore.Audit.AuditOutcome
+MPCore.Audit.AuditOutcome.Failed = 2 -> MPCore.Audit.AuditOutcome
+MPCore.Audit.AuditOutcome.Rejected = 1 -> MPCore.Audit.AuditOutcome
+MPCore.Audit.AuditOutcome.Succeeded = 0 -> MPCore.Audit.AuditOutcome
+MPCore.Audit.AuditPage
+MPCore.Audit.AuditPage.<Clone>$() -> MPCore.Audit.AuditPage!
+MPCore.Audit.AuditPage.AuditPage(System.Collections.Generic.IReadOnlyList<MPCore.Audit.AuditEntry!>! Items, int Page, int Size, long Total) -> void
+MPCore.Audit.AuditPage.Deconstruct(out System.Collections.Generic.IReadOnlyList<MPCore.Audit.AuditEntry!>! Items, out int Page, out int Size, out long Total) -> void
+MPCore.Audit.AuditPage.Equals(MPCore.Audit.AuditPage? other) -> bool
+MPCore.Audit.AuditPage.Items.get -> System.Collections.Generic.IReadOnlyList<MPCore.Audit.AuditEntry!>!
+MPCore.Audit.AuditPage.Items.init -> void
+MPCore.Audit.AuditPage.Page.get -> int
+MPCore.Audit.AuditPage.Page.init -> void
+MPCore.Audit.AuditPage.Size.get -> int
+MPCore.Audit.AuditPage.Size.init -> void
+MPCore.Audit.AuditPage.Total.get -> long
+MPCore.Audit.AuditPage.Total.init -> void
+MPCore.Audit.AuditPageRequest
+MPCore.Audit.AuditPageRequest.<Clone>$() -> MPCore.Audit.AuditPageRequest!
+MPCore.Audit.AuditPageRequest.AuditPageRequest(int Page = 1, int Size = 50) -> void
+MPCore.Audit.AuditPageRequest.Deconstruct(out int Page, out int Size) -> void
+MPCore.Audit.AuditPageRequest.Equals(MPCore.Audit.AuditPageRequest? other) -> bool
+MPCore.Audit.AuditPageRequest.Page.get -> int
+MPCore.Audit.AuditPageRequest.Page.init -> void
+MPCore.Audit.AuditPageRequest.Size.get -> int
+MPCore.Audit.AuditPageRequest.Size.init -> void
+MPCore.Audit.AuditPolicy
+MPCore.Audit.AuditPolicy.AuditPolicy() -> void
+MPCore.Audit.AuditPolicy.Entities.get -> System.Collections.Generic.IReadOnlyDictionary<System.Type!, MPCore.Audit.AuditEntityPolicy!>!
+MPCore.Audit.AuditPolicy.Entity<TEntity>(string! module) -> MPCore.Audit.AuditEntityPolicyBuilder<TEntity>!
+MPCore.Audit.AuditPolicy.Find(System.Type! entityType) -> MPCore.Audit.AuditEntityPolicy?
+MPCore.Audit.AuditQueryFilter
+MPCore.Audit.AuditQueryFilter.<Clone>$() -> MPCore.Audit.AuditQueryFilter!
+MPCore.Audit.AuditQueryFilter.ActorSubjectId.get -> string?
+MPCore.Audit.AuditQueryFilter.ActorSubjectId.init -> void
+MPCore.Audit.AuditQueryFilter.AuditQueryFilter() -> void
+MPCore.Audit.AuditQueryFilter.Category.get -> MPCore.Audit.AuditCategory?
+MPCore.Audit.AuditQueryFilter.Category.init -> void
+MPCore.Audit.AuditQueryFilter.CorrelationId.get -> string?
+MPCore.Audit.AuditQueryFilter.CorrelationId.init -> void
+MPCore.Audit.AuditQueryFilter.EntityId.get -> string?
+MPCore.Audit.AuditQueryFilter.EntityId.init -> void
+MPCore.Audit.AuditQueryFilter.EntityType.get -> string?
+MPCore.Audit.AuditQueryFilter.EntityType.init -> void
+MPCore.Audit.AuditQueryFilter.Equals(MPCore.Audit.AuditQueryFilter? other) -> bool
+MPCore.Audit.AuditQueryFilter.FromUtc.get -> System.DateTimeOffset?
+MPCore.Audit.AuditQueryFilter.FromUtc.init -> void
+MPCore.Audit.AuditQueryFilter.Module.get -> string?
+MPCore.Audit.AuditQueryFilter.Module.init -> void
+MPCore.Audit.AuditQueryFilter.Outcome.get -> MPCore.Audit.AuditOutcome?
+MPCore.Audit.AuditQueryFilter.Outcome.init -> void
+MPCore.Audit.AuditQueryFilter.ToUtc.get -> System.DateTimeOffset?
+MPCore.Audit.AuditQueryFilter.ToUtc.init -> void
+MPCore.Audit.IAuditContext
+MPCore.Audit.IAuditContext.Actor.get -> MPCore.Audit.AuditActor!
+MPCore.Audit.IAuditContext.CorrelationId.get -> string?
+MPCore.Audit.IAuditContext.OperationId.get -> string?
+MPCore.Audit.IAuditContext.TenantId.get -> string?
+MPCore.Audit.IAuditQuery
+MPCore.Audit.IAuditQuery.QueryAsync(MPCore.Audit.AuditQueryFilter! filter, MPCore.Audit.AuditPageRequest! page, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MPCore.Audit.AuditPage!>!
+MPCore.Audit.IAuditSink
+MPCore.Audit.IAuditSink.AppendAsync(MPCore.Audit.AuditEntry! entry, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Audit.IAuditSink.AppendDetachedAsync(MPCore.Audit.AuditEntry! entry, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Audit.IBusinessAuditRecorder
+MPCore.Audit.IBusinessAuditRecorder.RecordAsync(string! module, string! action, string? entityType = null, string? entityId = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? metadata = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Audit.IBusinessAuditRecorder.RecordAttemptAsync(string! module, string! action, MPCore.Audit.AuditOutcome outcome, MPCore.Audit.AuditFailure? failure = null, string? reason = null, string? entityType = null, string? entityId = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? metadata = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Audit.MaskStyle
+MPCore.Audit.MaskStyle.KeepLastFour = 1 -> MPCore.Audit.MaskStyle
+MPCore.Audit.MaskStyle.Redact = 0 -> MPCore.Audit.MaskStyle
+override MPCore.Audit.AuditActor.Equals(object? obj) -> bool
+override MPCore.Audit.AuditActor.GetHashCode() -> int
+override MPCore.Audit.AuditActor.ToString() -> string!
+override MPCore.Audit.AuditEntry.Equals(object? obj) -> bool
+override MPCore.Audit.AuditEntry.GetHashCode() -> int
+override MPCore.Audit.AuditEntry.ToString() -> string!
+override MPCore.Audit.AuditFailure.Equals(object? obj) -> bool
+override MPCore.Audit.AuditFailure.GetHashCode() -> int
+override MPCore.Audit.AuditFailure.ToString() -> string!
+override MPCore.Audit.AuditFieldChange.Equals(object? obj) -> bool
+override MPCore.Audit.AuditFieldChange.GetHashCode() -> int
+override MPCore.Audit.AuditFieldChange.ToString() -> string!
+override MPCore.Audit.AuditPage.Equals(object? obj) -> bool
+override MPCore.Audit.AuditPage.GetHashCode() -> int
+override MPCore.Audit.AuditPage.ToString() -> string!
+override MPCore.Audit.AuditPageRequest.Equals(object? obj) -> bool
+override MPCore.Audit.AuditPageRequest.GetHashCode() -> int
+override MPCore.Audit.AuditPageRequest.ToString() -> string!
+override MPCore.Audit.AuditQueryFilter.Equals(object? obj) -> bool
+override MPCore.Audit.AuditQueryFilter.GetHashCode() -> int
+override MPCore.Audit.AuditQueryFilter.ToString() -> string!
+static MPCore.Audit.AuditActor.Anonymous.get -> MPCore.Audit.AuditActor!
+static MPCore.Audit.AuditActor.SystemActor(string! name) -> MPCore.Audit.AuditActor!
+static MPCore.Audit.AuditActor.operator !=(MPCore.Audit.AuditActor? left, MPCore.Audit.AuditActor? right) -> bool
+static MPCore.Audit.AuditActor.operator ==(MPCore.Audit.AuditActor? left, MPCore.Audit.AuditActor? right) -> bool
+static MPCore.Audit.AuditEntry.operator !=(MPCore.Audit.AuditEntry? left, MPCore.Audit.AuditEntry? right) -> bool
+static MPCore.Audit.AuditEntry.operator ==(MPCore.Audit.AuditEntry? left, MPCore.Audit.AuditEntry? right) -> bool
+static MPCore.Audit.AuditFailure.operator !=(MPCore.Audit.AuditFailure? left, MPCore.Audit.AuditFailure? right) -> bool
+static MPCore.Audit.AuditFailure.operator ==(MPCore.Audit.AuditFailure? left, MPCore.Audit.AuditFailure? right) -> bool
+static MPCore.Audit.AuditFieldChange.operator !=(MPCore.Audit.AuditFieldChange? left, MPCore.Audit.AuditFieldChange? right) -> bool
+static MPCore.Audit.AuditFieldChange.operator ==(MPCore.Audit.AuditFieldChange? left, MPCore.Audit.AuditFieldChange? right) -> bool
+static MPCore.Audit.AuditMasking.Apply(string? value, MPCore.Audit.MaskStyle? style) -> string?
+static MPCore.Audit.AuditMasking.IsHardExcluded(string! propertyName) -> bool
+static MPCore.Audit.AuditMasking.RequiresMask(string! propertyName) -> bool
+static MPCore.Audit.AuditPage.operator !=(MPCore.Audit.AuditPage? left, MPCore.Audit.AuditPage? right) -> bool
+static MPCore.Audit.AuditPage.operator ==(MPCore.Audit.AuditPage? left, MPCore.Audit.AuditPage? right) -> bool
+static MPCore.Audit.AuditPageRequest.operator !=(MPCore.Audit.AuditPageRequest? left, MPCore.Audit.AuditPageRequest? right) -> bool
+static MPCore.Audit.AuditPageRequest.operator ==(MPCore.Audit.AuditPageRequest? left, MPCore.Audit.AuditPageRequest? right) -> bool
+static MPCore.Audit.AuditQueryFilter.operator !=(MPCore.Audit.AuditQueryFilter? left, MPCore.Audit.AuditQueryFilter? right) -> bool
+static MPCore.Audit.AuditQueryFilter.operator ==(MPCore.Audit.AuditQueryFilter? left, MPCore.Audit.AuditQueryFilter? right) -> bool

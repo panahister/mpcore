@@ -1,0 +1,17 @@
+#nullable enable
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.EntityFrameworkRepository<TAggregate, TId>
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.EntityFrameworkRepository<TAggregate, TId>.Add(TAggregate! aggregate) -> void
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.EntityFrameworkRepository<TAggregate, TId>.EntityFrameworkRepository(Microsoft.EntityFrameworkCore.DbContext! dbContext) -> void
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.EntityFrameworkRepository<TAggregate, TId>.GetAsync(TId id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TAggregate?>!
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.EntityFrameworkRepository<TAggregate, TId>.Remove(TAggregate! aggregate) -> void
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.MPCoreDbContext
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.MPCoreDbContext.MPCoreDbContext(Microsoft.EntityFrameworkCore.DbContextOptions! options, System.TimeProvider! timeProvider) -> void
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.MPCoreDbContext.MPCoreDbContext(Microsoft.EntityFrameworkCore.DbContextOptions! options, System.TimeProvider! timeProvider, MPCore.Domain.Events.IAggregateEventSink! eventSink) -> void
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.PostgreSqlDbContextOptions
+MPCore.Persistence.EntityFrameworkCore.PostgreSql.PostgreSqlServiceCollectionExtensions
+override MPCore.Persistence.EntityFrameworkCore.PostgreSql.MPCoreDbContext.SaveChangesAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<int>!
+static MPCore.Persistence.EntityFrameworkCore.PostgreSql.PostgreSqlDbContextOptions.Apply(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder! options, string! connectionString, System.Action<Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.NpgsqlDbContextOptionsBuilder!>? configureNpgsql = null) -> Microsoft.EntityFrameworkCore.DbContextOptionsBuilder!
+static MPCore.Persistence.EntityFrameworkCore.PostgreSql.PostgreSqlServiceCollectionExtensions.AddMPCoreAggregateEvents(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Persistence.EntityFrameworkCore.PostgreSql.PostgreSqlServiceCollectionExtensions.AddMPCorePostgreSql<TContext>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, string! connectionString, System.Action<Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.NpgsqlDbContextOptionsBuilder!>? configureNpgsql = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Persistence.EntityFrameworkCore.PostgreSql.PostgreSqlServiceCollectionExtensions.AddMPCorePostgreSql<TContext>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, string! connectionString, System.Action<System.IServiceProvider!, Microsoft.EntityFrameworkCore.DbContextOptionsBuilder!>! configureOptions, System.Action<Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.NpgsqlDbContextOptionsBuilder!>? configureNpgsql = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Persistence.EntityFrameworkCore.PostgreSql.PostgreSqlServiceCollectionExtensions.AddMPCoreUnitOfWork<TContext>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

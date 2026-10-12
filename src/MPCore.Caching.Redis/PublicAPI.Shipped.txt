@@ -1,0 +1,9 @@
+#nullable enable
+MPCore.Caching.Redis.RedisCacheAdapter
+MPCore.Caching.Redis.RedisCacheAdapter.GetAsync<T>(string! key, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T?>!
+MPCore.Caching.Redis.RedisCacheAdapter.GetOrCreateAsync<T>(string! key, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<T>>! factory, System.TimeSpan? absoluteExpiration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<T>
+MPCore.Caching.Redis.RedisCacheAdapter.RedisCacheAdapter(Microsoft.Extensions.Caching.Distributed.IDistributedCache! cache, Microsoft.Extensions.Options.IOptions<MPCore.Caching.Abstractions.MPCoreCacheOptions!>! options) -> void
+MPCore.Caching.Redis.RedisCacheAdapter.RemoveAsync(string! key, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+MPCore.Caching.Redis.RedisCacheAdapter.SetAsync<T>(string! key, T value, System.TimeSpan? absoluteExpiration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+MPCore.Caching.Redis.RedisCacheServiceCollectionExtensions
+static MPCore.Caching.Redis.RedisCacheServiceCollectionExtensions.AddMPCoreRedisCache(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, string! connectionString, System.Action<MPCore.Caching.Abstractions.MPCoreCacheOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

@@ -1,0 +1,66 @@
+#nullable enable
+MPCore.Audit.EntityFrameworkCore.AuditModelBuilderExtensions
+MPCore.Audit.EntityFrameworkCore.AuditRecord
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Action.get -> string!
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Action.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.ActorClientId.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.ActorClientId.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.ActorKind.get -> int
+MPCore.Audit.EntityFrameworkCore.AuditRecord.ActorKind.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.ActorSubjectId.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.ActorSubjectId.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.ActorUserName.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.ActorUserName.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.AuditRecord() -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Category.get -> int
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Category.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Changes.get -> string!
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Changes.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.CorrelationId.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.CorrelationId.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.EntityId.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.EntityId.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.EntityType.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.EntityType.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.FailureCode.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.FailureCode.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.FailureDomain.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.FailureDomain.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Id.get -> long
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Id.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Metadata.get -> string!
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Metadata.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Module.get -> string!
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Module.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.OccurredAtUtc.get -> System.DateTimeOffset
+MPCore.Audit.EntityFrameworkCore.AuditRecord.OccurredAtUtc.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.OperationId.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.OperationId.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Outcome.get -> int
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Outcome.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Reason.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.Reason.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditRecord.TenantId.get -> string?
+MPCore.Audit.EntityFrameworkCore.AuditRecord.TenantId.set -> void
+MPCore.Audit.EntityFrameworkCore.AuditSaveChangesInterceptor
+MPCore.Audit.EntityFrameworkCore.AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(MPCore.Audit.AuditPolicy! policy, MPCore.Audit.IAuditContext! context, System.TimeProvider! clock, Microsoft.Extensions.Logging.ILogger<MPCore.Audit.EntityFrameworkCore.AuditSaveChangesInterceptor!>! logger) -> void
+MPCore.Audit.EntityFrameworkCore.AuditServiceCollectionExtensions
+MPCore.Audit.EntityFrameworkCore.BusinessAuditRecorder
+MPCore.Audit.EntityFrameworkCore.BusinessAuditRecorder.BusinessAuditRecorder(MPCore.Audit.IAuditSink! sink, MPCore.Audit.IAuditContext! context, System.TimeProvider! clock) -> void
+MPCore.Audit.EntityFrameworkCore.BusinessAuditRecorder.RecordAsync(string! module, string! action, string? entityType = null, string? entityId = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? metadata = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Audit.EntityFrameworkCore.BusinessAuditRecorder.RecordAttemptAsync(string! module, string! action, MPCore.Audit.AuditOutcome outcome, MPCore.Audit.AuditFailure? failure = null, string? reason = null, string? entityType = null, string? entityId = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? metadata = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Audit.EntityFrameworkCore.EntityFrameworkAuditQuery<TContext>
+MPCore.Audit.EntityFrameworkCore.EntityFrameworkAuditQuery<TContext>.EntityFrameworkAuditQuery(TContext! context) -> void
+MPCore.Audit.EntityFrameworkCore.EntityFrameworkAuditQuery<TContext>.QueryAsync(MPCore.Audit.AuditQueryFilter! filter, MPCore.Audit.AuditPageRequest! page, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MPCore.Audit.AuditPage!>!
+MPCore.Audit.EntityFrameworkCore.EntityFrameworkAuditSink<TContext>
+MPCore.Audit.EntityFrameworkCore.EntityFrameworkAuditSink<TContext>.AppendAsync(MPCore.Audit.AuditEntry! entry, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Audit.EntityFrameworkCore.EntityFrameworkAuditSink<TContext>.AppendDetachedAsync(MPCore.Audit.AuditEntry! entry, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Audit.EntityFrameworkCore.EntityFrameworkAuditSink<TContext>.EntityFrameworkAuditSink(TContext! context) -> void
+const MPCore.Audit.EntityFrameworkCore.AuditModelBuilderExtensions.Schema = "audit" -> string!
+const MPCore.Audit.EntityFrameworkCore.AuditModelBuilderExtensions.Table = "entries" -> string!
+const MPCore.Audit.EntityFrameworkCore.EntityFrameworkAuditQuery<TContext>.MaxPageSize = 500 -> int
+override MPCore.Audit.EntityFrameworkCore.AuditSaveChangesInterceptor.SavingChanges(Microsoft.EntityFrameworkCore.Diagnostics.DbContextEventData! eventData, Microsoft.EntityFrameworkCore.Diagnostics.InterceptionResult<int> result) -> Microsoft.EntityFrameworkCore.Diagnostics.InterceptionResult<int>
+override MPCore.Audit.EntityFrameworkCore.AuditSaveChangesInterceptor.SavingChangesAsync(Microsoft.EntityFrameworkCore.Diagnostics.DbContextEventData! eventData, Microsoft.EntityFrameworkCore.Diagnostics.InterceptionResult<int> result, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Microsoft.EntityFrameworkCore.Diagnostics.InterceptionResult<int>>
+static MPCore.Audit.EntityFrameworkCore.AuditModelBuilderExtensions.ApplyMPCoreAudit(this Microsoft.EntityFrameworkCore.ModelBuilder! modelBuilder) -> Microsoft.EntityFrameworkCore.ModelBuilder!
+static MPCore.Audit.EntityFrameworkCore.AuditServiceCollectionExtensions.AddMPCoreAudit<TContext>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Audit.AuditPolicy!>! configurePolicy) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Audit.EntityFrameworkCore.AuditServiceCollectionExtensions.UseMPCoreAudit(this Microsoft.EntityFrameworkCore.DbContextOptionsBuilder! options, System.IServiceProvider! provider) -> Microsoft.EntityFrameworkCore.DbContextOptionsBuilder!

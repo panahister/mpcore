@@ -1,0 +1,32 @@
+#nullable enable
+MPCore.Messaging.Abstractions.IMessageInbox
+MPCore.Messaging.Abstractions.IMessageInbox.TryBeginAsync(string! consumer, string! messageId, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<bool>!
+MPCore.Messaging.Abstractions.IMessagePublisher
+MPCore.Messaging.Abstractions.IMessagePublisher.PublishAsync(object! message, MPCore.Messaging.Abstractions.MessageDeliveryContext! delivery, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Messaging.Abstractions.IMessagePublisher.PublishAsync(object! message, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Messaging.Abstractions.MessageDeliveryContext
+MPCore.Messaging.Abstractions.MessageDeliveryContext.<Clone>$() -> MPCore.Messaging.Abstractions.MessageDeliveryContext!
+MPCore.Messaging.Abstractions.MessageDeliveryContext.CausationId.get -> string?
+MPCore.Messaging.Abstractions.MessageDeliveryContext.CausationId.init -> void
+MPCore.Messaging.Abstractions.MessageDeliveryContext.CorrelationId.get -> string?
+MPCore.Messaging.Abstractions.MessageDeliveryContext.CorrelationId.init -> void
+MPCore.Messaging.Abstractions.MessageDeliveryContext.Deconstruct(out string? CorrelationId, out string? CausationId, out string? TenantId, out string? IdempotencyKey) -> void
+MPCore.Messaging.Abstractions.MessageDeliveryContext.DeliverAfter.get -> System.TimeSpan?
+MPCore.Messaging.Abstractions.MessageDeliveryContext.DeliverAfter.init -> void
+MPCore.Messaging.Abstractions.MessageDeliveryContext.Equals(MPCore.Messaging.Abstractions.MessageDeliveryContext? other) -> bool
+MPCore.Messaging.Abstractions.MessageDeliveryContext.IdempotencyKey.get -> string?
+MPCore.Messaging.Abstractions.MessageDeliveryContext.IdempotencyKey.init -> void
+MPCore.Messaging.Abstractions.MessageDeliveryContext.MessageDeliveryContext(string? CorrelationId, string? CausationId, string? TenantId = null, string? IdempotencyKey = null) -> void
+MPCore.Messaging.Abstractions.MessageDeliveryContext.TenantId.get -> string?
+MPCore.Messaging.Abstractions.MessageDeliveryContext.TenantId.init -> void
+MPCore.Messaging.Abstractions.MessageHeaders
+const MPCore.Messaging.Abstractions.MessageHeaders.CausationId = "x-causation-id" -> string!
+const MPCore.Messaging.Abstractions.MessageHeaders.CorrelationId = "x-correlation-id" -> string!
+const MPCore.Messaging.Abstractions.MessageHeaders.EventVersion = "x-event-version" -> string!
+const MPCore.Messaging.Abstractions.MessageHeaders.IdempotencyKey = "x-idempotency-key" -> string!
+const MPCore.Messaging.Abstractions.MessageHeaders.TenantId = "x-tenant-id" -> string!
+override MPCore.Messaging.Abstractions.MessageDeliveryContext.Equals(object? obj) -> bool
+override MPCore.Messaging.Abstractions.MessageDeliveryContext.GetHashCode() -> int
+override MPCore.Messaging.Abstractions.MessageDeliveryContext.ToString() -> string!
+static MPCore.Messaging.Abstractions.MessageDeliveryContext.operator !=(MPCore.Messaging.Abstractions.MessageDeliveryContext? left, MPCore.Messaging.Abstractions.MessageDeliveryContext? right) -> bool
+static MPCore.Messaging.Abstractions.MessageDeliveryContext.operator ==(MPCore.Messaging.Abstractions.MessageDeliveryContext? left, MPCore.Messaging.Abstractions.MessageDeliveryContext? right) -> bool

@@ -1,0 +1,17 @@
+#nullable enable
+MPCore.Validation.FluentValidation.MPCoreFluentValidationExtensions
+MPCore.Validation.FluentValidation.ResultFailureValidationAction<T>
+MPCore.Validation.FluentValidation.ResultFailureValidationAction<T>.ResultFailureValidationAction() -> void
+MPCore.Validation.FluentValidation.ResultFailureValidationAction<T>.Throw(T message, System.Collections.Generic.IReadOnlyList<FluentValidation.Results.ValidationFailure!>! failures) -> void
+MPCore.Validation.FluentValidation.ValidationFailures
+const MPCore.Validation.FluentValidation.ValidationFailures.ErrorCode = "VALIDATION_FAILED" -> string!
+const MPCore.Validation.FluentValidation.ValidationFailures.ErrorDomain = "mpcore.validation" -> string!
+const MPCore.Validation.FluentValidation.ValidationFailures.MaximumViolations = 32 -> int
+const MPCore.Validation.FluentValidation.ValidationFailures.MessageKey = "mpcore.validation_failed" -> string!
+const MPCore.Validation.FluentValidation.ValidationFailures.ObjectFieldPath = "request" -> string!
+static MPCore.Validation.FluentValidation.MPCoreFluentValidationExtensions.AddMPCoreValidators(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Reflection.Assembly! assembly, Microsoft.Extensions.DependencyInjection.ServiceLifetime lifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Validation.FluentValidation.MPCoreFluentValidationExtensions.UseMPCoreFluentValidation(this Wolverine.WolverineOptions! options) -> Wolverine.WolverineOptions!
+static MPCore.Validation.FluentValidation.ValidationFailures.ToFailure(System.Collections.Generic.IReadOnlyList<FluentValidation.Results.ValidationFailure!>! failures) -> MPCore.Application.Results.FailureDescriptor!
+static MPCore.Validation.FluentValidation.ValidationFailures.ToFieldPath(string? propertyName) -> string!
+static MPCore.Validation.FluentValidation.ValidationFailures.ToRuleCode(string? errorCode) -> string!
+static MPCore.Validation.FluentValidation.ValidationFailures.ToViolation(FluentValidation.Results.ValidationFailure! failure) -> MPCore.Application.Results.FieldViolation!

@@ -1,0 +1,10 @@
+#nullable enable
+MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportExtensions
+MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportOptions
+MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportOptions.AutoProvision.get -> bool
+MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportOptions.AutoProvision.init -> void
+MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportOptions.ConnectionString.get -> string!
+MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportOptions.ConnectionString.init -> void
+MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportOptions.RabbitMqTransportOptions() -> void
+MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportOptions.Validate() -> void
+static MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportExtensions.UseMPCoreRabbitMq(this Wolverine.WolverineOptions! options, MPCore.Messaging.Wolverine.RabbitMQ.RabbitMqTransportOptions! transport) -> Wolverine.WolverineOptions!

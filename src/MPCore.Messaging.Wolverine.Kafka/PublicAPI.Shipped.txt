@@ -1,0 +1,10 @@
+#nullable enable
+MPCore.Messaging.Wolverine.Kafka.KafkaTransportExtensions
+MPCore.Messaging.Wolverine.Kafka.KafkaTransportOptions
+MPCore.Messaging.Wolverine.Kafka.KafkaTransportOptions.AutoProvision.get -> bool
+MPCore.Messaging.Wolverine.Kafka.KafkaTransportOptions.AutoProvision.init -> void
+MPCore.Messaging.Wolverine.Kafka.KafkaTransportOptions.BootstrapServers.get -> string!
+MPCore.Messaging.Wolverine.Kafka.KafkaTransportOptions.BootstrapServers.init -> void
+MPCore.Messaging.Wolverine.Kafka.KafkaTransportOptions.KafkaTransportOptions() -> void
+MPCore.Messaging.Wolverine.Kafka.KafkaTransportOptions.Validate() -> void
+static MPCore.Messaging.Wolverine.Kafka.KafkaTransportExtensions.UseMPCoreKafka(this Wolverine.WolverineOptions! options, MPCore.Messaging.Wolverine.Kafka.KafkaTransportOptions! transport) -> Wolverine.WolverineOptions!

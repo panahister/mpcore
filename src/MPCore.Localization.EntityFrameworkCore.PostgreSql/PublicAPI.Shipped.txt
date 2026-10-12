@@ -1,0 +1,37 @@
+#nullable enable
+MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource
+MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource.Count.get -> int
+MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource.DatabaseMessageTemplateSource() -> void
+MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource.Precedence.get -> int
+MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource.Replace(System.Collections.Generic.IEnumerable<MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord!>! records) -> void
+MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource.TryGetTemplate(string! key, System.Globalization.CultureInfo! culture, out string? template) -> bool
+MPCore.Localization.EntityFrameworkCore.EntityFrameworkMessageTranslationStore<TContext>
+MPCore.Localization.EntityFrameworkCore.EntityFrameworkMessageTranslationStore<TContext>.EntityFrameworkMessageTranslationStore(TContext! context, MPCore.Application.Time.IClock! clock) -> void
+MPCore.Localization.EntityFrameworkCore.EntityFrameworkMessageTranslationStore<TContext>.ListAsync(string? culture, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<MPCore.Localization.MessageTranslationEntry!>!>!
+MPCore.Localization.EntityFrameworkCore.EntityFrameworkMessageTranslationStore<TContext>.RemoveAsync(string! key, string! culture, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<bool>!
+MPCore.Localization.EntityFrameworkCore.EntityFrameworkMessageTranslationStore<TContext>.SetAsync(string! key, string! culture, string! text, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+MPCore.Localization.EntityFrameworkCore.LocalizationModelBuilderExtensions
+MPCore.Localization.EntityFrameworkCore.MessageTranslationOptions
+MPCore.Localization.EntityFrameworkCore.MessageTranslationOptions.MessageTranslationOptions() -> void
+MPCore.Localization.EntityFrameworkCore.MessageTranslationOptions.RefreshInterval.get -> System.TimeSpan
+MPCore.Localization.EntityFrameworkCore.MessageTranslationOptions.RefreshInterval.set -> void
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.Culture.get -> string!
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.Culture.set -> void
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.Key.get -> string!
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.Key.set -> void
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.MessageTranslationRecord() -> void
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.ModifiedOnUtc.get -> System.DateTimeOffset
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.ModifiedOnUtc.set -> void
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.Text.get -> string!
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRecord.Text.set -> void
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRefresher<TContext>
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRefresher<TContext>.MessageTranslationRefresher(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory! scopes, MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource! source, Microsoft.Extensions.Options.IOptions<MPCore.Localization.EntityFrameworkCore.MessageTranslationOptions!>! options, Microsoft.Extensions.Logging.ILogger<MPCore.Localization.EntityFrameworkCore.MessageTranslationRefresher<TContext!>!>! logger) -> void
+MPCore.Localization.EntityFrameworkCore.MessageTranslationRefresher<TContext>.RefreshOnceAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<bool>!
+MPCore.Localization.EntityFrameworkCore.MessageTranslationServiceCollectionExtensions
+const MPCore.Localization.EntityFrameworkCore.DatabaseMessageTemplateSource.OverridePrecedence = 100 -> int
+const MPCore.Localization.EntityFrameworkCore.LocalizationModelBuilderExtensions.MaximumTextLength = 2000 -> int
+const MPCore.Localization.EntityFrameworkCore.LocalizationModelBuilderExtensions.Schema = "localization" -> string!
+const MPCore.Localization.EntityFrameworkCore.LocalizationModelBuilderExtensions.Table = "translations" -> string!
+static MPCore.Localization.EntityFrameworkCore.LocalizationModelBuilderExtensions.ApplyMPCoreLocalization(this Microsoft.EntityFrameworkCore.ModelBuilder! modelBuilder) -> Microsoft.EntityFrameworkCore.ModelBuilder!
+static MPCore.Localization.EntityFrameworkCore.MessageTranslationServiceCollectionExtensions.AddMPCoreMessageTranslations<TContext>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Localization.EntityFrameworkCore.MessageTranslationOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

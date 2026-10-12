@@ -1,0 +1,11 @@
+#nullable enable
+MPCore.Caching.Memory.DependencyInjection
+MPCore.Caching.Memory.MemoryCacheAdapter
+MPCore.Caching.Memory.MemoryCacheAdapter.GetAsync<T>(string! key, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T?>!
+MPCore.Caching.Memory.MemoryCacheAdapter.GetOrCreateAsync<T>(string! key, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<T>>! factory, System.TimeSpan? absoluteExpiration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<T>
+MPCore.Caching.Memory.MemoryCacheAdapter.MemoryCacheAdapter(Microsoft.Extensions.Caching.Memory.IMemoryCache! cache) -> void
+MPCore.Caching.Memory.MemoryCacheAdapter.MemoryCacheAdapter(Microsoft.Extensions.Caching.Memory.IMemoryCache! cache, Microsoft.Extensions.Options.IOptions<MPCore.Caching.Abstractions.MPCoreCacheOptions!>! options) -> void
+MPCore.Caching.Memory.MemoryCacheAdapter.RemoveAsync(string! key, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+MPCore.Caching.Memory.MemoryCacheAdapter.SetAsync<T>(string! key, T value, System.TimeSpan? absoluteExpiration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static MPCore.Caching.Memory.DependencyInjection.AddMPCoreMemoryCache(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Caching.Memory.DependencyInjection.AddMPCoreMemoryCache(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Caching.Abstractions.MPCoreCacheOptions!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

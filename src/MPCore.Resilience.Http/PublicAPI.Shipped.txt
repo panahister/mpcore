@@ -1,0 +1,87 @@
+#nullable enable
+MPCore.Resilience.Http.ClientCertificate
+MPCore.Resilience.Http.IServiceTokenSource
+MPCore.Resilience.Http.IServiceTokenSource.Forget(string! token) -> void
+MPCore.Resilience.Http.IServiceTokenSource.GetTokenAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<string!>
+MPCore.Resilience.Http.ITokenIntrospector
+MPCore.Resilience.Http.ITokenIntrospector.IntrospectAsync(string! token, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MPCore.Resilience.Http.TokenIntrospectionResult!>!
+MPCore.Resilience.Http.MutualTlsClientOptions
+MPCore.Resilience.Http.MutualTlsClientOptions.Certificate.get -> System.Security.Cryptography.X509Certificates.X509Certificate2?
+MPCore.Resilience.Http.MutualTlsClientOptions.Certificate.set -> void
+MPCore.Resilience.Http.MutualTlsClientOptions.CertificatePath.get -> string?
+MPCore.Resilience.Http.MutualTlsClientOptions.CertificatePath.set -> void
+MPCore.Resilience.Http.MutualTlsClientOptions.KeyPath.get -> string?
+MPCore.Resilience.Http.MutualTlsClientOptions.KeyPath.set -> void
+MPCore.Resilience.Http.MutualTlsClientOptions.MutualTlsClientOptions() -> void
+MPCore.Resilience.Http.MutualTlsClientOptions.RevocationMode.get -> System.Security.Cryptography.X509Certificates.X509RevocationMode
+MPCore.Resilience.Http.MutualTlsClientOptions.RevocationMode.set -> void
+MPCore.Resilience.Http.MutualTlsClientOptions.ServerCertificateAuthorities.get -> System.Security.Cryptography.X509Certificates.X509Certificate2Collection!
+MPCore.Resilience.Http.MutualTlsClientOptions.ServerCertificateAuthorityPaths.get -> System.Collections.Generic.IList<string!>!
+MPCore.Resilience.Http.ResilientHttpClientExtensions
+MPCore.Resilience.Http.ServiceIdentity
+MPCore.Resilience.Http.ServiceIdentityException
+MPCore.Resilience.Http.ServiceIdentityException.ServiceIdentityException(string! message, System.Exception? inner = null, System.Net.HttpStatusCode? statusCode = null) -> void
+MPCore.Resilience.Http.ServiceIdentityOptions
+MPCore.Resilience.Http.ServiceIdentityOptions.Authority.get -> System.Uri?
+MPCore.Resilience.Http.ServiceIdentityOptions.Authority.set -> void
+MPCore.Resilience.Http.ServiceIdentityOptions.ClientId.get -> string!
+MPCore.Resilience.Http.ServiceIdentityOptions.ClientId.set -> void
+MPCore.Resilience.Http.ServiceIdentityOptions.ClientSecret.get -> string!
+MPCore.Resilience.Http.ServiceIdentityOptions.ClientSecret.set -> void
+MPCore.Resilience.Http.ServiceIdentityOptions.RefreshBeforeExpiry.get -> System.TimeSpan
+MPCore.Resilience.Http.ServiceIdentityOptions.RefreshBeforeExpiry.set -> void
+MPCore.Resilience.Http.ServiceIdentityOptions.RequireHttps.get -> bool
+MPCore.Resilience.Http.ServiceIdentityOptions.RequireHttps.set -> void
+MPCore.Resilience.Http.ServiceIdentityOptions.Scope.get -> string?
+MPCore.Resilience.Http.ServiceIdentityOptions.Scope.set -> void
+MPCore.Resilience.Http.ServiceIdentityOptions.ServiceIdentityOptions() -> void
+MPCore.Resilience.Http.ServiceIdentityOptions.TokenEndpoint.get -> System.Uri?
+MPCore.Resilience.Http.ServiceIdentityOptions.TokenEndpoint.set -> void
+MPCore.Resilience.Http.TenantPropagation
+MPCore.Resilience.Http.TokenIntrospection
+MPCore.Resilience.Http.TokenIntrospectionOptions
+MPCore.Resilience.Http.TokenIntrospectionOptions.Authority.get -> System.Uri?
+MPCore.Resilience.Http.TokenIntrospectionOptions.Authority.set -> void
+MPCore.Resilience.Http.TokenIntrospectionOptions.ClientId.get -> string!
+MPCore.Resilience.Http.TokenIntrospectionOptions.ClientId.set -> void
+MPCore.Resilience.Http.TokenIntrospectionOptions.ClientSecret.get -> string!
+MPCore.Resilience.Http.TokenIntrospectionOptions.ClientSecret.set -> void
+MPCore.Resilience.Http.TokenIntrospectionOptions.IntrospectionEndpoint.get -> System.Uri?
+MPCore.Resilience.Http.TokenIntrospectionOptions.IntrospectionEndpoint.set -> void
+MPCore.Resilience.Http.TokenIntrospectionOptions.MaximumCacheDuration.get -> System.TimeSpan
+MPCore.Resilience.Http.TokenIntrospectionOptions.MaximumCacheDuration.set -> void
+MPCore.Resilience.Http.TokenIntrospectionOptions.RequireHttps.get -> bool
+MPCore.Resilience.Http.TokenIntrospectionOptions.RequireHttps.set -> void
+MPCore.Resilience.Http.TokenIntrospectionOptions.Timeout.get -> System.TimeSpan
+MPCore.Resilience.Http.TokenIntrospectionOptions.Timeout.set -> void
+MPCore.Resilience.Http.TokenIntrospectionOptions.TokenIntrospectionOptions() -> void
+MPCore.Resilience.Http.TokenIntrospectionResult
+MPCore.Resilience.Http.TokenIntrospectionResult.<Clone>$() -> MPCore.Resilience.Http.TokenIntrospectionResult!
+MPCore.Resilience.Http.TokenIntrospectionResult.Active.get -> bool
+MPCore.Resilience.Http.TokenIntrospectionResult.Active.init -> void
+MPCore.Resilience.Http.TokenIntrospectionResult.ClientId.get -> string?
+MPCore.Resilience.Http.TokenIntrospectionResult.ClientId.init -> void
+MPCore.Resilience.Http.TokenIntrospectionResult.Equals(MPCore.Resilience.Http.TokenIntrospectionResult? other) -> bool
+MPCore.Resilience.Http.TokenIntrospectionResult.ExpiresAt.get -> System.DateTimeOffset?
+MPCore.Resilience.Http.TokenIntrospectionResult.ExpiresAt.init -> void
+MPCore.Resilience.Http.TokenIntrospectionResult.SessionId.get -> string?
+MPCore.Resilience.Http.TokenIntrospectionResult.SessionId.init -> void
+MPCore.Resilience.Http.TokenIntrospectionResult.Subject.get -> string?
+MPCore.Resilience.Http.TokenIntrospectionResult.Subject.init -> void
+MPCore.Resilience.Http.TokenIntrospectionResult.TokenIntrospectionResult() -> void
+const MPCore.Resilience.Http.ServiceIdentity.TokenClientName = "MPCore.ServiceIdentity" -> string!
+const MPCore.Resilience.Http.TokenIntrospection.ClientName = "MPCore.TokenIntrospection" -> string!
+override MPCore.Resilience.Http.MutualTlsClientOptions.ToString() -> string!
+override MPCore.Resilience.Http.ServiceIdentityOptions.ToString() -> string!
+override MPCore.Resilience.Http.TokenIntrospectionOptions.ToString() -> string!
+override MPCore.Resilience.Http.TokenIntrospectionResult.Equals(object? obj) -> bool
+override MPCore.Resilience.Http.TokenIntrospectionResult.GetHashCode() -> int
+override MPCore.Resilience.Http.TokenIntrospectionResult.ToString() -> string!
+static MPCore.Resilience.Http.ClientCertificate.AddMPCoreClientCertificate(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder! builder, System.Action<MPCore.Resilience.Http.MutualTlsClientOptions!>! configure) -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder!
+static MPCore.Resilience.Http.ResilientHttpClientExtensions.AddMPCoreResilientHttpClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, string! name, System.Action<System.Net.Http.HttpClient!>? configureClient = null, System.Action<Microsoft.Extensions.Http.Resilience.HttpStandardResilienceOptions!>? configureResilience = null) -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder!
+static MPCore.Resilience.Http.ServiceIdentity.AddMPCoreServiceIdentity(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder! builder, System.Action<MPCore.Resilience.Http.ServiceIdentityOptions!>! configure) -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder!
+static MPCore.Resilience.Http.TenantPropagation.AddMPCoreTenantPropagation(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder! builder) -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder!
+static MPCore.Resilience.Http.TokenIntrospection.AddMPCoreTokenIntrospection(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Resilience.Http.TokenIntrospectionOptions!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Resilience.Http.TokenIntrospectionResult.Inactive.get -> MPCore.Resilience.Http.TokenIntrospectionResult!
+static MPCore.Resilience.Http.TokenIntrospectionResult.operator !=(MPCore.Resilience.Http.TokenIntrospectionResult? left, MPCore.Resilience.Http.TokenIntrospectionResult? right) -> bool
+static MPCore.Resilience.Http.TokenIntrospectionResult.operator ==(MPCore.Resilience.Http.TokenIntrospectionResult? left, MPCore.Resilience.Http.TokenIntrospectionResult? right) -> bool

@@ -1,0 +1,4 @@
+#nullable enable
+MPCore.Observability.Prometheus.PrometheusScrapeExtensions
+static MPCore.Observability.Prometheus.PrometheusScrapeExtensions.AddMPCorePrometheusScrape(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Observability.Prometheus.PrometheusScrapeExtensions.MapMPCorePrometheusScrape(this Microsoft.AspNetCore.Routing.IEndpointRouteBuilder! endpoints, string! path = "/metrics") -> Microsoft.AspNetCore.Builder.IEndpointConventionBuilder!

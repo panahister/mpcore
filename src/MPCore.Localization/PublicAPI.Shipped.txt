@@ -1,0 +1,81 @@
+#nullable enable
+MPCore.Localization.IListableMessageTemplateSource
+MPCore.Localization.IListableMessageTemplateSource.ListDefaultTemplates() -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+MPCore.Localization.IMessageArgumentFormatter
+MPCore.Localization.IMessageArgumentFormatter.Format(string! name, MPCore.Application.Results.MessageArgument! value, System.Globalization.CultureInfo! culture) -> string?
+MPCore.Localization.IMessageCatalog
+MPCore.Localization.IMessageCatalog.IsKnownKey(string! key) -> bool
+MPCore.Localization.IMessageCatalog.ListKnownKeys() -> System.Collections.Generic.IReadOnlyList<MPCore.Localization.KnownMessageKey!>!
+MPCore.Localization.IMessageCatalog.Render(string! key, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? arguments, System.Collections.Generic.IReadOnlyDictionary<string!, MPCore.Application.Results.MessageArgument!>? typedArguments, System.Globalization.CultureInfo! culture) -> string?
+MPCore.Localization.IMessageCatalog.Render(string! key, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? arguments, System.Globalization.CultureInfo! culture) -> string?
+MPCore.Localization.IMessageTemplateSource
+MPCore.Localization.IMessageTemplateSource.Precedence.get -> int
+MPCore.Localization.IMessageTemplateSource.TryGetTemplate(string! key, System.Globalization.CultureInfo! culture, out string? template) -> bool
+MPCore.Localization.IMessageTranslationStore
+MPCore.Localization.IMessageTranslationStore.ListAsync(string? culture, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<MPCore.Localization.MessageTranslationEntry!>!>!
+MPCore.Localization.IMessageTranslationStore.RemoveAsync(string! key, string! culture, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<bool>!
+MPCore.Localization.IMessageTranslationStore.SetAsync(string! key, string! culture, string! text, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+MPCore.Localization.KnownMessageKey
+MPCore.Localization.KnownMessageKey.<Clone>$() -> MPCore.Localization.KnownMessageKey!
+MPCore.Localization.KnownMessageKey.Deconstruct(out string! Key, out string! DefaultText, out System.Collections.Generic.IReadOnlyList<string!>! Placeholders, out MPCore.Localization.MessageTextOrigin Origin) -> void
+MPCore.Localization.KnownMessageKey.DefaultText.get -> string!
+MPCore.Localization.KnownMessageKey.DefaultText.init -> void
+MPCore.Localization.KnownMessageKey.Equals(MPCore.Localization.KnownMessageKey? other) -> bool
+MPCore.Localization.KnownMessageKey.Key.get -> string!
+MPCore.Localization.KnownMessageKey.Key.init -> void
+MPCore.Localization.KnownMessageKey.KnownMessageKey(string! Key, string! DefaultText, System.Collections.Generic.IReadOnlyList<string!>! Placeholders, MPCore.Localization.MessageTextOrigin Origin) -> void
+MPCore.Localization.KnownMessageKey.Origin.get -> MPCore.Localization.MessageTextOrigin
+MPCore.Localization.KnownMessageKey.Origin.init -> void
+MPCore.Localization.KnownMessageKey.Placeholders.get -> System.Collections.Generic.IReadOnlyList<string!>!
+MPCore.Localization.KnownMessageKey.Placeholders.init -> void
+MPCore.Localization.MessageCatalog
+MPCore.Localization.MessageCatalog.IsKnownKey(string! key) -> bool
+MPCore.Localization.MessageCatalog.ListKnownKeys() -> System.Collections.Generic.IReadOnlyList<MPCore.Localization.KnownMessageKey!>!
+MPCore.Localization.MessageCatalog.Localize(MPCore.Application.Results.FailureMessageDescriptor! message, System.Globalization.CultureInfo! culture) -> string?
+MPCore.Localization.MessageCatalog.MessageCatalog(System.Collections.Generic.IEnumerable<MPCore.Localization.IMessageTemplateSource!>! sources, Microsoft.Extensions.Options.IOptions<MPCore.Localization.MessageCatalogOptions!>! options, Microsoft.Extensions.Logging.ILogger<MPCore.Localization.MessageCatalog!>! logger) -> void
+MPCore.Localization.MessageCatalog.Render(string! key, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? arguments, System.Collections.Generic.IReadOnlyDictionary<string!, MPCore.Application.Results.MessageArgument!>? typedArguments, System.Globalization.CultureInfo! culture) -> string?
+MPCore.Localization.MessageCatalog.Render(string! key, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? arguments, System.Globalization.CultureInfo! culture) -> string?
+MPCore.Localization.MessageCatalogBuilder
+MPCore.Localization.MessageCatalogBuilder.AddResources(System.Type! resourceType, int precedence = 0) -> MPCore.Localization.MessageCatalogBuilder!
+MPCore.Localization.MessageCatalogBuilder.AddResources<TResource>(int precedence = 0) -> MPCore.Localization.MessageCatalogBuilder!
+MPCore.Localization.MessageCatalogBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+MPCore.Localization.MessageCatalogBuilder.UseArgumentFormatter(MPCore.Localization.IMessageArgumentFormatter! formatter) -> MPCore.Localization.MessageCatalogBuilder!
+MPCore.Localization.MessageCatalogOptions
+MPCore.Localization.MessageCatalogOptions.DefaultCulture.get -> string!
+MPCore.Localization.MessageCatalogOptions.DefaultCulture.set -> void
+MPCore.Localization.MessageCatalogOptions.MessageCatalogOptions() -> void
+MPCore.Localization.MessageCatalogServiceCollectionExtensions
+MPCore.Localization.MessageTextOrigin
+MPCore.Localization.MessageTextOrigin.MPCore = 1 -> MPCore.Localization.MessageTextOrigin
+MPCore.Localization.MessageTextOrigin.Product = 0 -> MPCore.Localization.MessageTextOrigin
+MPCore.Localization.MessageTranslationEntry
+MPCore.Localization.MessageTranslationEntry.<Clone>$() -> MPCore.Localization.MessageTranslationEntry!
+MPCore.Localization.MessageTranslationEntry.Culture.get -> string!
+MPCore.Localization.MessageTranslationEntry.Culture.init -> void
+MPCore.Localization.MessageTranslationEntry.Deconstruct(out string! Key, out string! Culture, out string! Text, out System.DateTimeOffset ModifiedOnUtc) -> void
+MPCore.Localization.MessageTranslationEntry.Equals(MPCore.Localization.MessageTranslationEntry? other) -> bool
+MPCore.Localization.MessageTranslationEntry.Key.get -> string!
+MPCore.Localization.MessageTranslationEntry.Key.init -> void
+MPCore.Localization.MessageTranslationEntry.MessageTranslationEntry(string! Key, string! Culture, string! Text, System.DateTimeOffset ModifiedOnUtc) -> void
+MPCore.Localization.MessageTranslationEntry.ModifiedOnUtc.get -> System.DateTimeOffset
+MPCore.Localization.MessageTranslationEntry.ModifiedOnUtc.init -> void
+MPCore.Localization.MessageTranslationEntry.Text.get -> string!
+MPCore.Localization.MessageTranslationEntry.Text.init -> void
+MPCore.Localization.ResourceMessageTemplateSource
+MPCore.Localization.ResourceMessageTemplateSource.ListDefaultTemplates() -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+MPCore.Localization.ResourceMessageTemplateSource.Precedence.get -> int
+MPCore.Localization.ResourceMessageTemplateSource.ResourceMessageTemplateSource(System.Resources.ResourceManager! resources, int precedence = 0) -> void
+MPCore.Localization.ResourceMessageTemplateSource.TryGetTemplate(string! key, System.Globalization.CultureInfo! culture, out string? template) -> bool
+const MPCore.Localization.MessageCatalog.MeterName = "MPCore.Localization" -> string!
+const MPCore.Localization.MessageCatalogServiceCollectionExtensions.MPCoreDefaultsPrecedence = -100 -> int
+override MPCore.Localization.KnownMessageKey.Equals(object? obj) -> bool
+override MPCore.Localization.KnownMessageKey.GetHashCode() -> int
+override MPCore.Localization.KnownMessageKey.ToString() -> string!
+override MPCore.Localization.MessageTranslationEntry.Equals(object? obj) -> bool
+override MPCore.Localization.MessageTranslationEntry.GetHashCode() -> int
+override MPCore.Localization.MessageTranslationEntry.ToString() -> string!
+static MPCore.Localization.KnownMessageKey.operator !=(MPCore.Localization.KnownMessageKey? left, MPCore.Localization.KnownMessageKey? right) -> bool
+static MPCore.Localization.KnownMessageKey.operator ==(MPCore.Localization.KnownMessageKey? left, MPCore.Localization.KnownMessageKey? right) -> bool
+static MPCore.Localization.MessageCatalogServiceCollectionExtensions.AddMPCoreMessageCatalog(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Localization.MessageCatalogBuilder!>? configure = null, System.Action<MPCore.Localization.MessageCatalogOptions!>? options = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Localization.MessageTranslationEntry.operator !=(MPCore.Localization.MessageTranslationEntry? left, MPCore.Localization.MessageTranslationEntry? right) -> bool
+static MPCore.Localization.MessageTranslationEntry.operator ==(MPCore.Localization.MessageTranslationEntry? left, MPCore.Localization.MessageTranslationEntry? right) -> bool

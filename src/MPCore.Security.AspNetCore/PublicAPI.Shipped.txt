@@ -1,0 +1,190 @@
+#nullable enable
+MPCore.Security.AspNetCore.ActorClaimMappingOptions
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.ActorClaimMappingOptions() -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.AdditionalClaims.get -> System.Collections.Generic.ISet<string!>!
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.ClientIdClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.ClientIdClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.DisplayNameClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.DisplayNameClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.EmailClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.EmailClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.EmailVerifiedClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.EmailVerifiedClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.PhoneNumberClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.PhoneNumberClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.PhoneNumberVerifiedClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.PhoneNumberVerifiedClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.RoleClaimType.get -> string!
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.RoleClaimType.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.RoleSources.get -> System.Collections.Generic.IList<MPCore.Security.AspNetCore.RoleClaimSource!>!
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.ScopeClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.ScopeClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.ServiceAccountClientIdClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.ServiceAccountClientIdClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.ServiceAccountUserNamePrefix.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.ServiceAccountUserNamePrefix.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.SessionIdClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.SessionIdClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.SubjectClaim.get -> string!
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.SubjectClaim.set -> void
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.UseGenericOidc() -> MPCore.Security.AspNetCore.ActorClaimMappingOptions!
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.UseKeycloakDefaults() -> MPCore.Security.AspNetCore.ActorClaimMappingOptions!
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.UserNameClaim.get -> string?
+MPCore.Security.AspNetCore.ActorClaimMappingOptions.UserNameClaim.set -> void
+MPCore.Security.AspNetCore.ForwardedIdentityHeaderOptions
+MPCore.Security.AspNetCore.ForwardedIdentityHeaderOptions.DeniedHeaders.get -> System.Collections.Generic.IList<string!>!
+MPCore.Security.AspNetCore.ForwardedIdentityHeaderOptions.ForwardedIdentityHeaderOptions() -> void
+MPCore.Security.AspNetCore.GatewayForwardingExtensions
+MPCore.Security.AspNetCore.GatewayForwardingOptions
+MPCore.Security.AspNetCore.GatewayForwardingOptions.ForwardLimit.get -> int
+MPCore.Security.AspNetCore.GatewayForwardingOptions.ForwardLimit.set -> void
+MPCore.Security.AspNetCore.GatewayForwardingOptions.GatewayForwardingOptions() -> void
+MPCore.Security.AspNetCore.GatewayForwardingOptions.TrustedProxies.get -> System.Collections.Generic.IList<string!>!
+MPCore.Security.AspNetCore.GatewayForwardingOptions.TrustedProxies.set -> void
+MPCore.Security.AspNetCore.IMPCoreAuthorizationPolicyContributor
+MPCore.Security.AspNetCore.IMPCoreAuthorizationPolicyContributor.Contribute(Microsoft.AspNetCore.Authorization.AuthorizationOptions! options) -> void
+MPCore.Security.AspNetCore.IMPCoreBearerTokenValidator
+MPCore.Security.AspNetCore.IMPCoreBearerTokenValidator.ValidateAsync(string! token, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult!>!
+MPCore.Security.AspNetCore.MPCoreAuthorizationOptions
+MPCore.Security.AspNetCore.MPCoreAuthorizationOptions.ApplyAuthenticatedFallbackPolicy.get -> bool
+MPCore.Security.AspNetCore.MPCoreAuthorizationOptions.ApplyAuthenticatedFallbackPolicy.set -> void
+MPCore.Security.AspNetCore.MPCoreAuthorizationOptions.MPCoreAuthorizationOptions() -> void
+MPCore.Security.AspNetCore.MPCoreAuthorizationPolicies
+MPCore.Security.AspNetCore.MPCoreAuthorizationPolicyBuilderExtensions
+MPCore.Security.AspNetCore.MPCoreBearerIssuerSet
+MPCore.Security.AspNetCore.MPCoreBearerIssuerSet.Add(string! scheme, System.Action<MPCore.Security.AspNetCore.MPCoreBearerOptions!>! configure) -> MPCore.Security.AspNetCore.MPCoreBearerIssuerSet!
+MPCore.Security.AspNetCore.MPCoreBearerIssuerSet.MPCoreBearerIssuerSet() -> void
+MPCore.Security.AspNetCore.MPCoreBearerIssuerSet.SelectorScheme.get -> string!
+MPCore.Security.AspNetCore.MPCoreBearerIssuerSet.SelectorScheme.set -> void
+MPCore.Security.AspNetCore.MPCoreBearerOptions
+MPCore.Security.AspNetCore.MPCoreBearerOptions.AuthenticationScheme.get -> string!
+MPCore.Security.AspNetCore.MPCoreBearerOptions.AuthenticationScheme.set -> void
+MPCore.Security.AspNetCore.MPCoreBearerOptions.Authority.get -> string?
+MPCore.Security.AspNetCore.MPCoreBearerOptions.Authority.set -> void
+MPCore.Security.AspNetCore.MPCoreBearerOptions.ClockSkew.get -> System.TimeSpan
+MPCore.Security.AspNetCore.MPCoreBearerOptions.ClockSkew.set -> void
+MPCore.Security.AspNetCore.MPCoreBearerOptions.MPCoreBearerOptions() -> void
+MPCore.Security.AspNetCore.MPCoreBearerOptions.MetadataAddress.get -> string?
+MPCore.Security.AspNetCore.MPCoreBearerOptions.MetadataAddress.set -> void
+MPCore.Security.AspNetCore.MPCoreBearerOptions.RequireHttpsMetadata.get -> bool
+MPCore.Security.AspNetCore.MPCoreBearerOptions.RequireHttpsMetadata.set -> void
+MPCore.Security.AspNetCore.MPCoreBearerOptions.ValidAlgorithms.get -> System.Collections.Generic.IList<string!>!
+MPCore.Security.AspNetCore.MPCoreBearerOptions.ValidAudiences.get -> System.Collections.Generic.IList<string!>!
+MPCore.Security.AspNetCore.MPCoreBearerOptions.ValidIssuer.get -> string?
+MPCore.Security.AspNetCore.MPCoreBearerOptions.ValidIssuer.set -> void
+MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult
+MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult.FailureReason.get -> string?
+MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult.IsValid.get -> bool
+MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult.Issuer.get -> string?
+MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult.Principal.get -> System.Security.Claims.ClaimsPrincipal?
+MPCore.Security.AspNetCore.MPCoreBearerTokenValidationResult.Scheme.get -> string?
+MPCore.Security.AspNetCore.MPCoreRoleRequirement
+MPCore.Security.AspNetCore.MPCoreRoleRequirement.MPCoreRoleRequirement(params string![]! roles) -> void
+MPCore.Security.AspNetCore.MPCoreRoleRequirement.Roles.get -> System.Collections.Generic.IReadOnlyList<string!>!
+MPCore.Security.AspNetCore.MutualTlsExtensions
+MPCore.Security.AspNetCore.MutualTlsOptions
+MPCore.Security.AspNetCore.MutualTlsOptions.AllowedWorkloadNames.get -> System.Collections.Generic.ISet<string!>!
+MPCore.Security.AspNetCore.MutualTlsOptions.CertificateAuthorities.get -> System.Security.Cryptography.X509Certificates.X509Certificate2Collection!
+MPCore.Security.AspNetCore.MutualTlsOptions.CertificateAuthorityPaths.get -> System.Collections.Generic.IList<string!>!
+MPCore.Security.AspNetCore.MutualTlsOptions.ForwardedCertificateHeader.get -> string!
+MPCore.Security.AspNetCore.MutualTlsOptions.ForwardedCertificateHeader.set -> void
+MPCore.Security.AspNetCore.MutualTlsOptions.MutualTlsOptions() -> void
+MPCore.Security.AspNetCore.MutualTlsOptions.RevocationMode.get -> System.Security.Cryptography.X509Certificates.X509RevocationMode
+MPCore.Security.AspNetCore.MutualTlsOptions.RevocationMode.set -> void
+MPCore.Security.AspNetCore.MutualTlsOptions.TrustedProxies.get -> System.Collections.Generic.IList<string!>!
+MPCore.Security.AspNetCore.ResourceKeyAttribute
+MPCore.Security.AspNetCore.ResourceKeyAttribute.AuthenticationSchemes.get -> string?
+MPCore.Security.AspNetCore.ResourceKeyAttribute.AuthenticationSchemes.set -> void
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Key.get -> string!
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Policy.get -> string?
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Policy.set -> void
+MPCore.Security.AspNetCore.ResourceKeyAttribute.ResourceKeyAttribute(string! key) -> void
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Roles.get -> string?
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Roles.set -> void
+MPCore.Security.AspNetCore.ResourceKeyExemptAttribute
+MPCore.Security.AspNetCore.ResourceKeyExemptAttribute.ResourceKeyExemptAttribute() -> void
+MPCore.Security.AspNetCore.ResourceKeyExtensions
+MPCore.Security.AspNetCore.ResourceKeyOptions
+MPCore.Security.AspNetCore.ResourceKeyOptions.ResourceKeyOptions() -> void
+MPCore.Security.AspNetCore.ResourceKeyOptions.Timeout.get -> System.TimeSpan
+MPCore.Security.AspNetCore.ResourceKeyOptions.Timeout.set -> void
+MPCore.Security.AspNetCore.ResourceKeyRequirement
+MPCore.Security.AspNetCore.ResourceKeyRequirement.ResourceKeyRequirement() -> void
+MPCore.Security.AspNetCore.RoleClaimSource
+MPCore.Security.AspNetCore.RoleClaimSource.LiteralPrefix.get -> string?
+MPCore.Security.AspNetCore.RoleClaimSource.LiteralPrefix.set -> void
+MPCore.Security.AspNetCore.RoleClaimSource.Path.get -> string!
+MPCore.Security.AspNetCore.RoleClaimSource.Path.set -> void
+MPCore.Security.AspNetCore.RoleClaimSource.Prefix.get -> MPCore.Security.AspNetCore.RolePrefixMode
+MPCore.Security.AspNetCore.RoleClaimSource.Prefix.set -> void
+MPCore.Security.AspNetCore.RoleClaimSource.PrefixSeparator.get -> string!
+MPCore.Security.AspNetCore.RoleClaimSource.PrefixSeparator.set -> void
+MPCore.Security.AspNetCore.RoleClaimSource.RoleClaimSource() -> void
+MPCore.Security.AspNetCore.RolePrefixMode
+MPCore.Security.AspNetCore.RolePrefixMode.Literal = 2 -> MPCore.Security.AspNetCore.RolePrefixMode
+MPCore.Security.AspNetCore.RolePrefixMode.None = 0 -> MPCore.Security.AspNetCore.RolePrefixMode
+MPCore.Security.AspNetCore.RolePrefixMode.WildcardSegment = 1 -> MPCore.Security.AspNetCore.RolePrefixMode
+MPCore.Security.AspNetCore.ScopeRequirement
+MPCore.Security.AspNetCore.ScopeRequirement.ScopeRequirement(params string![]! scopes) -> void
+MPCore.Security.AspNetCore.ScopeRequirement.Scopes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+MPCore.Security.AspNetCore.SecurityRegistrationExtensions
+MPCore.Security.AspNetCore.SubjectEvidenceExtensions
+MPCore.Security.AspNetCore.SubjectEvidenceForwardingOptions
+MPCore.Security.AspNetCore.SubjectEvidenceForwardingOptions.RequireHttps.get -> bool
+MPCore.Security.AspNetCore.SubjectEvidenceForwardingOptions.RequireHttps.set -> void
+MPCore.Security.AspNetCore.SubjectEvidenceForwardingOptions.SubjectEvidenceForwardingOptions() -> void
+MPCore.Security.AspNetCore.SubjectEvidenceHeader
+MPCore.Security.AspNetCore.SubjectEvidenceOptions
+MPCore.Security.AspNetCore.SubjectEvidenceOptions.AllowedAuthorizedParties.get -> System.Collections.Generic.ISet<string!>!
+MPCore.Security.AspNetCore.SubjectEvidenceOptions.MaximumAuthenticationAge.get -> System.TimeSpan
+MPCore.Security.AspNetCore.SubjectEvidenceOptions.MaximumAuthenticationAge.set -> void
+MPCore.Security.AspNetCore.SubjectEvidenceOptions.RequiredTokenType.get -> string?
+MPCore.Security.AspNetCore.SubjectEvidenceOptions.RequiredTokenType.set -> void
+MPCore.Security.AspNetCore.SubjectEvidenceOptions.SubjectEvidenceOptions() -> void
+MPCore.Security.AspNetCore.SubjectEvidenceOptions.TrustedServiceClients.get -> System.Collections.Generic.ISet<string!>!
+MPCore.Security.AspNetCore.SubjectEvidenceRequirement
+MPCore.Security.AspNetCore.SubjectEvidenceRequirement.IssuerSchemes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+MPCore.Security.AspNetCore.SubjectEvidenceRequirement.SubjectEvidenceRequirement(params string![]! issuerSchemes) -> void
+MPCore.Security.AspNetCore.TenancyRegistrationExtensions
+MPCore.Security.AspNetCore.TenantClaimOptions
+MPCore.Security.AspNetCore.TenantClaimOptions.ClaimType.get -> string!
+MPCore.Security.AspNetCore.TenantClaimOptions.ClaimType.set -> void
+MPCore.Security.AspNetCore.TenantClaimOptions.TenantClaimOptions() -> void
+MPCore.Security.AspNetCore.TenantClaimOptions.TrustedServiceClients.get -> System.Collections.Generic.ISet<string!>!
+MPCore.Security.AspNetCore.WorkloadCertificateRequirement
+MPCore.Security.AspNetCore.WorkloadCertificateRequirement.WorkloadCertificateRequirement() -> void
+const MPCore.Security.AspNetCore.ActorClaimMappingOptions.MaximumRoleSources = 8 -> int
+const MPCore.Security.AspNetCore.MPCoreAuthorizationPolicies.Authenticated = "MPCore.Authenticated" -> string!
+const MPCore.Security.AspNetCore.MPCoreAuthorizationPolicies.ResourceKey = "MPCore.ResourceKey" -> string!
+const MPCore.Security.AspNetCore.MPCoreBearerOptions.RejectedDefaultAudience = "account" -> string!
+const MPCore.Security.AspNetCore.RoleClaimSource.MaximumSegments = 8 -> int
+const MPCore.Security.AspNetCore.SubjectEvidenceHeader.Name = "x-subject-token" -> string!
+static MPCore.Security.AspNetCore.GatewayForwardingExtensions.AddMPCoreGatewayForwarding(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.GatewayForwardingOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.GatewayForwardingExtensions.UseMPCoreGatewayForwarding(this Microsoft.AspNetCore.Builder.IApplicationBuilder! app) -> Microsoft.AspNetCore.Builder.IApplicationBuilder!
+static MPCore.Security.AspNetCore.MPCoreAuthorizationPolicies.RequireRole(params string![]! roles) -> Microsoft.AspNetCore.Authorization.AuthorizationPolicy!
+static MPCore.Security.AspNetCore.MPCoreAuthorizationPolicies.RequireScope(params string![]! scopes) -> Microsoft.AspNetCore.Authorization.AuthorizationPolicy!
+static MPCore.Security.AspNetCore.MPCoreAuthorizationPolicyBuilderExtensions.RequireMPCoreRole(this Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder! builder, params string![]! roles) -> Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder!
+static MPCore.Security.AspNetCore.MPCoreAuthorizationPolicyBuilderExtensions.RequireScope(this Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder! builder, params string![]! scopes) -> Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder!
+static MPCore.Security.AspNetCore.MutualTlsExtensions.AddMPCoreMutualTls(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.MutualTlsOptions!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.MutualTlsExtensions.RequireWorkloadCertificate(this Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder! builder) -> Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder!
+static MPCore.Security.AspNetCore.MutualTlsExtensions.RequireWorkloadCertificate<TBuilder>(this TBuilder builder) -> TBuilder
+static MPCore.Security.AspNetCore.MutualTlsExtensions.UseMPCoreCertificateForwarding(this Microsoft.AspNetCore.Builder.IApplicationBuilder! app) -> Microsoft.AspNetCore.Builder.IApplicationBuilder!
+static MPCore.Security.AspNetCore.MutualTlsExtensions.UseMPCoreMutualTls(this Microsoft.AspNetCore.Builder.IApplicationBuilder! app) -> Microsoft.AspNetCore.Builder.IApplicationBuilder!
+static MPCore.Security.AspNetCore.ResourceKeyExtensions.AddMPCoreResourceKeys(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.ResourceKeyOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.ResourceKeyExtensions.ExemptFromResourceKey<TBuilder>(this TBuilder builder) -> TBuilder
+static MPCore.Security.AspNetCore.ResourceKeyExtensions.RequireResourceKey<TBuilder>(this TBuilder builder, string! key) -> TBuilder
+static MPCore.Security.AspNetCore.SecurityRegistrationExtensions.AddForwardedIdentityHeaderGuard(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.ForwardedIdentityHeaderOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.SecurityRegistrationExtensions.AddMPCoreAuthorization(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.MPCoreAuthorizationOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.SecurityRegistrationExtensions.AddMPCoreBearerAuthentication(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.MPCoreBearerOptions!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.SecurityRegistrationExtensions.AddMPCoreBearerIssuers(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.MPCoreBearerIssuerSet!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.SecurityRegistrationExtensions.AddMPCoreCurrentActor(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.ActorClaimMappingOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.SecurityRegistrationExtensions.AddPolicyContributor<TContributor>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.SecurityRegistrationExtensions.UseForwardedIdentityHeaderGuard(this Microsoft.AspNetCore.Builder.IApplicationBuilder! app) -> Microsoft.AspNetCore.Builder.IApplicationBuilder!
+static MPCore.Security.AspNetCore.SubjectEvidenceExtensions.AddMPCoreSubjectEvidence(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder! builder, System.Action<MPCore.Security.AspNetCore.SubjectEvidenceForwardingOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder!
+static MPCore.Security.AspNetCore.SubjectEvidenceExtensions.AddMPCoreSubjectEvidenceValidation(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.SubjectEvidenceOptions!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.SubjectEvidenceExtensions.RequireSubjectEvidence(this Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder! builder, params string![]! issuerSchemes) -> Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder!
+static MPCore.Security.AspNetCore.SubjectEvidenceExtensions.UseMPCoreSubjectEvidence(this Microsoft.AspNetCore.Builder.IApplicationBuilder! app) -> Microsoft.AspNetCore.Builder.IApplicationBuilder!
+static MPCore.Security.AspNetCore.TenancyRegistrationExtensions.AddMPCoreTenancyFromClaim(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Security.AspNetCore.TenantClaimOptions!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Security.AspNetCore.TenancyRegistrationExtensions.AddMPCoreTenancyFromClaim(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, string! claimType = "tenant_id") -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static readonly MPCore.Security.AspNetCore.ForwardedIdentityHeaderOptions.DefaultDeniedHeaders -> System.Collections.Generic.IReadOnlyList<string!>!
+static readonly MPCore.Security.AspNetCore.MPCoreBearerOptions.AsymmetricAlgorithms -> System.Collections.Generic.IReadOnlyList<string!>!

@@ -1,0 +1,16 @@
+#nullable enable
+MPCore.Caching.Abstractions.ICache
+MPCore.Caching.Abstractions.ICache.GetAsync<T>(string! key, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T?>!
+MPCore.Caching.Abstractions.ICache.RemoveAsync(string! key, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+MPCore.Caching.Abstractions.ICache.SetAsync<T>(string! key, T value, System.TimeSpan? absoluteExpiration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+MPCore.Caching.Abstractions.IReadThroughCache
+MPCore.Caching.Abstractions.IReadThroughCache.GetOrCreateAsync<T>(string! key, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<T>>! factory, System.TimeSpan? absoluteExpiration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<T>
+MPCore.Caching.Abstractions.MPCoreCacheOptions
+MPCore.Caching.Abstractions.MPCoreCacheOptions.DefaultAbsoluteExpiration.get -> System.TimeSpan
+MPCore.Caching.Abstractions.MPCoreCacheOptions.DefaultAbsoluteExpiration.set -> void
+MPCore.Caching.Abstractions.MPCoreCacheOptions.KeyPrefix.get -> string!
+MPCore.Caching.Abstractions.MPCoreCacheOptions.KeyPrefix.set -> void
+MPCore.Caching.Abstractions.MPCoreCacheOptions.MPCoreCacheOptions() -> void
+MPCore.Caching.Abstractions.MPCoreCacheOptions.Qualify(string! key) -> string!
+MPCore.Caching.Abstractions.ReadThroughCacheExtensions
+static MPCore.Caching.Abstractions.ReadThroughCacheExtensions.GetOrCreateAsync<T>(this MPCore.Caching.Abstractions.ICache! cache, string! key, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<T>>! factory, System.TimeSpan? absoluteExpiration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<T>

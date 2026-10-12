@@ -1,0 +1,7 @@
+#nullable enable
+MPCore.Persistence.Abstractions.IRepository<TAggregate, TId>
+MPCore.Persistence.Abstractions.IRepository<TAggregate, TId>.Add(TAggregate! aggregate) -> void
+MPCore.Persistence.Abstractions.IRepository<TAggregate, TId>.GetAsync(TId id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TAggregate?>!
+MPCore.Persistence.Abstractions.IRepository<TAggregate, TId>.Remove(TAggregate! aggregate) -> void
+MPCore.Persistence.Abstractions.IUnitOfWork
+MPCore.Persistence.Abstractions.IUnitOfWork.SaveChangesAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<int>!

@@ -1,0 +1,54 @@
+#nullable enable
+MPCore.Transport.Http.HttpFailureOptions
+MPCore.Transport.Http.HttpFailureOptions.AcceptLanguageHeaderName.get -> string!
+MPCore.Transport.Http.HttpFailureOptions.AcceptLanguageHeaderName.set -> void
+MPCore.Transport.Http.HttpFailureOptions.DefaultCulture.get -> string!
+MPCore.Transport.Http.HttpFailureOptions.DefaultCulture.set -> void
+MPCore.Transport.Http.HttpFailureOptions.HttpFailureOptions() -> void
+MPCore.Transport.Http.HttpFailureOptions.IncludeInstance.get -> bool
+MPCore.Transport.Http.HttpFailureOptions.IncludeInstance.set -> void
+MPCore.Transport.Http.HttpFailureOptions.MaximumRequestIdLength.get -> int
+MPCore.Transport.Http.HttpFailureOptions.MaximumRequestIdLength.set -> void
+MPCore.Transport.Http.HttpFailureOptions.ProblemDocumentByteLimit.get -> int
+MPCore.Transport.Http.HttpFailureOptions.ProblemDocumentByteLimit.set -> void
+MPCore.Transport.Http.HttpFailureOptions.ProblemTypeUriTemplate.get -> string!
+MPCore.Transport.Http.HttpFailureOptions.ProblemTypeUriTemplate.set -> void
+MPCore.Transport.Http.HttpFailureOptions.RequestIdHeaderName.get -> string!
+MPCore.Transport.Http.HttpFailureOptions.RequestIdHeaderName.set -> void
+MPCore.Transport.Http.HttpFailureOptions.ScopeRequirementTypeNames.get -> System.Collections.Generic.IList<string!>!
+MPCore.Transport.Http.HttpFailureOptions.SupportedCultures.get -> System.Collections.Generic.IList<string!>!
+MPCore.Transport.Http.HttpFailureRegistrationExtensions
+MPCore.Transport.Http.HttpIdempotencyKeySource
+MPCore.Transport.Http.HttpIdempotencyKeySource.HttpIdempotencyKeySource(Microsoft.AspNetCore.Http.IHttpContextAccessor! accessor, System.Collections.Generic.IEnumerable<MPCore.Application.Idempotency.IdempotencyOptions!>! options) -> void
+MPCore.Transport.Http.HttpIdempotencyKeySource.MarkReplayed() -> void
+MPCore.Transport.Http.HttpIdempotencyKeySource.Read() -> MPCore.Application.Idempotency.IdempotencyKeyReading
+MPCore.Transport.Http.HttpResultExtensions
+MPCore.Transport.Http.IHttpExceptionMapper
+MPCore.Transport.Http.IHttpExceptionMapper.Map(System.Exception! exception, Microsoft.AspNetCore.Http.HttpContext! context) -> MPCore.Application.Results.FailureDescriptor?
+MPCore.Transport.Http.IHttpFailureLocalizer
+MPCore.Transport.Http.IHttpFailureLocalizer.Localize(MPCore.Application.Results.FailureMessageDescriptor! message, System.Globalization.CultureInfo! culture) -> string?
+MPCore.Transport.Http.IHttpRetrySafetyPolicy
+MPCore.Transport.Http.IHttpRetrySafetyPolicy.AllowsRetry(MPCore.Application.Results.FailureDescriptor! failure, Microsoft.AspNetCore.Http.HttpContext! context) -> bool
+MPCore.Transport.Http.IProblemDetailsEnricher
+MPCore.Transport.Http.IProblemDetailsEnricher.Enrich(MPCore.Transport.Http.ProblemDetailsEnrichmentContext! context) -> void
+MPCore.Transport.Http.IdempotencyEndpointConventionExtensions
+MPCore.Transport.Http.ProblemDetailsEnrichmentContext
+MPCore.Transport.Http.ProblemDetailsEnrichmentContext.Failure.get -> MPCore.Application.Results.FailureDescriptor!
+MPCore.Transport.Http.ProblemDetailsEnrichmentContext.HttpContext.get -> Microsoft.AspNetCore.Http.HttpContext!
+MPCore.Transport.Http.ProblemDetailsEnrichmentContext.Status.get -> int
+MPCore.Transport.Http.ProblemDetailsEnrichmentContext.TryAdd(string! member, object? value) -> bool
+const MPCore.Transport.Http.HttpFailureOptions.DefaultProblemTypeUriTemplate = "urn:mpcore:error:{domain}:{code}" -> string!
+const MPCore.Transport.Http.HttpFailureOptions.MaximumProblemDocumentBytes = 6144 -> int
+const MPCore.Transport.Http.HttpFailureOptions.MinimumProblemDocumentBytes = 1024 -> int
+const MPCore.Transport.Http.HttpIdempotencyKeySource.ReplayedHeaderName = "Idempotency-Replayed" -> string!
+const MPCore.Transport.Http.ProblemDetailsEnrichmentContext.MaximumExtensionCount = 16 -> int
+static MPCore.Transport.Http.HttpFailureRegistrationExtensions.AddHttpExceptionMapper<TMapper>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Transport.Http.HttpFailureRegistrationExtensions.AddMPCoreHttpFailureHandling(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<MPCore.Transport.Http.HttpFailureOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Transport.Http.HttpFailureRegistrationExtensions.AddMPCoreProblemDetailsSecurityResponses(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Transport.Http.HttpFailureRegistrationExtensions.AddProblemDetailsEnricher<TEnricher>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Transport.Http.HttpFailureRegistrationExtensions.UseMPCoreProblemDetails(this Microsoft.AspNetCore.Builder.IApplicationBuilder! app) -> Microsoft.AspNetCore.Builder.IApplicationBuilder!
+static MPCore.Transport.Http.HttpFailureRegistrationExtensions.UseMPCoreRequestContext(this Microsoft.AspNetCore.Builder.IApplicationBuilder! app) -> Microsoft.AspNetCore.Builder.IApplicationBuilder!
+static MPCore.Transport.Http.HttpResultExtensions.ToHttpResult(this MPCore.Application.Results.Result! result) -> Microsoft.AspNetCore.Http.IResult!
+static MPCore.Transport.Http.HttpResultExtensions.ToHttpResult<TValue>(this MPCore.Application.Results.Result<TValue>! result, System.Func<TValue, Microsoft.AspNetCore.Http.IResult!>! onSuccess) -> Microsoft.AspNetCore.Http.IResult!
+static MPCore.Transport.Http.IdempotencyEndpointConventionExtensions.RequireIdempotencyKey<TBuilder>(this TBuilder builder) -> TBuilder
+static readonly MPCore.Transport.Http.ProblemDetailsEnrichmentContext.ReservedMembers -> System.Collections.Generic.IReadOnlySet<string!>!

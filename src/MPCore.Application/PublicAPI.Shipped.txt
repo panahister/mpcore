@@ -1,0 +1,426 @@
+#nullable enable
+MPCore.Application.Idempotency.IIdempotencyKeySource
+MPCore.Application.Idempotency.IIdempotencyKeySource.MarkReplayed() -> void
+MPCore.Application.Idempotency.IIdempotencyKeySource.Read() -> MPCore.Application.Idempotency.IdempotencyKeyReading
+MPCore.Application.Idempotency.IIdempotencyScopeProvider
+MPCore.Application.Idempotency.IIdempotencyScopeProvider.GetScope() -> string!
+MPCore.Application.Idempotency.IIdempotencyStore
+MPCore.Application.Idempotency.IIdempotencyStore.FindAsync(string! scope, string! key, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Idempotency.IdempotencyEntry?>!
+MPCore.Application.Idempotency.IIdempotentExecutor
+MPCore.Application.Idempotency.IIdempotentExecutor.ExecuteAsync(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!
+MPCore.Application.Idempotency.IIdempotentExecutor.ExecuteAsync<TValue>(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!
+MPCore.Application.Idempotency.IdempotencyContext
+MPCore.Application.Idempotency.IdempotencyContext.Capture(object? response) -> void
+MPCore.Application.Idempotency.IdempotencyContext.Dispose() -> void
+MPCore.Application.Idempotency.IdempotencyContext.Forget() -> void
+MPCore.Application.Idempotency.IdempotencyContext.HasResponse.get -> bool
+MPCore.Application.Idempotency.IdempotencyContext.MarkRecorded() -> void
+MPCore.Application.Idempotency.IdempotencyContext.Recorded.get -> bool
+MPCore.Application.Idempotency.IdempotencyContext.Request.get -> MPCore.Application.Idempotency.IdempotencyRequest!
+MPCore.Application.Idempotency.IdempotencyContext.Response.get -> object?
+MPCore.Application.Idempotency.IdempotencyEntry
+MPCore.Application.Idempotency.IdempotencyEntry.<Clone>$() -> MPCore.Application.Idempotency.IdempotencyEntry!
+MPCore.Application.Idempotency.IdempotencyEntry.CreatedOnUtc.get -> System.DateTimeOffset
+MPCore.Application.Idempotency.IdempotencyEntry.CreatedOnUtc.init -> void
+MPCore.Application.Idempotency.IdempotencyEntry.Deconstruct(out string! Scope, out string! Key, out string! Operation, out string! RequestHash, out string? ResponseJson, out System.DateTimeOffset CreatedOnUtc) -> void
+MPCore.Application.Idempotency.IdempotencyEntry.Equals(MPCore.Application.Idempotency.IdempotencyEntry? other) -> bool
+MPCore.Application.Idempotency.IdempotencyEntry.IdempotencyEntry(string! Scope, string! Key, string! Operation, string! RequestHash, string? ResponseJson, System.DateTimeOffset CreatedOnUtc) -> void
+MPCore.Application.Idempotency.IdempotencyEntry.Key.get -> string!
+MPCore.Application.Idempotency.IdempotencyEntry.Key.init -> void
+MPCore.Application.Idempotency.IdempotencyEntry.Operation.get -> string!
+MPCore.Application.Idempotency.IdempotencyEntry.Operation.init -> void
+MPCore.Application.Idempotency.IdempotencyEntry.RequestHash.get -> string!
+MPCore.Application.Idempotency.IdempotencyEntry.RequestHash.init -> void
+MPCore.Application.Idempotency.IdempotencyEntry.ResponseJson.get -> string?
+MPCore.Application.Idempotency.IdempotencyEntry.ResponseJson.init -> void
+MPCore.Application.Idempotency.IdempotencyEntry.Scope.get -> string!
+MPCore.Application.Idempotency.IdempotencyEntry.Scope.init -> void
+MPCore.Application.Idempotency.IdempotencyFailures
+MPCore.Application.Idempotency.IdempotencyKeyReading
+MPCore.Application.Idempotency.IdempotencyKeyReading.Deconstruct(out string? Key, out bool Required) -> void
+MPCore.Application.Idempotency.IdempotencyKeyReading.Equals(MPCore.Application.Idempotency.IdempotencyKeyReading other) -> bool
+MPCore.Application.Idempotency.IdempotencyKeyReading.IdempotencyKeyReading() -> void
+MPCore.Application.Idempotency.IdempotencyKeyReading.IdempotencyKeyReading(string? Key, bool Required) -> void
+MPCore.Application.Idempotency.IdempotencyKeyReading.Key.get -> string?
+MPCore.Application.Idempotency.IdempotencyKeyReading.Key.init -> void
+MPCore.Application.Idempotency.IdempotencyKeyReading.Required.get -> bool
+MPCore.Application.Idempotency.IdempotencyKeyReading.Required.init -> void
+MPCore.Application.Idempotency.IdempotencyOptions
+MPCore.Application.Idempotency.IdempotencyOptions.HeaderName.get -> string!
+MPCore.Application.Idempotency.IdempotencyOptions.HeaderName.set -> void
+MPCore.Application.Idempotency.IdempotencyOptions.IdempotencyOptions() -> void
+MPCore.Application.Idempotency.IdempotencyOptions.InboxRetention.get -> System.TimeSpan
+MPCore.Application.Idempotency.IdempotencyOptions.InboxRetention.set -> void
+MPCore.Application.Idempotency.IdempotencyOptions.PurgeInterval.get -> System.TimeSpan
+MPCore.Application.Idempotency.IdempotencyOptions.PurgeInterval.set -> void
+MPCore.Application.Idempotency.IdempotencyOptions.Retention.get -> System.TimeSpan
+MPCore.Application.Idempotency.IdempotencyOptions.Retention.set -> void
+MPCore.Application.Idempotency.IdempotencyRequest
+MPCore.Application.Idempotency.IdempotencyRequest.<Clone>$() -> MPCore.Application.Idempotency.IdempotencyRequest!
+MPCore.Application.Idempotency.IdempotencyRequest.Deconstruct(out string! Scope, out string! Operation, out string! Key, out string! RequestHash) -> void
+MPCore.Application.Idempotency.IdempotencyRequest.Equals(MPCore.Application.Idempotency.IdempotencyRequest? other) -> bool
+MPCore.Application.Idempotency.IdempotencyRequest.IdempotencyRequest(string! Scope, string! Operation, string! Key, string! RequestHash) -> void
+MPCore.Application.Idempotency.IdempotencyRequest.Key.get -> string!
+MPCore.Application.Idempotency.IdempotencyRequest.Key.init -> void
+MPCore.Application.Idempotency.IdempotencyRequest.Operation.get -> string!
+MPCore.Application.Idempotency.IdempotencyRequest.Operation.init -> void
+MPCore.Application.Idempotency.IdempotencyRequest.RequestHash.get -> string!
+MPCore.Application.Idempotency.IdempotencyRequest.RequestHash.init -> void
+MPCore.Application.Idempotency.IdempotencyRequest.Scope.get -> string!
+MPCore.Application.Idempotency.IdempotencyRequest.Scope.init -> void
+MPCore.Application.Idempotency.IdempotencyServiceCollectionExtensions
+MPCore.Application.Idempotency.IdempotentExecutor
+MPCore.Application.Idempotency.IdempotentExecutor.ExecuteAsync(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!
+MPCore.Application.Idempotency.IdempotentExecutor.ExecuteAsync<TValue>(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!
+MPCore.Application.Idempotency.IdempotentExecutor.IdempotentExecutor(MPCore.Application.Idempotency.IIdempotencyKeySource! keys, MPCore.Application.Idempotency.IIdempotencyScopeProvider! scopes, MPCore.Application.Idempotency.IIdempotencyStore! store) -> void
+MPCore.Application.Idempotency.NoIdempotencyKeySource
+MPCore.Application.Idempotency.NoIdempotencyKeySource.MarkReplayed() -> void
+MPCore.Application.Idempotency.NoIdempotencyKeySource.NoIdempotencyKeySource() -> void
+MPCore.Application.Idempotency.NoIdempotencyKeySource.Read() -> MPCore.Application.Idempotency.IdempotencyKeyReading
+MPCore.Application.Idempotency.RequireIdempotencyKeyAttribute
+MPCore.Application.Idempotency.RequireIdempotencyKeyAttribute.RequireIdempotencyKeyAttribute() -> void
+MPCore.Application.Messaging.ICommand
+MPCore.Application.Messaging.ICommand<TResponse>
+MPCore.Application.Messaging.IQuery<TResponse>
+MPCore.Application.Modules.CrossModuleWriteAttribute
+MPCore.Application.Modules.CrossModuleWriteAttribute.CrossModuleWriteAttribute(string! reason) -> void
+MPCore.Application.Modules.CrossModuleWriteAttribute.Reason.get -> string!
+MPCore.Application.Querying.Page<TItem>
+MPCore.Application.Querying.Page<TItem>.<Clone>$() -> MPCore.Application.Querying.Page<TItem>!
+MPCore.Application.Querying.Page<TItem>.Deconstruct(out System.Collections.Generic.IReadOnlyList<TItem>! Items, out int Number, out int Size, out long Total) -> void
+MPCore.Application.Querying.Page<TItem>.Equals(MPCore.Application.Querying.Page<TItem>? other) -> bool
+MPCore.Application.Querying.Page<TItem>.HasMore.get -> bool
+MPCore.Application.Querying.Page<TItem>.Items.get -> System.Collections.Generic.IReadOnlyList<TItem>!
+MPCore.Application.Querying.Page<TItem>.Items.init -> void
+MPCore.Application.Querying.Page<TItem>.Number.get -> int
+MPCore.Application.Querying.Page<TItem>.Number.init -> void
+MPCore.Application.Querying.Page<TItem>.Page(System.Collections.Generic.IReadOnlyList<TItem>! Items, int Number, int Size, long Total) -> void
+MPCore.Application.Querying.Page<TItem>.PageCount.get -> int
+MPCore.Application.Querying.Page<TItem>.Size.get -> int
+MPCore.Application.Querying.Page<TItem>.Size.init -> void
+MPCore.Application.Querying.Page<TItem>.Total.get -> long
+MPCore.Application.Querying.Page<TItem>.Total.init -> void
+MPCore.Application.Querying.PageRequest
+MPCore.Application.Querying.PageRequest.<Clone>$() -> MPCore.Application.Querying.PageRequest!
+MPCore.Application.Querying.PageRequest.Equals(MPCore.Application.Querying.PageRequest? other) -> bool
+MPCore.Application.Querying.PageRequest.Number.get -> int
+MPCore.Application.Querying.PageRequest.PageRequest(int number = 1, int size = 20) -> void
+MPCore.Application.Querying.PageRequest.Size.get -> int
+MPCore.Application.Querying.PageRequest.Skip.get -> int
+MPCore.Application.Querying.SortAllowlist
+MPCore.Application.Querying.SortAllowlist.Allows(string? field) -> bool
+MPCore.Application.Querying.SortAllowlist.Fields.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+MPCore.Application.Querying.SortAllowlist.Rejected() -> MPCore.Application.Results.FailureDescriptor!
+MPCore.Application.Querying.SortAllowlist.Resolve(MPCore.Application.Querying.SortSpec? requested, MPCore.Application.Querying.SortSpec! fallback) -> MPCore.Application.Results.Result<MPCore.Application.Querying.SortSpec!>!
+MPCore.Application.Querying.SortAllowlist.SortAllowlist(params string![]! fields) -> void
+MPCore.Application.Querying.SortDirection
+MPCore.Application.Querying.SortDirection.Ascending = 0 -> MPCore.Application.Querying.SortDirection
+MPCore.Application.Querying.SortDirection.Descending = 1 -> MPCore.Application.Querying.SortDirection
+MPCore.Application.Querying.SortSpec
+MPCore.Application.Querying.SortSpec.<Clone>$() -> MPCore.Application.Querying.SortSpec!
+MPCore.Application.Querying.SortSpec.Deconstruct(out string! Field, out MPCore.Application.Querying.SortDirection Direction) -> void
+MPCore.Application.Querying.SortSpec.Direction.get -> MPCore.Application.Querying.SortDirection
+MPCore.Application.Querying.SortSpec.Direction.init -> void
+MPCore.Application.Querying.SortSpec.Equals(MPCore.Application.Querying.SortSpec? other) -> bool
+MPCore.Application.Querying.SortSpec.Field.get -> string!
+MPCore.Application.Querying.SortSpec.Field.init -> void
+MPCore.Application.Querying.SortSpec.Reversed() -> MPCore.Application.Querying.SortSpec!
+MPCore.Application.Querying.SortSpec.SortSpec(string! Field, MPCore.Application.Querying.SortDirection Direction = MPCore.Application.Querying.SortDirection.Ascending) -> void
+MPCore.Application.Results.Error
+MPCore.Application.Results.Error.<Clone>$() -> MPCore.Application.Results.Error!
+MPCore.Application.Results.Error.Code.get -> string!
+MPCore.Application.Results.Error.Code.init -> void
+MPCore.Application.Results.Error.Deconstruct(out string! Code, out string! Description) -> void
+MPCore.Application.Results.Error.Description.get -> string!
+MPCore.Application.Results.Error.Description.init -> void
+MPCore.Application.Results.Error.Equals(MPCore.Application.Results.Error? other) -> bool
+MPCore.Application.Results.Error.Error(string! Code, string! Description) -> void
+MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.AlreadyExists = 3 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.BusinessRule = 4 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Cancelled = 14 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Concurrency = 7 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Conflict = 6 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Deadline = 13 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.DependencyUnavailable = 12 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Forbidden = 9 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.NotFound = 2 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Precondition = 5 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Quota = 11 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.RateLimit = 10 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Unauthenticated = 8 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Unknown = 0 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorCategory.Validation = 1 -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.ErrorIdentity
+MPCore.Application.Results.ErrorIdentity.<Clone>$() -> MPCore.Application.Results.ErrorIdentity!
+MPCore.Application.Results.ErrorIdentity.Code.get -> string!
+MPCore.Application.Results.ErrorIdentity.Domain.get -> string!
+MPCore.Application.Results.ErrorIdentity.Equals(MPCore.Application.Results.ErrorIdentity? other) -> bool
+MPCore.Application.Results.ErrorIdentity.ErrorIdentity(string! domain, string! code) -> void
+MPCore.Application.Results.FailureDescriptor
+MPCore.Application.Results.FailureDescriptor.<Clone>$() -> MPCore.Application.Results.FailureDescriptor!
+MPCore.Application.Results.FailureDescriptor.Category.get -> MPCore.Application.Results.ErrorCategory
+MPCore.Application.Results.FailureDescriptor.Details.get -> System.Collections.Generic.IReadOnlyList<MPCore.Application.Results.FailureDetail!>!
+MPCore.Application.Results.FailureDescriptor.Equals(MPCore.Application.Results.FailureDescriptor? other) -> bool
+MPCore.Application.Results.FailureDescriptor.FailureDescriptor(MPCore.Application.Results.ErrorIdentity! identity, MPCore.Application.Results.ErrorCategory category, MPCore.Application.Results.FailureMessageDescriptor! message, MPCore.Application.Results.RetryDirective? retry = null, System.Collections.Generic.IEnumerable<MPCore.Application.Results.FailureDetail!>? details = null) -> void
+MPCore.Application.Results.FailureDescriptor.Identity.get -> MPCore.Application.Results.ErrorIdentity!
+MPCore.Application.Results.FailureDescriptor.Message.get -> MPCore.Application.Results.FailureMessageDescriptor!
+MPCore.Application.Results.FailureDescriptor.Retry.get -> MPCore.Application.Results.RetryDirective!
+MPCore.Application.Results.FailureDetail
+MPCore.Application.Results.FailureDetail.FailureDetail(MPCore.Application.Results.FailureDetail! original) -> void
+MPCore.Application.Results.FailureMessageDescriptor
+MPCore.Application.Results.FailureMessageDescriptor.<Clone>$() -> MPCore.Application.Results.FailureMessageDescriptor!
+MPCore.Application.Results.FailureMessageDescriptor.Arguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+MPCore.Application.Results.FailureMessageDescriptor.Equals(MPCore.Application.Results.FailureMessageDescriptor? other) -> bool
+MPCore.Application.Results.FailureMessageDescriptor.FailureMessageDescriptor(string! key, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? arguments = null) -> void
+MPCore.Application.Results.FailureMessageDescriptor.FailureMessageDescriptor(string! key, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? arguments, System.Collections.Generic.IReadOnlyDictionary<string!, MPCore.Application.Results.MessageArgument!>? typedArguments) -> void
+MPCore.Application.Results.FailureMessageDescriptor.Key.get -> string!
+MPCore.Application.Results.FailureMessageDescriptor.TypedArguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, MPCore.Application.Results.MessageArgument!>!
+MPCore.Application.Results.FieldViolation
+MPCore.Application.Results.FieldViolation.<Clone>$() -> MPCore.Application.Results.FieldViolation!
+MPCore.Application.Results.FieldViolation.Equals(MPCore.Application.Results.FieldViolation? other) -> bool
+MPCore.Application.Results.FieldViolation.FieldPath.get -> string!
+MPCore.Application.Results.FieldViolation.FieldViolation(string! fieldPath, string! ruleCode, MPCore.Application.Results.FailureMessageDescriptor! message) -> void
+MPCore.Application.Results.FieldViolation.Message.get -> MPCore.Application.Results.FailureMessageDescriptor!
+MPCore.Application.Results.FieldViolation.RuleCode.get -> string!
+MPCore.Application.Results.IFailureMessageLocalizer
+MPCore.Application.Results.IFailureMessageLocalizer.Localize(MPCore.Application.Results.FailureMessageDescriptor! message, System.Globalization.CultureInfo! culture) -> string?
+MPCore.Application.Results.MessageArgument
+MPCore.Application.Results.MessageArgument.<Clone>$() -> MPCore.Application.Results.MessageArgument!
+MPCore.Application.Results.MessageArgument.Equals(MPCore.Application.Results.MessageArgument? other) -> bool
+MPCore.Application.Results.MessageArgument.InvariantValue.get -> string!
+MPCore.Application.Results.MessageArgument.Kind.get -> MPCore.Application.Results.MessageArgumentKind
+MPCore.Application.Results.MessageArgument.Value.get -> object!
+MPCore.Application.Results.MessageArgumentKind
+MPCore.Application.Results.MessageArgumentKind.Date = 1 -> MPCore.Application.Results.MessageArgumentKind
+MPCore.Application.Results.MessageArgumentKind.DateAndTime = 2 -> MPCore.Application.Results.MessageArgumentKind
+MPCore.Application.Results.MessageArgumentKind.Decimal = 4 -> MPCore.Application.Results.MessageArgumentKind
+MPCore.Application.Results.MessageArgumentKind.Integer = 3 -> MPCore.Application.Results.MessageArgumentKind
+MPCore.Application.Results.PreconditionFailureDetail
+MPCore.Application.Results.PreconditionFailureDetail.Equals(MPCore.Application.Results.PreconditionFailureDetail? other) -> bool
+MPCore.Application.Results.PreconditionFailureDetail.PreconditionFailureDetail(System.Collections.Generic.IEnumerable<MPCore.Application.Results.PreconditionViolation!>! violations) -> void
+MPCore.Application.Results.PreconditionFailureDetail.Violations.get -> System.Collections.Generic.IReadOnlyList<MPCore.Application.Results.PreconditionViolation!>!
+MPCore.Application.Results.PreconditionViolation
+MPCore.Application.Results.PreconditionViolation.<Clone>$() -> MPCore.Application.Results.PreconditionViolation!
+MPCore.Application.Results.PreconditionViolation.Equals(MPCore.Application.Results.PreconditionViolation? other) -> bool
+MPCore.Application.Results.PreconditionViolation.Message.get -> MPCore.Application.Results.FailureMessageDescriptor!
+MPCore.Application.Results.PreconditionViolation.PreconditionViolation(string! type, string! subject, string! ruleCode, MPCore.Application.Results.FailureMessageDescriptor! message) -> void
+MPCore.Application.Results.PreconditionViolation.RuleCode.get -> string!
+MPCore.Application.Results.PreconditionViolation.Subject.get -> string!
+MPCore.Application.Results.PreconditionViolation.Type.get -> string!
+MPCore.Application.Results.QuotaFailureDetail
+MPCore.Application.Results.QuotaFailureDetail.Equals(MPCore.Application.Results.QuotaFailureDetail? other) -> bool
+MPCore.Application.Results.QuotaFailureDetail.QuotaFailureDetail(System.Collections.Generic.IEnumerable<MPCore.Application.Results.QuotaViolation!>! violations) -> void
+MPCore.Application.Results.QuotaFailureDetail.Violations.get -> System.Collections.Generic.IReadOnlyList<MPCore.Application.Results.QuotaViolation!>!
+MPCore.Application.Results.QuotaViolation
+MPCore.Application.Results.QuotaViolation.<Clone>$() -> MPCore.Application.Results.QuotaViolation!
+MPCore.Application.Results.QuotaViolation.Equals(MPCore.Application.Results.QuotaViolation? other) -> bool
+MPCore.Application.Results.QuotaViolation.Message.get -> MPCore.Application.Results.FailureMessageDescriptor!
+MPCore.Application.Results.QuotaViolation.QuotaViolation(string! subject, string! ruleCode, MPCore.Application.Results.FailureMessageDescriptor! message) -> void
+MPCore.Application.Results.QuotaViolation.RuleCode.get -> string!
+MPCore.Application.Results.QuotaViolation.Subject.get -> string!
+MPCore.Application.Results.ResourceFailureDetail
+MPCore.Application.Results.ResourceFailureDetail.Equals(MPCore.Application.Results.ResourceFailureDetail? other) -> bool
+MPCore.Application.Results.ResourceFailureDetail.Owner.get -> string?
+MPCore.Application.Results.ResourceFailureDetail.ResourceFailureDetail(string! resourceType, string! resourceName, string? owner = null) -> void
+MPCore.Application.Results.ResourceFailureDetail.ResourceName.get -> string!
+MPCore.Application.Results.ResourceFailureDetail.ResourceType.get -> string!
+MPCore.Application.Results.Result
+MPCore.Application.Results.Result.Error.get -> MPCore.Application.Results.Error!
+MPCore.Application.Results.Result.FailureDescriptor.get -> MPCore.Application.Results.FailureDescriptor?
+MPCore.Application.Results.Result.IsFailure.get -> bool
+MPCore.Application.Results.Result.IsSuccess.get -> bool
+MPCore.Application.Results.Result.Result(bool isSuccess, MPCore.Application.Results.Error! error) -> void
+MPCore.Application.Results.Result.Result(bool isSuccess, MPCore.Application.Results.Error! error, MPCore.Application.Results.FailureDescriptor? failure) -> void
+MPCore.Application.Results.Result<TValue>
+MPCore.Application.Results.Result<TValue>.Value.get -> TValue
+MPCore.Application.Results.ResultExtensions
+MPCore.Application.Results.ResultFailureException
+MPCore.Application.Results.ResultFailureException.Failure.get -> MPCore.Application.Results.FailureDescriptor!
+MPCore.Application.Results.ResultFailureException.ResultFailureException(MPCore.Application.Results.FailureDescriptor! failure) -> void
+MPCore.Application.Results.RetryDirective
+MPCore.Application.Results.RetryDirective.<Clone>$() -> MPCore.Application.Results.RetryDirective!
+MPCore.Application.Results.RetryDirective.Equals(MPCore.Application.Results.RetryDirective? other) -> bool
+MPCore.Application.Results.RetryDirective.IsRetryable.get -> bool
+MPCore.Application.Results.RetryDirective.RetryAfter.get -> System.TimeSpan?
+MPCore.Application.Results.RetryDirective.RetryDirective(bool isRetryable, System.TimeSpan? retryAfter = null) -> void
+MPCore.Application.Results.ValidationFailureDetail
+MPCore.Application.Results.ValidationFailureDetail.Equals(MPCore.Application.Results.ValidationFailureDetail? other) -> bool
+MPCore.Application.Results.ValidationFailureDetail.ValidationFailureDetail(System.Collections.Generic.IEnumerable<MPCore.Application.Results.FieldViolation!>! violations) -> void
+MPCore.Application.Results.ValidationFailureDetail.Violations.get -> System.Collections.Generic.IReadOnlyList<MPCore.Application.Results.FieldViolation!>!
+MPCore.Application.Sensitive.SensitiveMessageTypes
+MPCore.Application.Sensitive.SensitiveMessageTypes.Add(System.Type! type) -> void
+MPCore.Application.Sensitive.SensitiveMessageTypes.Contains(System.Type! type) -> bool
+MPCore.Application.Sensitive.SensitiveMessageTypes.IsEmpty.get -> bool
+MPCore.Application.Sensitive.SensitiveMessageTypes.SensitiveMessageTypes() -> void
+MPCore.Application.Sensitive.SensitiveMessageTypesRegistration
+MPCore.Application.Sensitive.SensitiveValue
+MPCore.Application.Sensitive.SensitiveValue.Equals(MPCore.Application.Sensitive.SensitiveValue? other) -> bool
+MPCore.Application.Sensitive.SensitiveValue.FixedTimeEquals(string? candidate) -> bool
+MPCore.Application.Sensitive.SensitiveValue.Reveal() -> string!
+MPCore.Application.Sensitive.SensitiveValue.SensitiveValue(string! value) -> void
+MPCore.Application.Time.IClock
+MPCore.Application.Time.IClock.UtcNow.get -> System.DateTimeOffset
+MPCore.Application.Time.SystemClock
+MPCore.Application.Time.SystemClock.SystemClock(System.TimeProvider! timeProvider) -> void
+MPCore.Application.Time.SystemClock.UtcNow.get -> System.DateTimeOffset
+abstract MPCore.Application.Results.FailureDetail.<Clone>$() -> MPCore.Application.Results.FailureDetail!
+const MPCore.Application.Idempotency.IdempotencyFailures.Domain = "mpcore.idempotency" -> string!
+const MPCore.Application.Idempotency.IdempotencyRequest.MaximumKeyLength = 255 -> int
+const MPCore.Application.Querying.PageRequest.DefaultSize = 20 -> int
+const MPCore.Application.Querying.PageRequest.MaximumSize = 200 -> int
+const MPCore.Application.Querying.SortAllowlist.FailureCode = "SORT_FIELD_NOT_ALLOWED" -> string!
+const MPCore.Application.Querying.SortAllowlist.FailureDomain = "mpcore.querying" -> string!
+const MPCore.Application.Results.ErrorIdentity.MaximumCodeLength = 63 -> int
+const MPCore.Application.Results.ErrorIdentity.MaximumDomainLength = 253 -> int
+const MPCore.Application.Results.FailureMessageDescriptor.MaximumArgumentCount = 16 -> int
+const MPCore.Application.Results.FailureMessageDescriptor.MaximumArgumentValueLength = 256 -> int
+const MPCore.Application.Results.FailureMessageDescriptor.MaximumKeyLength = 160 -> int
+const MPCore.Application.Sensitive.SensitiveValue.Mask = "***" -> string!
+override MPCore.Application.Idempotency.IdempotencyEntry.Equals(object? obj) -> bool
+override MPCore.Application.Idempotency.IdempotencyEntry.GetHashCode() -> int
+override MPCore.Application.Idempotency.IdempotencyEntry.ToString() -> string!
+override MPCore.Application.Idempotency.IdempotencyKeyReading.GetHashCode() -> int
+override MPCore.Application.Idempotency.IdempotencyRequest.Equals(object? obj) -> bool
+override MPCore.Application.Idempotency.IdempotencyRequest.GetHashCode() -> int
+override MPCore.Application.Idempotency.IdempotencyRequest.ToString() -> string!
+override MPCore.Application.Querying.Page<TItem>.Equals(object? obj) -> bool
+override MPCore.Application.Querying.Page<TItem>.GetHashCode() -> int
+override MPCore.Application.Querying.Page<TItem>.ToString() -> string!
+override MPCore.Application.Querying.PageRequest.Equals(object? obj) -> bool
+override MPCore.Application.Querying.PageRequest.GetHashCode() -> int
+override MPCore.Application.Querying.PageRequest.ToString() -> string!
+override MPCore.Application.Querying.SortSpec.Equals(object? obj) -> bool
+override MPCore.Application.Querying.SortSpec.GetHashCode() -> int
+override MPCore.Application.Querying.SortSpec.ToString() -> string!
+override MPCore.Application.Results.Error.Equals(object? obj) -> bool
+override MPCore.Application.Results.Error.GetHashCode() -> int
+override MPCore.Application.Results.Error.ToString() -> string!
+override MPCore.Application.Results.ErrorIdentity.Equals(object? obj) -> bool
+override MPCore.Application.Results.ErrorIdentity.GetHashCode() -> int
+override MPCore.Application.Results.ErrorIdentity.ToString() -> string!
+override MPCore.Application.Results.FailureDescriptor.Equals(object? obj) -> bool
+override MPCore.Application.Results.FailureDescriptor.GetHashCode() -> int
+override MPCore.Application.Results.FailureDescriptor.ToString() -> string!
+override MPCore.Application.Results.FailureDetail.Equals(object? obj) -> bool
+override MPCore.Application.Results.FailureDetail.GetHashCode() -> int
+override MPCore.Application.Results.FailureDetail.ToString() -> string!
+override MPCore.Application.Results.FailureMessageDescriptor.Equals(object? obj) -> bool
+override MPCore.Application.Results.FailureMessageDescriptor.GetHashCode() -> int
+override MPCore.Application.Results.FailureMessageDescriptor.ToString() -> string!
+override MPCore.Application.Results.FieldViolation.Equals(object? obj) -> bool
+override MPCore.Application.Results.FieldViolation.GetHashCode() -> int
+override MPCore.Application.Results.FieldViolation.ToString() -> string!
+override MPCore.Application.Results.MessageArgument.Equals(object? obj) -> bool
+override MPCore.Application.Results.MessageArgument.GetHashCode() -> int
+override MPCore.Application.Results.MessageArgument.ToString() -> string!
+override MPCore.Application.Results.PreconditionFailureDetail.<Clone>$() -> MPCore.Application.Results.PreconditionFailureDetail!
+override MPCore.Application.Results.PreconditionFailureDetail.Equals(object? obj) -> bool
+override MPCore.Application.Results.PreconditionFailureDetail.GetHashCode() -> int
+override MPCore.Application.Results.PreconditionFailureDetail.ToString() -> string!
+override MPCore.Application.Results.PreconditionViolation.Equals(object? obj) -> bool
+override MPCore.Application.Results.PreconditionViolation.GetHashCode() -> int
+override MPCore.Application.Results.PreconditionViolation.ToString() -> string!
+override MPCore.Application.Results.QuotaFailureDetail.<Clone>$() -> MPCore.Application.Results.QuotaFailureDetail!
+override MPCore.Application.Results.QuotaFailureDetail.Equals(object? obj) -> bool
+override MPCore.Application.Results.QuotaFailureDetail.GetHashCode() -> int
+override MPCore.Application.Results.QuotaFailureDetail.ToString() -> string!
+override MPCore.Application.Results.QuotaViolation.Equals(object? obj) -> bool
+override MPCore.Application.Results.QuotaViolation.GetHashCode() -> int
+override MPCore.Application.Results.QuotaViolation.ToString() -> string!
+override MPCore.Application.Results.ResourceFailureDetail.<Clone>$() -> MPCore.Application.Results.ResourceFailureDetail!
+override MPCore.Application.Results.ResourceFailureDetail.Equals(object? obj) -> bool
+override MPCore.Application.Results.ResourceFailureDetail.GetHashCode() -> int
+override MPCore.Application.Results.ResourceFailureDetail.ToString() -> string!
+override MPCore.Application.Results.RetryDirective.Equals(object? obj) -> bool
+override MPCore.Application.Results.RetryDirective.GetHashCode() -> int
+override MPCore.Application.Results.RetryDirective.ToString() -> string!
+override MPCore.Application.Results.ValidationFailureDetail.<Clone>$() -> MPCore.Application.Results.ValidationFailureDetail!
+override MPCore.Application.Results.ValidationFailureDetail.Equals(object? obj) -> bool
+override MPCore.Application.Results.ValidationFailureDetail.GetHashCode() -> int
+override MPCore.Application.Results.ValidationFailureDetail.ToString() -> string!
+override MPCore.Application.Sensitive.SensitiveValue.Equals(object? obj) -> bool
+override MPCore.Application.Sensitive.SensitiveValue.GetHashCode() -> int
+override MPCore.Application.Sensitive.SensitiveValue.ToString() -> string!
+override sealed MPCore.Application.Results.PreconditionFailureDetail.Equals(MPCore.Application.Results.FailureDetail? other) -> bool
+override sealed MPCore.Application.Results.QuotaFailureDetail.Equals(MPCore.Application.Results.FailureDetail? other) -> bool
+override sealed MPCore.Application.Results.ResourceFailureDetail.Equals(MPCore.Application.Results.FailureDetail? other) -> bool
+override sealed MPCore.Application.Results.ValidationFailureDetail.Equals(MPCore.Application.Results.FailureDetail? other) -> bool
+static MPCore.Application.Idempotency.IdempotencyContext.Current.get -> MPCore.Application.Idempotency.IdempotencyContext?
+static MPCore.Application.Idempotency.IdempotencyContext.Enter(MPCore.Application.Idempotency.IdempotencyRequest! request) -> MPCore.Application.Idempotency.IdempotencyContext!
+static MPCore.Application.Idempotency.IdempotencyEntry.operator !=(MPCore.Application.Idempotency.IdempotencyEntry? left, MPCore.Application.Idempotency.IdempotencyEntry? right) -> bool
+static MPCore.Application.Idempotency.IdempotencyEntry.operator ==(MPCore.Application.Idempotency.IdempotencyEntry? left, MPCore.Application.Idempotency.IdempotencyEntry? right) -> bool
+static MPCore.Application.Idempotency.IdempotencyFailures.KeyInvalid() -> MPCore.Application.Results.FailureDescriptor!
+static MPCore.Application.Idempotency.IdempotencyFailures.KeyRequired() -> MPCore.Application.Results.FailureDescriptor!
+static MPCore.Application.Idempotency.IdempotencyFailures.KeyReused() -> MPCore.Application.Results.FailureDescriptor!
+static MPCore.Application.Idempotency.IdempotencyKeyReading.operator !=(MPCore.Application.Idempotency.IdempotencyKeyReading left, MPCore.Application.Idempotency.IdempotencyKeyReading right) -> bool
+static MPCore.Application.Idempotency.IdempotencyKeyReading.operator ==(MPCore.Application.Idempotency.IdempotencyKeyReading left, MPCore.Application.Idempotency.IdempotencyKeyReading right) -> bool
+static MPCore.Application.Idempotency.IdempotencyRequest.For(string! scope, object! message, string! key) -> MPCore.Application.Idempotency.IdempotencyRequest!
+static MPCore.Application.Idempotency.IdempotencyRequest.IsValidKey(string? key) -> bool
+static MPCore.Application.Idempotency.IdempotencyRequest.operator !=(MPCore.Application.Idempotency.IdempotencyRequest? left, MPCore.Application.Idempotency.IdempotencyRequest? right) -> bool
+static MPCore.Application.Idempotency.IdempotencyRequest.operator ==(MPCore.Application.Idempotency.IdempotencyRequest? left, MPCore.Application.Idempotency.IdempotencyRequest? right) -> bool
+static MPCore.Application.Idempotency.IdempotencyServiceCollectionExtensions.AddMPCoreIdempotentExecution(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Application.Querying.Page<TItem>.Empty(MPCore.Application.Querying.PageRequest! request) -> MPCore.Application.Querying.Page<TItem>!
+static MPCore.Application.Querying.Page<TItem>.operator !=(MPCore.Application.Querying.Page<TItem>? left, MPCore.Application.Querying.Page<TItem>? right) -> bool
+static MPCore.Application.Querying.Page<TItem>.operator ==(MPCore.Application.Querying.Page<TItem>? left, MPCore.Application.Querying.Page<TItem>? right) -> bool
+static MPCore.Application.Querying.PageRequest.First.get -> MPCore.Application.Querying.PageRequest!
+static MPCore.Application.Querying.PageRequest.operator !=(MPCore.Application.Querying.PageRequest? left, MPCore.Application.Querying.PageRequest? right) -> bool
+static MPCore.Application.Querying.PageRequest.operator ==(MPCore.Application.Querying.PageRequest? left, MPCore.Application.Querying.PageRequest? right) -> bool
+static MPCore.Application.Querying.SortSpec.operator !=(MPCore.Application.Querying.SortSpec? left, MPCore.Application.Querying.SortSpec? right) -> bool
+static MPCore.Application.Querying.SortSpec.operator ==(MPCore.Application.Querying.SortSpec? left, MPCore.Application.Querying.SortSpec? right) -> bool
+static MPCore.Application.Results.Error.operator !=(MPCore.Application.Results.Error? left, MPCore.Application.Results.Error? right) -> bool
+static MPCore.Application.Results.Error.operator ==(MPCore.Application.Results.Error? left, MPCore.Application.Results.Error? right) -> bool
+static MPCore.Application.Results.ErrorIdentity.FromLegacy(string! domain, string? code) -> MPCore.Application.Results.ErrorIdentity!
+static MPCore.Application.Results.ErrorIdentity.IsValidCode(string? value) -> bool
+static MPCore.Application.Results.ErrorIdentity.IsValidDomain(string? value) -> bool
+static MPCore.Application.Results.ErrorIdentity.operator !=(MPCore.Application.Results.ErrorIdentity? left, MPCore.Application.Results.ErrorIdentity? right) -> bool
+static MPCore.Application.Results.ErrorIdentity.operator ==(MPCore.Application.Results.ErrorIdentity? left, MPCore.Application.Results.ErrorIdentity? right) -> bool
+static MPCore.Application.Results.FailureDescriptor.operator !=(MPCore.Application.Results.FailureDescriptor? left, MPCore.Application.Results.FailureDescriptor? right) -> bool
+static MPCore.Application.Results.FailureDescriptor.operator ==(MPCore.Application.Results.FailureDescriptor? left, MPCore.Application.Results.FailureDescriptor? right) -> bool
+static MPCore.Application.Results.FailureDetail.operator !=(MPCore.Application.Results.FailureDetail? left, MPCore.Application.Results.FailureDetail? right) -> bool
+static MPCore.Application.Results.FailureDetail.operator ==(MPCore.Application.Results.FailureDetail? left, MPCore.Application.Results.FailureDetail? right) -> bool
+static MPCore.Application.Results.FailureMessageDescriptor.Generic.get -> MPCore.Application.Results.FailureMessageDescriptor!
+static MPCore.Application.Results.FailureMessageDescriptor.operator !=(MPCore.Application.Results.FailureMessageDescriptor? left, MPCore.Application.Results.FailureMessageDescriptor? right) -> bool
+static MPCore.Application.Results.FailureMessageDescriptor.operator ==(MPCore.Application.Results.FailureMessageDescriptor? left, MPCore.Application.Results.FailureMessageDescriptor? right) -> bool
+static MPCore.Application.Results.FieldViolation.operator !=(MPCore.Application.Results.FieldViolation? left, MPCore.Application.Results.FieldViolation? right) -> bool
+static MPCore.Application.Results.FieldViolation.operator ==(MPCore.Application.Results.FieldViolation? left, MPCore.Application.Results.FieldViolation? right) -> bool
+static MPCore.Application.Results.MessageArgument.Date(System.DateOnly value) -> MPCore.Application.Results.MessageArgument!
+static MPCore.Application.Results.MessageArgument.DateAndTime(System.DateTime value) -> MPCore.Application.Results.MessageArgument!
+static MPCore.Application.Results.MessageArgument.DateAndTime(System.DateTimeOffset value) -> MPCore.Application.Results.MessageArgument!
+static MPCore.Application.Results.MessageArgument.Decimal(decimal value) -> MPCore.Application.Results.MessageArgument!
+static MPCore.Application.Results.MessageArgument.Integer(long value) -> MPCore.Application.Results.MessageArgument!
+static MPCore.Application.Results.MessageArgument.operator !=(MPCore.Application.Results.MessageArgument? left, MPCore.Application.Results.MessageArgument? right) -> bool
+static MPCore.Application.Results.MessageArgument.operator ==(MPCore.Application.Results.MessageArgument? left, MPCore.Application.Results.MessageArgument? right) -> bool
+static MPCore.Application.Results.PreconditionFailureDetail.operator !=(MPCore.Application.Results.PreconditionFailureDetail? left, MPCore.Application.Results.PreconditionFailureDetail? right) -> bool
+static MPCore.Application.Results.PreconditionFailureDetail.operator ==(MPCore.Application.Results.PreconditionFailureDetail? left, MPCore.Application.Results.PreconditionFailureDetail? right) -> bool
+static MPCore.Application.Results.PreconditionViolation.operator !=(MPCore.Application.Results.PreconditionViolation? left, MPCore.Application.Results.PreconditionViolation? right) -> bool
+static MPCore.Application.Results.PreconditionViolation.operator ==(MPCore.Application.Results.PreconditionViolation? left, MPCore.Application.Results.PreconditionViolation? right) -> bool
+static MPCore.Application.Results.QuotaFailureDetail.operator !=(MPCore.Application.Results.QuotaFailureDetail? left, MPCore.Application.Results.QuotaFailureDetail? right) -> bool
+static MPCore.Application.Results.QuotaFailureDetail.operator ==(MPCore.Application.Results.QuotaFailureDetail? left, MPCore.Application.Results.QuotaFailureDetail? right) -> bool
+static MPCore.Application.Results.QuotaViolation.operator !=(MPCore.Application.Results.QuotaViolation? left, MPCore.Application.Results.QuotaViolation? right) -> bool
+static MPCore.Application.Results.QuotaViolation.operator ==(MPCore.Application.Results.QuotaViolation? left, MPCore.Application.Results.QuotaViolation? right) -> bool
+static MPCore.Application.Results.ResourceFailureDetail.operator !=(MPCore.Application.Results.ResourceFailureDetail? left, MPCore.Application.Results.ResourceFailureDetail? right) -> bool
+static MPCore.Application.Results.ResourceFailureDetail.operator ==(MPCore.Application.Results.ResourceFailureDetail? left, MPCore.Application.Results.ResourceFailureDetail? right) -> bool
+static MPCore.Application.Results.Result.Failure(MPCore.Application.Results.Error! error) -> MPCore.Application.Results.Result!
+static MPCore.Application.Results.Result.FromFailure(MPCore.Application.Results.FailureDescriptor! failure) -> MPCore.Application.Results.Result!
+static MPCore.Application.Results.Result.Success() -> MPCore.Application.Results.Result!
+static MPCore.Application.Results.Result<TValue>.Failure(MPCore.Application.Results.Error! error) -> MPCore.Application.Results.Result<TValue>!
+static MPCore.Application.Results.Result<TValue>.FromFailure(MPCore.Application.Results.FailureDescriptor! failure) -> MPCore.Application.Results.Result<TValue>!
+static MPCore.Application.Results.Result<TValue>.Success(TValue value) -> MPCore.Application.Results.Result<TValue>!
+static MPCore.Application.Results.ResultExtensions.ThrowIfFailure(this MPCore.Application.Results.Result! result) -> void
+static MPCore.Application.Results.ResultExtensions.ValueOrThrow<TValue>(this MPCore.Application.Results.Result<TValue>! result) -> TValue
+static MPCore.Application.Results.RetryDirective.After(System.TimeSpan delay) -> MPCore.Application.Results.RetryDirective!
+static MPCore.Application.Results.RetryDirective.Never.get -> MPCore.Application.Results.RetryDirective!
+static MPCore.Application.Results.RetryDirective.operator !=(MPCore.Application.Results.RetryDirective? left, MPCore.Application.Results.RetryDirective? right) -> bool
+static MPCore.Application.Results.RetryDirective.operator ==(MPCore.Application.Results.RetryDirective? left, MPCore.Application.Results.RetryDirective? right) -> bool
+static MPCore.Application.Results.ValidationFailureDetail.operator !=(MPCore.Application.Results.ValidationFailureDetail? left, MPCore.Application.Results.ValidationFailureDetail? right) -> bool
+static MPCore.Application.Results.ValidationFailureDetail.operator ==(MPCore.Application.Results.ValidationFailureDetail? left, MPCore.Application.Results.ValidationFailureDetail? right) -> bool
+static MPCore.Application.Sensitive.SensitiveMessageTypesRegistration.AddMPCoreSensitiveMessageTypes(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, params System.Type![]! types) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static MPCore.Application.Sensitive.SensitiveValue.operator !=(MPCore.Application.Sensitive.SensitiveValue? left, MPCore.Application.Sensitive.SensitiveValue? right) -> bool
+static MPCore.Application.Sensitive.SensitiveValue.operator ==(MPCore.Application.Sensitive.SensitiveValue? left, MPCore.Application.Sensitive.SensitiveValue? right) -> bool
+static readonly MPCore.Application.Results.Error.None -> MPCore.Application.Results.Error!
+virtual MPCore.Application.Results.FailureDetail.EqualityContract.get -> System.Type!
+virtual MPCore.Application.Results.FailureDetail.Equals(MPCore.Application.Results.FailureDetail? other) -> bool
+virtual MPCore.Application.Results.FailureDetail.PrintMembers(System.Text.StringBuilder! builder) -> bool
+~override MPCore.Application.Idempotency.IdempotencyKeyReading.Equals(object obj) -> bool
+~override MPCore.Application.Idempotency.IdempotencyKeyReading.ToString() -> string

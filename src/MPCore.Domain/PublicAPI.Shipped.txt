@@ -1,0 +1,113 @@
+#nullable enable
+MPCore.Domain.Events.DomainEvent
+MPCore.Domain.Events.DomainEvent.DomainEvent() -> void
+MPCore.Domain.Events.DomainEvent.DomainEvent(MPCore.Domain.Events.DomainEvent! original) -> void
+MPCore.Domain.Events.IAggregateEventSink
+MPCore.Domain.Events.IAggregateEventSink.CollectAsync(System.Collections.Generic.IReadOnlyList<MPCore.Domain.Events.IDomainEvent!>! domainEvents, System.Collections.Generic.IReadOnlyList<MPCore.Domain.Events.IIntegrationEvent!>! integrationEvents, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Domain.Events.IDomainEvent
+MPCore.Domain.Events.IEventSource
+MPCore.Domain.Events.IEventSource.ClearEvents() -> void
+MPCore.Domain.Events.IEventSource.DomainEvents.get -> System.Collections.Generic.IReadOnlyCollection<MPCore.Domain.Events.IDomainEvent!>!
+MPCore.Domain.Events.IEventSource.IntegrationEvents.get -> System.Collections.Generic.IReadOnlyCollection<MPCore.Domain.Events.IIntegrationEvent!>!
+MPCore.Domain.Events.IIntegrationEvent
+MPCore.Domain.Events.IIntegrationEvent.CausationId.get -> string?
+MPCore.Domain.Events.IIntegrationEvent.CorrelationId.get -> string?
+MPCore.Domain.Events.IIntegrationEvent.EventId.get -> System.Guid
+MPCore.Domain.Events.IIntegrationEvent.EventName.get -> string!
+MPCore.Domain.Events.IIntegrationEvent.EventVersion.get -> int
+MPCore.Domain.Events.IIntegrationEvent.OccurredOnUtc.get -> System.DateTimeOffset
+MPCore.Domain.Events.IntegrationEvent
+MPCore.Domain.Events.IntegrationEvent.CausationId.get -> string?
+MPCore.Domain.Events.IntegrationEvent.CausationId.init -> void
+MPCore.Domain.Events.IntegrationEvent.CorrelationId.get -> string?
+MPCore.Domain.Events.IntegrationEvent.CorrelationId.init -> void
+MPCore.Domain.Events.IntegrationEvent.EventId.get -> System.Guid
+MPCore.Domain.Events.IntegrationEvent.EventId.init -> void
+MPCore.Domain.Events.IntegrationEvent.EventName.get -> string!
+MPCore.Domain.Events.IntegrationEvent.EventName.init -> void
+MPCore.Domain.Events.IntegrationEvent.EventVersion.get -> int
+MPCore.Domain.Events.IntegrationEvent.EventVersion.init -> void
+MPCore.Domain.Events.IntegrationEvent.IntegrationEvent(MPCore.Domain.Events.IntegrationEvent! original) -> void
+MPCore.Domain.Events.IntegrationEvent.IntegrationEvent(string! eventName, int eventVersion, System.DateTimeOffset occurredOnUtc, System.Guid? eventId = null, string? correlationId = null, string? causationId = null) -> void
+MPCore.Domain.Events.IntegrationEvent.OccurredOnUtc.get -> System.DateTimeOffset
+MPCore.Domain.Events.IntegrationEvent.OccurredOnUtc.init -> void
+MPCore.Domain.Events.NullAggregateEventSink
+MPCore.Domain.Events.NullAggregateEventSink.CollectAsync(System.Collections.Generic.IReadOnlyList<MPCore.Domain.Events.IDomainEvent!>! domainEvents, System.Collections.Generic.IReadOnlyList<MPCore.Domain.Events.IIntegrationEvent!>! integrationEvents, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+MPCore.Domain.Events.NullAggregateEventSink.NullAggregateEventSink() -> void
+MPCore.Domain.Model.AggregateRoot<TId>
+MPCore.Domain.Model.AggregateRoot<TId>.AggregateRoot() -> void
+MPCore.Domain.Model.AggregateRoot<TId>.AggregateRoot(TId id) -> void
+MPCore.Domain.Model.AggregateRoot<TId>.ClearEvents() -> void
+MPCore.Domain.Model.AggregateRoot<TId>.DomainEvents.get -> System.Collections.Generic.IReadOnlyCollection<MPCore.Domain.Events.IDomainEvent!>!
+MPCore.Domain.Model.AggregateRoot<TId>.IntegrationEvents.get -> System.Collections.Generic.IReadOnlyCollection<MPCore.Domain.Events.IIntegrationEvent!>!
+MPCore.Domain.Model.AggregateRoot<TId>.Raise(MPCore.Domain.Events.IDomainEvent! domainEvent) -> void
+MPCore.Domain.Model.AggregateRoot<TId>.Raise(MPCore.Domain.Events.IIntegrationEvent! integrationEvent) -> void
+MPCore.Domain.Model.Entity<TId>
+MPCore.Domain.Model.Entity<TId>.CreatedOnUtc.get -> System.DateTimeOffset
+MPCore.Domain.Model.Entity<TId>.Entity() -> void
+MPCore.Domain.Model.Entity<TId>.Entity(TId id) -> void
+MPCore.Domain.Model.Entity<TId>.Id.get -> TId
+MPCore.Domain.Model.Entity<TId>.Id.set -> void
+MPCore.Domain.Model.Entity<TId>.MarkCreated(System.DateTimeOffset occurredOnUtc) -> void
+MPCore.Domain.Model.Entity<TId>.MarkModified(System.DateTimeOffset occurredOnUtc) -> void
+MPCore.Domain.Model.Entity<TId>.ModifiedOnUtc.get -> System.DateTimeOffset?
+MPCore.Domain.Model.ITrackableEntity
+MPCore.Domain.Model.ITrackableEntity.CreatedOnUtc.get -> System.DateTimeOffset
+MPCore.Domain.Model.ITrackableEntity.MarkCreated(System.DateTimeOffset occurredOnUtc) -> void
+MPCore.Domain.Model.ITrackableEntity.MarkModified(System.DateTimeOffset occurredOnUtc) -> void
+MPCore.Domain.Model.ITrackableEntity.ModifiedOnUtc.get -> System.DateTimeOffset?
+MPCore.Domain.Model.ValueObject
+MPCore.Domain.Model.ValueObject.ValueObject() -> void
+MPCore.Domain.Rules.BusinessRule
+MPCore.Domain.Rules.BusinessRule.BusinessRule(string! errorDomain, string! code, string! messageKey, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? arguments = null) -> void
+MPCore.Domain.Rules.BusinessRule.Code.get -> string!
+MPCore.Domain.Rules.BusinessRule.ErrorDomain.get -> string!
+MPCore.Domain.Rules.BusinessRule.MessageArguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+MPCore.Domain.Rules.BusinessRule.MessageKey.get -> string!
+MPCore.Domain.Rules.BusinessRuleValidationException
+MPCore.Domain.Rules.BusinessRuleValidationException.BusinessRuleValidationException(MPCore.Domain.Rules.IBusinessRule! rule) -> void
+MPCore.Domain.Rules.BusinessRuleValidationException.Rule.get -> MPCore.Domain.Rules.IBusinessRule!
+MPCore.Domain.Rules.BusinessRules
+MPCore.Domain.Rules.IBusinessRule
+MPCore.Domain.Rules.IBusinessRule.Code.get -> string!
+MPCore.Domain.Rules.IBusinessRule.ErrorDomain.get -> string!
+MPCore.Domain.Rules.IBusinessRule.IsBroken() -> bool
+MPCore.Domain.Rules.IBusinessRule.Message.get -> string!
+MPCore.Domain.Rules.IBusinessRule.MessageArguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+MPCore.Domain.Rules.IBusinessRule.MessageKey.get -> string!
+abstract MPCore.Domain.Events.DomainEvent.<Clone>$() -> MPCore.Domain.Events.DomainEvent!
+abstract MPCore.Domain.Events.IntegrationEvent.<Clone>$() -> MPCore.Domain.Events.IntegrationEvent!
+abstract MPCore.Domain.Model.ValueObject.GetEqualityComponents() -> System.Collections.Generic.IEnumerable<object?>!
+abstract MPCore.Domain.Rules.BusinessRule.IsBroken() -> bool
+const MPCore.Domain.Rules.BusinessRule.DefaultErrorDomain = "mpcore.domain" -> string!
+const MPCore.Domain.Rules.BusinessRule.MaximumArgumentCount = 16 -> int
+const MPCore.Domain.Rules.BusinessRule.MaximumArgumentValueLength = 256 -> int
+override MPCore.Domain.Events.DomainEvent.Equals(object? obj) -> bool
+override MPCore.Domain.Events.DomainEvent.GetHashCode() -> int
+override MPCore.Domain.Events.DomainEvent.ToString() -> string!
+override MPCore.Domain.Events.IntegrationEvent.Equals(object? obj) -> bool
+override MPCore.Domain.Events.IntegrationEvent.GetHashCode() -> int
+override MPCore.Domain.Events.IntegrationEvent.ToString() -> string!
+override MPCore.Domain.Model.Entity<TId>.Equals(object? obj) -> bool
+override MPCore.Domain.Model.Entity<TId>.GetHashCode() -> int
+override MPCore.Domain.Model.ValueObject.Equals(object? obj) -> bool
+override MPCore.Domain.Model.ValueObject.GetHashCode() -> int
+static MPCore.Domain.Events.DomainEvent.operator !=(MPCore.Domain.Events.DomainEvent? left, MPCore.Domain.Events.DomainEvent? right) -> bool
+static MPCore.Domain.Events.DomainEvent.operator ==(MPCore.Domain.Events.DomainEvent? left, MPCore.Domain.Events.DomainEvent? right) -> bool
+static MPCore.Domain.Events.IntegrationEvent.operator !=(MPCore.Domain.Events.IntegrationEvent? left, MPCore.Domain.Events.IntegrationEvent? right) -> bool
+static MPCore.Domain.Events.IntegrationEvent.operator ==(MPCore.Domain.Events.IntegrationEvent? left, MPCore.Domain.Events.IntegrationEvent? right) -> bool
+static MPCore.Domain.Events.NullAggregateEventSink.Instance.get -> MPCore.Domain.Events.NullAggregateEventSink!
+static MPCore.Domain.Model.Entity<TId>.CheckRule(MPCore.Domain.Rules.IBusinessRule! rule) -> void
+static MPCore.Domain.Rules.BusinessRule.DefaultMessageKeyFor(string! code) -> string!
+static MPCore.Domain.Rules.BusinessRule.IsValidCode(string? value) -> bool
+static MPCore.Domain.Rules.BusinessRule.IsValidErrorDomain(string? value) -> bool
+static MPCore.Domain.Rules.BusinessRule.IsValidMessageKey(string? value) -> bool
+static MPCore.Domain.Rules.BusinessRule.NoArguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+static MPCore.Domain.Rules.BusinessRules.Check(MPCore.Domain.Rules.IBusinessRule! rule) -> void
+virtual MPCore.Domain.Events.DomainEvent.EqualityContract.get -> System.Type!
+virtual MPCore.Domain.Events.DomainEvent.Equals(MPCore.Domain.Events.DomainEvent? other) -> bool
+virtual MPCore.Domain.Events.DomainEvent.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual MPCore.Domain.Events.IntegrationEvent.EqualityContract.get -> System.Type!
+virtual MPCore.Domain.Events.IntegrationEvent.Equals(MPCore.Domain.Events.IntegrationEvent? other) -> bool
+virtual MPCore.Domain.Events.IntegrationEvent.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual MPCore.Domain.Rules.BusinessRule.Message.get -> string!

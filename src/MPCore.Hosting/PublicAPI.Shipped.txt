@@ -1,0 +1,3 @@
+#nullable enable
+MPCore.Hosting.HostingExtensions
+static MPCore.Hosting.HostingExtensions.AddMPCoreFoundation(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, MPCore.Observability.MPCoreObservabilityOptions! observability) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

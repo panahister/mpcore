@@ -1,0 +1,107 @@
+#nullable enable
+MPCore.Security.ActorKind
+MPCore.Security.ActorKind.Anonymous = 0 -> MPCore.Security.ActorKind
+MPCore.Security.ActorKind.Service = 2 -> MPCore.Security.ActorKind
+MPCore.Security.ActorKind.System = 3 -> MPCore.Security.ActorKind
+MPCore.Security.ActorKind.User = 1 -> MPCore.Security.ActorKind
+MPCore.Security.AmbientCurrentActorAccessor
+MPCore.Security.AmbientCurrentActorAccessor.AmbientCurrentActorAccessor() -> void
+MPCore.Security.AmbientCurrentActorAccessor.Current.get -> MPCore.Security.CurrentActor!
+MPCore.Security.CurrentActor
+MPCore.Security.CurrentActor.<Clone>$() -> MPCore.Security.CurrentActor!
+MPCore.Security.CurrentActor.AdditionalClaims.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+MPCore.Security.CurrentActor.AuthenticatedAt.get -> System.DateTimeOffset?
+MPCore.Security.CurrentActor.ClientId.get -> string?
+MPCore.Security.CurrentActor.DisplayName.get -> string?
+MPCore.Security.CurrentActor.Email.get -> string?
+MPCore.Security.CurrentActor.EmailVerified.get -> bool
+MPCore.Security.CurrentActor.Equals(MPCore.Security.CurrentActor? other) -> bool
+MPCore.Security.CurrentActor.ExpiresAt.get -> System.DateTimeOffset?
+MPCore.Security.CurrentActor.HasRole(string! role) -> bool
+MPCore.Security.CurrentActor.HasScope(string! scope) -> bool
+MPCore.Security.CurrentActor.IsAuthenticated.get -> bool
+MPCore.Security.CurrentActor.IsAuthenticationFresh(System.TimeSpan maximumAge, System.DateTimeOffset now) -> bool
+MPCore.Security.CurrentActor.IssuedAt.get -> System.DateTimeOffset?
+MPCore.Security.CurrentActor.Issuer.get -> string?
+MPCore.Security.CurrentActor.Kind.get -> MPCore.Security.ActorKind
+MPCore.Security.CurrentActor.PhoneNumber.get -> string?
+MPCore.Security.CurrentActor.PhoneNumberVerified.get -> bool
+MPCore.Security.CurrentActor.Roles.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+MPCore.Security.CurrentActor.Scopes.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+MPCore.Security.CurrentActor.SessionId.get -> string?
+MPCore.Security.CurrentActor.SubjectId.get -> string?
+MPCore.Security.CurrentActor.UserName.get -> string?
+MPCore.Security.CurrentActorBuilder
+MPCore.Security.CurrentActorBuilder.AddRole(string? role) -> MPCore.Security.CurrentActorBuilder!
+MPCore.Security.CurrentActorBuilder.AddScope(string? scope) -> MPCore.Security.CurrentActorBuilder!
+MPCore.Security.CurrentActorBuilder.AdditionalClaims.get -> System.Collections.Generic.IDictionary<string!, string!>!
+MPCore.Security.CurrentActorBuilder.AuthenticatedAt.get -> System.DateTimeOffset?
+MPCore.Security.CurrentActorBuilder.AuthenticatedAt.set -> void
+MPCore.Security.CurrentActorBuilder.Build() -> MPCore.Security.CurrentActor!
+MPCore.Security.CurrentActorBuilder.ClientId.get -> string?
+MPCore.Security.CurrentActorBuilder.ClientId.set -> void
+MPCore.Security.CurrentActorBuilder.CurrentActorBuilder(MPCore.Security.ActorKind kind) -> void
+MPCore.Security.CurrentActorBuilder.DisplayName.get -> string?
+MPCore.Security.CurrentActorBuilder.DisplayName.set -> void
+MPCore.Security.CurrentActorBuilder.Email.get -> string?
+MPCore.Security.CurrentActorBuilder.Email.set -> void
+MPCore.Security.CurrentActorBuilder.EmailVerified.get -> bool
+MPCore.Security.CurrentActorBuilder.EmailVerified.set -> void
+MPCore.Security.CurrentActorBuilder.ExpiresAt.get -> System.DateTimeOffset?
+MPCore.Security.CurrentActorBuilder.ExpiresAt.set -> void
+MPCore.Security.CurrentActorBuilder.IssuedAt.get -> System.DateTimeOffset?
+MPCore.Security.CurrentActorBuilder.IssuedAt.set -> void
+MPCore.Security.CurrentActorBuilder.Issuer.get -> string?
+MPCore.Security.CurrentActorBuilder.Issuer.set -> void
+MPCore.Security.CurrentActorBuilder.Kind.get -> MPCore.Security.ActorKind
+MPCore.Security.CurrentActorBuilder.PhoneNumber.get -> string?
+MPCore.Security.CurrentActorBuilder.PhoneNumber.set -> void
+MPCore.Security.CurrentActorBuilder.PhoneNumberVerified.get -> bool
+MPCore.Security.CurrentActorBuilder.PhoneNumberVerified.set -> void
+MPCore.Security.CurrentActorBuilder.Roles.get -> System.Collections.Generic.IList<string!>!
+MPCore.Security.CurrentActorBuilder.Scopes.get -> System.Collections.Generic.IList<string!>!
+MPCore.Security.CurrentActorBuilder.SessionId.get -> string?
+MPCore.Security.CurrentActorBuilder.SessionId.set -> void
+MPCore.Security.CurrentActorBuilder.SubjectId.get -> string?
+MPCore.Security.CurrentActorBuilder.SubjectId.set -> void
+MPCore.Security.CurrentActorBuilder.UserName.get -> string?
+MPCore.Security.CurrentActorBuilder.UserName.set -> void
+MPCore.Security.ICurrentActorAccessor
+MPCore.Security.ICurrentActorAccessor.Current.get -> MPCore.Security.CurrentActor!
+MPCore.Security.IResourceAuthorizer
+MPCore.Security.IResourceAuthorizer.DecideAsync(MPCore.Security.CurrentActor! actor, string! resourceKey, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.ValueTask<MPCore.Security.ResourceDecision>
+MPCore.Security.ISubjectEvidenceAccessor
+MPCore.Security.ISubjectEvidenceAccessor.Current.get -> MPCore.Security.SubjectEvidence?
+MPCore.Security.ResourceDecision
+MPCore.Security.ResourceDecision.Denied = 0 -> MPCore.Security.ResourceDecision
+MPCore.Security.ResourceDecision.Granted = 1 -> MPCore.Security.ResourceDecision
+MPCore.Security.ResourceDecision.UnknownKey = 2 -> MPCore.Security.ResourceDecision
+MPCore.Security.SubjectEvidence
+MPCore.Security.SubjectEvidence.<Clone>$() -> MPCore.Security.SubjectEvidence!
+MPCore.Security.SubjectEvidence.AuthenticatedAt.get -> System.DateTimeOffset
+MPCore.Security.SubjectEvidence.Equals(MPCore.Security.SubjectEvidence? other) -> bool
+MPCore.Security.SubjectEvidence.Issuer.get -> string!
+MPCore.Security.SubjectEvidence.SessionId.get -> string!
+MPCore.Security.SubjectEvidence.SubjectEvidence(string! subjectId, string! sessionId, string! issuer, System.DateTimeOffset authenticatedAt) -> void
+MPCore.Security.SubjectEvidence.SubjectId.get -> string!
+MPCore.Security.SystemActorScope
+const MPCore.Security.CurrentActor.MaximumAdditionalClaimCount = 16 -> int
+const MPCore.Security.CurrentActor.MaximumMemberLength = 256 -> int
+const MPCore.Security.CurrentActor.MaximumRoleCount = 256 -> int
+const MPCore.Security.CurrentActor.MaximumRoleLength = 128 -> int
+const MPCore.Security.CurrentActor.MaximumScopeCount = 128 -> int
+const MPCore.Security.CurrentActor.MaximumScopeLength = 128 -> int
+override MPCore.Security.CurrentActor.Equals(object? obj) -> bool
+override MPCore.Security.CurrentActor.GetHashCode() -> int
+override MPCore.Security.CurrentActor.ToString() -> string!
+override MPCore.Security.SubjectEvidence.Equals(object? obj) -> bool
+override MPCore.Security.SubjectEvidence.GetHashCode() -> int
+override MPCore.Security.SubjectEvidence.ToString() -> string!
+static MPCore.Security.CurrentActor.Anonymous.get -> MPCore.Security.CurrentActor!
+static MPCore.Security.CurrentActor.ForSystem(string! processName) -> MPCore.Security.CurrentActor!
+static MPCore.Security.CurrentActor.operator !=(MPCore.Security.CurrentActor? left, MPCore.Security.CurrentActor? right) -> bool
+static MPCore.Security.CurrentActor.operator ==(MPCore.Security.CurrentActor? left, MPCore.Security.CurrentActor? right) -> bool
+static MPCore.Security.SubjectEvidence.operator !=(MPCore.Security.SubjectEvidence? left, MPCore.Security.SubjectEvidence? right) -> bool
+static MPCore.Security.SubjectEvidence.operator ==(MPCore.Security.SubjectEvidence? left, MPCore.Security.SubjectEvidence? right) -> bool
+static MPCore.Security.SystemActorScope.Current.get -> MPCore.Security.CurrentActor?
+static MPCore.Security.SystemActorScope.Enter(string! processName) -> System.IDisposable!

@@ -91,6 +91,18 @@
            Code="MPCORE0007"
            Text="MP Core: the API baseline $(_MPCoreBaselineName) at $(MPCoreBaselinePackagePath) is not the package that was verified (SHA-256 $(_MPCoreBaselineHash.ToLowerInvariant())). $(_MPCoreBaselineHint)" />
   </Target>
+  <!--
+    The public API of every runtime package is recorded in the project's PublicAPI.Shipped.txt (what a published
+    version promised) and PublicAPI.Unshipped.txt (what changed since), and the build fails on an undeclared
+    change: RS0016 for a public symbol the files do not list, RS0017 for a listed symbol that is gone. A removal is
+    recorded as *REMOVED* in PublicAPI.Unshipped.txt, and the break against the baseline in
+    CompatibilitySuppressions.xml, with its reason (docs/api/README.md).
+  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)../docs/nuget/README.md"
           Pack="true"

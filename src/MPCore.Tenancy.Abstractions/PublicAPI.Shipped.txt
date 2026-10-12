@@ -1,0 +1,13 @@
+#nullable enable
+MPCore.Tenancy.AmbientTenantContext
+MPCore.Tenancy.AmbientTenantContext.AmbientTenantContext() -> void
+MPCore.Tenancy.AmbientTenantContext.TenantId.get -> string?
+MPCore.Tenancy.ITenantContext
+MPCore.Tenancy.ITenantContext.TenantId.get -> string?
+MPCore.Tenancy.TenantHeader
+MPCore.Tenancy.TenantScope
+const MPCore.Tenancy.TenantHeader.MaximumLength = 128 -> int
+const MPCore.Tenancy.TenantHeader.Name = "x-tenant-id" -> string!
+static MPCore.Tenancy.TenantHeader.IsValid(string? value) -> bool
+static MPCore.Tenancy.TenantScope.Current.get -> string?
+static MPCore.Tenancy.TenantScope.Enter(string! tenantId) -> System.IDisposable!
