@@ -155,12 +155,17 @@ Everything else in ADR-007 holds for the adapter as for any host.
 
 ## What was proved
 
-`TemplateContractTests.Identity_provider_administration_is_governed_by_rules_not_refused` asserts four things.
+`TemplateContractTests.Identity_provider_administration_is_governed_by_rules_not_refused` asserts five things.
 None of the five generated files that carried the refusal (the security skill, the vertical-slice skill,
 `README.md`, `Program.cs`, `docs/architecture.md`) refuses the backend. The security skill carries, case aside,
-16 stems: four about the adapter as a whole (login, signup, OTP, password reset and password change are never
+19 stems: four about the adapter as a whole (login, signup, OTP, password reset and password change are never
 implemented here; "administration adapter"; any other backend never calls the provider's administration API
-itself; "ADR-019") and 12 for the six rules, at least one for each: a closed catalogue, 2; its own service
-identity, 3; every caller authorized for every command, 1; every write audited, 3; no administration token,
-2; every write idempotent, 1. The vertical-slice skill states the same boundary and points to the security
-skill. This record exists and says what changes in ADR-007.
+itself; "ADR-019") and 15 for the six rules, at least one for each: a closed catalogue, 2; its own service
+identity, 3; every caller authorized for every command, 1; every write audited, 3; no administration token, 5
+(among them `AddMPCoreServiceIdentity` presenting the token, `RedactLoggedHeaders` and a captured log of one
+call); every write idempotent, 1. The sentence section 6 replaced is not in the skill. The vertical-slice skill
+states the same boundary and points to the security skill. This record exists and says what changes in ADR-007.
+
+`GeneratedBackendTests.The_security_skills_example_compiles_and_its_captured_log_holds_no_token` builds the
+skill's example of the client to the provider and its captured-log test in a generated backend, and runs the
+test.

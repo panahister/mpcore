@@ -1747,9 +1747,12 @@ public sealed class TemplateContractTests
                      "IBusinessAuditRecorder",
                      "a refused or failed attempt too",
 
-                     // 5. No administration token in any log.
+                     // 5. No administration token in any log: ADR-019, section 6, as corrected.
                      "no administration token",
+                     "obtained and presented by `AddMPCoreServiceIdentity`",
                      "SensitiveValue",
+                     "RedactLoggedHeaders",
+                     "captures the log of one call",
 
                      // 6. Every write idempotent.
                      "every write idempotent",
@@ -1758,6 +1761,11 @@ public sealed class TemplateContractTests
             // A rule may open its sentence or its bullet, so case is not part of it.
             Assert.Contains(rule, security, StringComparison.OrdinalIgnoreCase);
         }
+
+        // The sentence ADR-019 replaced described nothing the code does: the adapter never holds the token it
+        // presents, and "log no header or body" named no mechanism.
+        Assert.DoesNotContain("hold the token as a `SensitiveValue`", security, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("log no header or body", security, StringComparison.OrdinalIgnoreCase);
 
         var slice = Flat(File.ReadAllText(Path.Combine(TemplateRoot, ".mpcore/skills/mpcore-implement-vertical-slice/SKILL.md")));
         Assert.Contains("Login, signup, OTP, password reset and password change are never implemented here", slice, StringComparison.Ordinal);

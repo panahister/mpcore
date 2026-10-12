@@ -64,8 +64,13 @@ Only in the backend the owner has named as the adapter; anywhere else, stop and 
   the outcome as the provider answered; a refused or failed attempt too, with `RecordAttemptAsync`.
   Identifiers only, never a credential or the provider's response body.
 - **No administration token**, client secret or credential in any log, trace, audit record, message,
-  problem document or response: hold the token as a `SensitiveValue`, log no header or body of the
-  provider's calls, and map the provider's errors to this backend's own failure codes.
+  problem document or response. The administration token is obtained and presented by
+  `AddMPCoreServiceIdentity` (MP Core ADR-014), which never gives it to application code; any credential
+  the adapter itself holds, such as the client's secret read from configuration or a token obtained by any
+  other path, is a `SensitiveValue` (MP Core ADR-018). The adapter's client to the provider is registered
+  with `RedactLoggedHeaders` for `Authorization`, or with its loggers removed, and a test captures the log
+  of one call and asserts that it holds no token; the adapter maps the provider's errors to this backend's
+  own failure codes and never returns or logs the provider's body.
 - **Every write idempotent**: it sets a state rather than adding to one, because a command can arrive
   twice; no provider call inside a transaction a concurrent attempt can lose.
 
@@ -77,7 +82,101 @@ Steps:
    `AddMPCoreServiceIdentity`, against the provider's documented administration API.
 3. Give each command its handler, its authorization and its audit record.
 4. Test a caller that is not listed, a caller without the right, a refusal by the provider (recorded, and
-   answered without the provider's body), and a captured log of a call that holds no token.
+   answered without the provider's body), and a captured log of one call that holds no token.
+
+The registration of the client to the provider, and the test that captures the log of one call. The test is
+an example a product copies into its tests project and adapts; a stub stands for the provider:
+
+```csharp
+// The administration client, and a captured log of one call (MP Core ADR-019, section 6).
+using System.Collections.Concurrent;
+using System.Net;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using MPCore.Resilience.Http;
+
+namespace IdentityAdministration.Example;
+
+public sealed class AdministrationClientLogTests
+{
+    private const string Token = "administration-token-7f3a";
+
+    [Fact]
+    public async Task A_captured_log_of_one_call_to_the_provider_holds_no_token()
+    {
+        var log = new CapturedLog();
+        var services = new ServiceCollection();
+        services.AddLogging(logging => logging.SetMinimumLevel(LogLevel.Trace).AddProvider(log));
+
+        // The registration. The token is obtained and presented by AddMPCoreServiceIdentity, and the
+        // Authorization header is redacted in the client's own logs.
+        services.AddMPCoreResilientHttpClient("identity-administration", client => client.BaseAddress = new Uri("https://identity.invalid/admin/realms/shop/"))
+            .AddMPCoreServiceIdentity(options =>
+            {
+                options.TokenEndpoint = new Uri("https://identity.invalid/realms/shop/protocol/openid-connect/token");
+                options.ClientId = "identity-administration";
+                options.ClientSecret = "read-from-configuration";
+            })
+            .RedactLoggedHeaders(["Authorization"])
+            .ConfigurePrimaryHttpMessageHandler(() => new Provider());
+        services.AddHttpClient(ServiceIdentity.TokenClientName).ConfigurePrimaryHttpMessageHandler(() => new Provider());
+
+        await using var provider = services.BuildServiceProvider();
+        var client = provider.GetRequiredService<IHttpClientFactory>().CreateClient("identity-administration");
+        using var response = await client.GetAsync(new Uri("users?username=someone", UriKind.Relative));
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains(log.Entries, entry => entry.Contains("Authorization", StringComparison.Ordinal));
+        Assert.DoesNotContain(log.Entries, entry => entry.Contains(Token, StringComparison.Ordinal));
+    }
+
+    /// <summary>Stands for the provider: issues the token, then answers the call.</summary>
+    private sealed class Provider : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(
+                    request.RequestUri!.AbsolutePath.EndsWith("/token", StringComparison.Ordinal)
+                        ? $"{{\"access_token\":\"{Token}\",\"token_type\":\"Bearer\",\"expires_in\":300}}"
+                        : "[]",
+                    Encoding.UTF8,
+                    "application/json"),
+            });
+    }
+
+    /// <summary>Every log entry, its message and its scopes, as text.</summary>
+    private sealed class CapturedLog : ILoggerProvider, ISupportExternalScope
+    {
+        private IExternalScopeProvider? _scopes;
+
+        public ConcurrentQueue<string> Entries { get; } = new();
+
+        public ILogger CreateLogger(string categoryName) => new Logger(this, categoryName);
+
+        public void SetScopeProvider(IExternalScopeProvider scopeProvider) => _scopes = scopeProvider;
+
+        public void Dispose()
+        {
+        }
+
+        private sealed class Logger(CapturedLog owner, string category) : ILogger
+        {
+            public IDisposable? BeginScope<TState>(TState state) where TState : notnull => owner._scopes?.Push(state);
+
+            public bool IsEnabled(LogLevel logLevel) => true;
+
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+            {
+                var text = new StringBuilder($"{category}: {formatter(state, exception)} {exception}");
+                owner._scopes?.ForEachScope((scope, builder) => builder.Append(" | ").Append(scope), text);
+                owner.Entries.Enqueue(text.ToString());
+            }
+        }
+    }
+}
+```
 
 ## Verification
 

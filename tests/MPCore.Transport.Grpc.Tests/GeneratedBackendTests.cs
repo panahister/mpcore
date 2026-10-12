@@ -101,6 +101,30 @@ public sealed partial class GeneratedBackendTests
     }
 
     /// <summary>
+    /// The security skill shows how the client to the identity provider is registered and how a test captures
+    /// the log of one call (ADR-019, section 6). That example is compiled and run here, as it stands in the
+    /// skill, inside a generated backend's tests project.
+    /// </summary>
+    [Fact]
+    public async Task The_security_skills_example_compiles_and_its_captured_log_holds_no_token()
+    {
+        const string Marker = "// The administration client, and a captured log of one call (MP Core ADR-019, section 6).";
+        var skill = File.ReadAllText(Path.Combine(TemplateRoot, ".mpcore/skills/mpcore-apply-security/SKILL.md")).ReplaceLineEndings("\n");
+        var start = skill.IndexOf("```csharp\n" + Marker, StringComparison.Ordinal);
+        Assert.True(start >= 0, "The security skill has no example of the administration client.");
+        var body = skill[(start + "```csharp\n".Length)..];
+        var example = body[..body.IndexOf("\n```", StringComparison.Ordinal)];
+
+        using var workspace = await Workspace.GenerateAsync("service");
+        workspace.Write("tests/Acme.Ledger.Tests/AdministrationClientLogTests.cs", example + "\n");
+
+        var run = await workspace.TestAsync("example");
+
+        Assert.True(run.ExitCode == 0, "The skill's example does not build or does not pass:\n" + run.Output);
+        Assert.Equal("Passed", run.Outcome("A_captured_log_of_one_call_to_the_provider_holds_no_token"));
+    }
+
+    /// <summary>
     /// A host generated from the template logs the request of a gRPC service the host names as sensitive. Its
     /// console shows neither the value nor the names of the fields; it still shows the host's other logs. With
     /// the default logging providers brought back, which the template clears, the same call prints the request
