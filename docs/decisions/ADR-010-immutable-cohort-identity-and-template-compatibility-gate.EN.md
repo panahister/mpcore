@@ -241,7 +241,7 @@ artifact per commit stops being something a consumer can restore. A prerelease f
 automatically on every push: publication stays the owner's act (ADR-004, addendum on publication). The
 commit as build metadata (`0.10.0+48045c7`): ignored by NuGet for identity, as §1 already says.
 
-## Addendum 2026-10-12: package validation is never skipped (proposed; pending owner acceptance)
+## Addendum 2026-10-12: package validation is never skipped (accepted by the repository owner, 2026-10-12)
 
 **What went wrong.** API validation of a package ran only when its baseline package happened to be in a git-ignored
 folder. Otherwise the build printed "validation is SKIPPED" and passed, so a clean checkout validated nothing and

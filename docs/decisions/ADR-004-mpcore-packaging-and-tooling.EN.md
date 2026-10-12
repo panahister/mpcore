@@ -36,7 +36,7 @@ nuget.org from version `0.9.0`, and the licence is Apache-2.0.
 
 ## Addendum 2026-09-27 — publication without a stored key
 
-Status: proposed. It changes the first point of the addendum above.
+Status: accepted by the repository owner, 2026-10-12. It changes the first point of the addendum above.
 
 Publication by hand meant a long-lived API key on a maintainer's machine, typed into a command. Such a key
 can be copied, leaks with a shell history, and publishes whatever bytes happen to be in a folder.
@@ -65,7 +65,7 @@ ability to publish, and so does an attacker who does not have it.
 **What stays.** A published version is never built again (ADR-010). Without the choice to publish, a run
 of the workflow is a rehearsal, and consumes nothing.
 
-## Addendum 2026-10-12: the command line tool and the template have a recorded contract (proposed; pending owner acceptance)
+## Addendum 2026-10-12: the command line tool and the template have a recorded contract (accepted by the repository owner, 2026-10-12)
 
 The runtime packages have their API checked against the last published version at every pack (ADR-010). The
 command line tool and the template are consumed too, and nothing recorded what a consumer may rely on in them: an

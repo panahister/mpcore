@@ -119,7 +119,7 @@ plain `AddDbContext` produces the same class of failure, which is why the genera
   and must never be published, reused or treated as a baseline; `0.2.0-alpha.7` remains the baseline
   and is untouched.
 
-## Addendum 2026-09-27 — what running a generated host end to end taught §7 (proposed; pending owner acceptance)
+## Addendum 2026-09-27 — what running a generated host end to end taught §7 (accepted by the repository owner, 2026-10-12)
 
 The first consumer that started a generated host, took real tokens and moved messages through local queues
 and Kafka (the Storefront sample) found five places where MP Core itself broke the §7 rule or
@@ -150,10 +150,11 @@ template's module README and the `mpcore-implement-ddd-module` skill): adapters 
 never by lambda, and a handler class name ends in `Handler` or `Consumer`.
 
 **§5 is not changed**, but the sample showed its cost: with a mis-named handler class, `StockReserved` and every
-domain event were dropped with an Information log. Raising this to a warning, or failing at startup for an
-aggregate event with no route, is proposed for an owner decision.
+domain event were dropped with an Information log. The repository owner decided on 2026-10-12 that it stays an
+Information log: an event that nobody consumes yet is normal in a modular monolith, and a warning, or a failure at
+startup, would be noise for it.
 
-## Addendum 2026-09-27 — an attempt that failed takes its messages with it (proposed; pending owner acceptance)
+## Addendum 2026-09-27 — an attempt that failed takes its messages with it (accepted by the repository owner, 2026-10-12)
 
 §5 says that nothing is delivered at the moment it is raised: a published message waits for the commit of
 the change that caused it. The Storefront sample found the case in which that was not enough.
