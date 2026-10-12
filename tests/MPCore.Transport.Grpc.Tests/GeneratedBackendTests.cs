@@ -189,6 +189,30 @@ public sealed partial class GeneratedBackendTests
         static string UserSecretsId(string project) => Regex.Match(File.ReadAllText(project), "<UserSecretsId>([^<]+)</UserSecretsId>").Groups[1].Value;
     }
 
+    /// <summary>
+    /// The solution lists the projects that were generated. A project a product adds later, such as a module's
+    /// Contracts project or its tests, is reached by nothing, so the root build and the root test run skip it until
+    /// <c>dotnet sln add</c> lists it, as the guides say.
+    /// </summary>
+    [Fact]
+    public async Task A_project_added_later_is_built_at_the_root_only_after_dotnet_sln_add()
+    {
+        using var workspace = await Workspace.GenerateWithAsync(["--shape", "modular-monolith", "--transport", "rest"]);
+        const string project = "src/Modules/Billing/Acme.Ledger.Modules.Billing.Contracts/Acme.Ledger.Modules.Billing.Contracts.csproj";
+        workspace.Write(project, "<Project Sdk=\"Microsoft.NET.Sdk\"></Project>\n");
+        workspace.Write("src/Modules/Billing/Acme.Ledger.Modules.Billing.Contracts/Broken.cs", "namespace Acme.Ledger.Modules.Billing.Contracts;\n\npublic sealed class Broken { public int Value => \"not an int\"; }\n");
+
+        var before = await workspace.RunAtRootAsync("build", "--configuration", "Release", "-nodeReuse:false");
+        var added = await workspace.RunAtRootAsync("sln", "add", project);
+        var after = await workspace.RunAtRootAsync("build", "--configuration", "Release", "-nodeReuse:false");
+
+        Assert.True(before.ExitCode == 0, "The root build failed before the project was listed:\n" + before.Output);
+        Assert.True(added.ExitCode == 0, "dotnet sln add failed:\n" + added.Output);
+        Assert.Contains(project, workspace.SolutionProjects());
+        Assert.NotEqual(0, after.ExitCode);
+        Assert.Contains("Broken.cs", after.Output, StringComparison.Ordinal);
+    }
+
     /// <summary>The control of the test above: without its solution file, the root build has nothing to build.</summary>
     [Fact]
     public async Task Without_its_solution_file_a_generated_backend_does_not_build_from_its_root()

@@ -14,7 +14,8 @@ Use when the plan is agreed and the module needs its structure, before business 
    project only if other modules will call this one. For `service`, use the existing top-level
    projects. Follow `src/Modules/README.md`, which also explains why: the compiler guards the boundary
    between bounded contexts (Simon Brown's *package by component*), and architecture tests guard the
-   layer folders.
+   layer folders. Add each new project to the solution at the root with `dotnet sln add <project>`, its tests
+   included: `dotnet test` at the root runs only what the solution lists.
 2. `Domain/` holds aggregates, child entities (`Entity<TId>`), value objects (`ValueObject` or a
    `record`), business rules (`BusinessRule`) and domain events, and uses nothing but `MPCore.Domain`. If a
    domain type needs `DbContext`, ASP.NET or a broker, the model is wrong.

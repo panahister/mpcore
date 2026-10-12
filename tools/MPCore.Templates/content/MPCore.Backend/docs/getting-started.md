@@ -39,6 +39,13 @@ dotnet restore
 dotnet build --configuration Release
 ```
 
+The solution lists the projects that were generated. A project you add later, a module's projects or a test
+project, is not in it until you add it, and `dotnet build` and `dotnet test` at the root skip what is not listed:
+
+```bash
+dotnet sln add src/Modules/<Context>/<Product>.Modules.<Context>/<Product>.Modules.<Context>.csproj
+```
+
 ## Test
 
 ```bash

@@ -30,6 +30,16 @@ src/Modules/<Context>/
 
 Namespaces follow the folders: `<Product>.Modules.<Context>.Application.Commands`, and so on.
 
+**Add the projects to the solution.** The solution at the root lists the projects generated with the
+repository, and a module is not among them. The host reaches its main project through a reference, so the root
+build compiles it; its Contracts project and its tests are reached by nothing, and `dotnet test` at the root runs
+only the tests the solution lists. Add each new project, from the root:
+
+```bash
+dotnet sln add src/Modules/<Context>/<Product>.Modules.<Context>/<Product>.Modules.<Context>.csproj
+dotnet sln add src/Modules/<Context>/<Product>.Modules.<Context>.Contracts/<Product>.Modules.<Context>.Contracts.csproj
+```
+
 Dependencies:
 
 - A module references `MPCore.*` abstraction packages, its own Contracts project, and the Contracts
