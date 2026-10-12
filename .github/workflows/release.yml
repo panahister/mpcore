@@ -132,6 +132,17 @@ jobs:
           fi
       - name: A changed cohort moves its version (ADR-010)
         run: ./eng/check-version-moved.sh
+      # A reader installs what README names. A release that README does not name in its install lines and its
+      # release-notes links is refused; the self-test first proves the check refuses a README that names another
+      # version. README names releases only, so a prerelease of main is not checked.
+      - name: README names the version to be published
+        run: |
+          ./eng/check-readme-names-version.sh --self-test
+          if [ -n "${{ steps.version.outputs.suffix }}" ]; then
+            echo "a prerelease of main ($VERSION): README names releases only, so it is not checked"
+          else
+            ./eng/check-readme-names-version.sh "$VERSION"
+          fi
       - name: The version is not on nuget.org yet
         run: |
           status="$(curl -s -o /dev/null -w '%{http_code}' "https://api.nuget.org/v3-flatcontainer/mpcore.domain/$VERSION/mpcore.domain.nuspec")"

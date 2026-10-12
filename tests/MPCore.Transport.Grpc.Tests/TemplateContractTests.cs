@@ -310,6 +310,22 @@ public sealed class TemplateContractTests
     }
 
     [Fact]
+    public void The_release_gate_refuses_a_release_that_the_README_does_not_name()
+    {
+        // A reader installs what README names. The job that verifies, which the job that publishes needs, first
+        // proves that the check refuses a README naming another version, then checks a release before anything
+        // is built.
+        var text = File.ReadAllText(Path.Combine(RepositoryRoot, ".github/workflows/release.yml"));
+        var before = text[..text.IndexOf("\n  publish:\n", StringComparison.Ordinal)];
+        var check = before.IndexOf("./eng/check-readme-names-version.sh \"$VERSION\"", StringComparison.Ordinal);
+
+        Assert.True(File.Exists(Path.Combine(RepositoryRoot, "eng/check-readme-names-version.sh")));
+        Assert.Contains("./eng/check-readme-names-version.sh --self-test", before, StringComparison.Ordinal);
+        Assert.True(check >= 0, "release.yml does not check that README names the release");
+        Assert.True(check < before.IndexOf("dotnet build", StringComparison.Ordinal), "release.yml checks README after it builds");
+    }
+
+    [Fact]
     public void The_slow_tests_run_in_a_job_of_their_own_and_the_release_gate_runs_every_test()
     {
         // Generating a backend and building it, and packing a package inside a test, take minutes and use the

@@ -33,6 +33,9 @@ A commit of `main` may also be published as a prerelease, `<declared>-main.<n>`,
    declared in five places, and `TemplateContractTests` fails when they disagree:
    `src/Directory.Build.props`, the two tool project files, `template.json` (twice) and
    `MPCoreCli.CohortVersionValue`. The READMEs of the two tools name it too, and the test reads the CLI's.
+   The commit that is released also makes the repository's `README.md` name it, in its install lines and its
+   release-notes links, and drops "(not yet released)" from the title of its notes: `release.yml` refuses to
+   publish a release that README does not name (`eng/check-readme-names-version.sh`).
 2. Locked restore, Release build with warnings as errors, full test run with the integration variables
    set (`eng/compose.test.yaml`). Report real numbers.
 3. Generate both shapes from the template and build them.
