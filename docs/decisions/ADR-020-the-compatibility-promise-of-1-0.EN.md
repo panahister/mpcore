@@ -1,6 +1,6 @@
 # ADR-020 — The compatibility promise of 1.0
 
-- Status: Proposed; pending owner acceptance
+- Status: Accepted, 2026-10-12, approved by the repository owner
 - Date: 2026-10-12
 - Extends: ADR-010 (immutable cohort identity and the template compatibility gate), ADR-004 (packaging and tooling)
 - The rules themselves are in the [Versioning section of README](../../README.md#versioning). This record gives the

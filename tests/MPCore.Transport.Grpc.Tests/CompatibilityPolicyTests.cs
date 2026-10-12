@@ -83,6 +83,28 @@ public sealed class CompatibilityPolicyTests
         Assert.Empty(RemovalsAllowed([], Version.Parse("1.0.0"), Version.Parse("1.0.1")));
     }
 
+    [Fact]
+    public void No_decision_record_reads_proposed()
+    {
+        var problems = ProposedIn(Directory.GetFiles(Path.Combine(RepositoryRoot, "docs/decisions"), "*.md").ToDictionary(static path => Path.GetFileName(path), File.ReadAllText));
+
+        Assert.True(problems.Count == 0, "A decision that reads proposed is a decision nobody has made:\n" + string.Join('\n', problems));
+    }
+
+    [Fact]
+    public void A_record_or_an_addendum_that_reads_proposed_is_found()
+    {
+        var problems = ProposedIn(new Dictionary<string, string>
+        {
+            ["ADR-900.md"] = "# ADR-900\n\n- Status: Proposed; pending owner acceptance\n",
+            ["ADR-901.md"] = "# ADR-901\n\n- Status: Accepted, 2026-10-12\n\n## Addendum 2026-10-12: a thing (proposed; pending owner acceptance)\n",
+            ["ADR-902.md"] = "# ADR-902\n\n- Status: Accepted, 2026-10-12\n\nStatus: proposed. It changes the first point.\n",
+            ["ADR-903.md"] = "# ADR-903\n\n- Status: Accepted, 2026-10-12\n\n## Addendum 2026-10-12: a thing (accepted by the repository owner, 2026-10-12)\n",
+        });
+
+        Assert.Equal(["ADR-900.md", "ADR-901.md", "ADR-902.md"], problems.Select(static problem => problem.Split(':')[0]).ToArray());
+    }
+
     [Theory]
     [InlineData("tools/MPCore.Templates/content/MPCore.Backend/docs/getting-started.md")]
     [InlineData(".mpcore/skills/mpcore-evolve-package/SKILL.md")]
@@ -155,6 +177,11 @@ public sealed class CompatibilityPolicyTests
 
         return removed;
     }
+
+    private static List<string> ProposedIn(IReadOnlyDictionary<string, string> records) =>
+        [.. records.OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+            .Where(static pair => Regex.IsMatch(pair.Value, @"^(?:- )?Status: proposed|\(proposed[;)]", RegexOptions.Multiline | RegexOptions.IgnoreCase))
+            .Select(static pair => $"{pair.Key}: reads proposed")];
 
     private static List<string> RemovalsAllowed(IEnumerable<string> removed, Version baseline, Version declared) =>
         declared.Major > baseline.Major ? [] : [.. removed];

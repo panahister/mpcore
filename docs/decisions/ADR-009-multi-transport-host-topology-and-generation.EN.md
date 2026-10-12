@@ -27,9 +27,14 @@ Resulting names, for `mpcore new backend --organization Acme --component Catalog
 | gRPC service namespace | `Acme.Catalog.Api.Grpc.Services` | not generated | `Acme.Catalog.Api.Grpc.Services` |
 | REST endpoint namespace | not generated | `Acme.Catalog.Api.Rest.Endpoints` | `Acme.Catalog.Api.Rest.Endpoints` |
 | Proto package / directory | `acme.catalog.v1` in `Protos/` | not generated | `acme.catalog.v1` in `Protos/` |
-| Solution | `Acme.Catalog.Backend.sln` | same | same |
+| Solution | `Acme.Catalog.slnx` | same | same |
 
 Other generated project names (`Acme.Catalog.Domain`, `Acme.Catalog.Application`, `Acme.Catalog.Infrastructure`) are unchanged.
+
+**Correction, 2026-10-12.** As accepted, this table named the solution `Acme.Catalog.Backend.sln`. The template has generated
+`Acme.Catalog.slnx` since 0.10.1, which lists exactly the projects it generated, and `mpcore new backend` created a
+`.sln` of its own beside it, so that a root with two solution files could not be built. From 1.0.0 the tool leaves the
+`.slnx` alone. The owner authorized this in-place correction on 2026-10-12.
 
 The rename is a breaking change to generated output only. MP Core packages are unaffected, and the framework is in an unpublished internal alpha, so no consumer migration is owed.
 
