@@ -49,6 +49,11 @@ A commit of `main` may also be published as a prerelease, `<declared>-main.<n>`,
    ```
 
    Never regenerate an existing manifest; refreezing over substituted bytes defeats the gate.
+
+   The sums are of the packages as the release run built them. nuget.org adds its repository signature
+   (`.signature.p7s`) to every package after upload, so a downloaded file has another SHA-256. To check a
+   download, verify its signatures with `dotnet nuget verify --all <file>` and compare its entries other than
+   `.signature.p7s` with the built package. It holds for 0.9.3 as well.
 7. Seed the next API baseline by copying the cohort into `artifacts/packages`, and name it in
    `MPCoreBaselineVersion`.
 8. Stop. Publication, commit, tag and push each require explicit authority. To publish, the owner asks
