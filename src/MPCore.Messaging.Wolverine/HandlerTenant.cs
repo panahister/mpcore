@@ -15,7 +15,7 @@ public sealed class HandlerTenantScope : IDisposable
     private HandlerTenantScope(IDisposable? scope) => _scope = scope;
 
     /// <summary>The tenant the message names in its <see cref="MessageHeaders.TenantId"/> header, or null.</summary>
-    public static string? TenantOf(Envelope envelope)
+    internal static string? TenantOf(Envelope envelope)
     {
         ArgumentNullException.ThrowIfNull(envelope);
         return envelope.Headers.TryGetValue(MessageHeaders.TenantId, out var tenant) && !string.IsNullOrWhiteSpace(tenant)

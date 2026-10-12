@@ -42,13 +42,11 @@ MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher.PublishAsync(object! 
 MPCore.Messaging.Wolverine.WolverineTenantMessagePublisher.WolverineTenantMessagePublisher(Wolverine.IMessageBus! messageBus, MPCore.Tenancy.ITenantContext? tenants = null) -> void
 static MPCore.Messaging.Wolverine.HandlerActorMiddleware.Before(Wolverine.Envelope! envelope) -> MPCore.Messaging.Wolverine.HandlerActorScope!
 static MPCore.Messaging.Wolverine.HandlerActorMiddleware.Finally(MPCore.Messaging.Wolverine.HandlerActorScope! actor) -> void
-static MPCore.Messaging.Wolverine.HandlerActorScope.ActorName(Wolverine.Envelope! envelope) -> string!
 static MPCore.Messaging.Wolverine.HandlerAttemptCompletion.After(MPCore.Messaging.Wolverine.HandlerAttempt! attempt) -> void
 static MPCore.Messaging.Wolverine.HandlerAttemptMiddleware.Before() -> MPCore.Messaging.Wolverine.HandlerAttempt!
 static MPCore.Messaging.Wolverine.HandlerAttemptMiddleware.Finally(MPCore.Messaging.Wolverine.HandlerAttempt! attempt, Wolverine.Runtime.MessageContext! context) -> System.Threading.Tasks.ValueTask
 static MPCore.Messaging.Wolverine.HandlerTenantMiddleware.Before(Wolverine.Envelope! envelope) -> MPCore.Messaging.Wolverine.HandlerTenantScope!
 static MPCore.Messaging.Wolverine.HandlerTenantMiddleware.Finally(MPCore.Messaging.Wolverine.HandlerTenantScope! tenant) -> void
-static MPCore.Messaging.Wolverine.HandlerTenantScope.TenantOf(Wolverine.Envelope! envelope) -> string?
 static MPCore.Messaging.Wolverine.MessageInboxExtensions.UseMPCoreInbox(this Wolverine.WolverineOptions! options) -> Wolverine.WolverineOptions!
 static MPCore.Messaging.Wolverine.MessageInboxMiddleware.BeforeAsync(MPCore.Domain.Events.IIntegrationEvent! message, MPCore.Messaging.Abstractions.IMessageInbox! inbox, MPCore.Messaging.Wolverine.WolverineFoundationOptions! foundation, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Wolverine.HandlerContinuation>!
 static MPCore.Messaging.Wolverine.ResultFailureRollback.After(MPCore.Application.Results.Result! result, MPCore.Persistence.Abstractions.IUnitOfWork! unitOfWork) -> void

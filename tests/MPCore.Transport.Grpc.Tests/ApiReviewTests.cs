@@ -15,7 +15,7 @@ public sealed partial class ApiReviewTests
     [Fact]
     public void The_review_the_inventories_and_the_suppressions_say_the_same_thing()
     {
-        var problems = Check(Review(), PublicTypes(), Suppressions());
+        var problems = Check(Review(), PublicTypes(), Suppressions(), MemberRows(), MemberSuppressions(), PublicMembers());
 
         Assert.True(problems.Count == 0, "docs/api/1.0-review.md, the PublicAPI.Shipped.txt files and the CompatibilitySuppressions.xml files disagree:\n" + string.Join('\n', problems));
     }
@@ -53,7 +53,7 @@ public sealed partial class ApiReviewTests
         var rows = Review();
         var left = rows.First(static row => row.Decision == "keep");
 
-        var problems = Check([.. rows.Where(row => row != left)], PublicTypes(), Suppressions());
+        var problems = Check([.. rows.Where(row => row != left)], PublicTypes(), Suppressions(), MemberRows(), MemberSuppressions(), PublicMembers());
 
         Assert.Contains(problems, problem => problem.Contains(left.Type, StringComparison.Ordinal) && problem.Contains("no row", StringComparison.Ordinal));
     }
@@ -65,7 +65,7 @@ public sealed partial class ApiReviewTests
         var internalRow = rows.First(static row => row.Decision == "make internal");
         var stillPublic = new HashSet<string>(PublicTypes()) { internalRow.Type };
 
-        var problems = Check(rows, stillPublic, Suppressions());
+        var problems = Check(rows, stillPublic, Suppressions(), MemberRows(), MemberSuppressions(), PublicMembers());
 
         Assert.Contains(problems, problem => problem.Contains(internalRow.Type, StringComparison.Ordinal) && problem.Contains("still public", StringComparison.Ordinal));
     }
@@ -81,11 +81,79 @@ public sealed partial class ApiReviewTests
         var withoutIt = new HashSet<string>(suppressions.Where(suppression => suppression != key));
         var withAnother = new HashSet<string>(suppressions) { "MPCore.Domain.NoSuchType" };
 
-        Assert.Contains(Check(rows, PublicTypes(), withoutIt), problem => problem.Contains(internalRow.Type, StringComparison.Ordinal) && problem.Contains("no suppression", StringComparison.Ordinal));
-        Assert.Contains(Check(rows, PublicTypes(), withAnother), problem => problem.Contains("MPCore.Domain.NoSuchType", StringComparison.Ordinal) && problem.Contains("no row", StringComparison.Ordinal));
+        Assert.Contains(Check(rows, PublicTypes(), withoutIt, MemberRows(), MemberSuppressions(), PublicMembers()), problem => problem.Contains(internalRow.Type, StringComparison.Ordinal) && problem.Contains("no suppression", StringComparison.Ordinal));
+        Assert.Contains(Check(rows, PublicTypes(), withAnother, MemberRows(), MemberSuppressions(), PublicMembers()), problem => problem.Contains("MPCore.Domain.NoSuchType", StringComparison.Ordinal) && problem.Contains("no row", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void A_member_made_internal_is_gone_from_the_inventory_and_has_a_suppression_and_the_other_way_round()
+    {
+        var problems = Check(Review(), PublicTypes(), Suppressions(), MemberRows(), MemberSuppressions(), PublicMembers());
+
+        Assert.True(problems.Count == 0, string.Join('\n', problems));
+        Assert.NotEmpty(MemberRows());
+    }
+
+    [Fact]
+    public void A_member_that_is_still_public_and_a_member_break_without_a_row_or_a_suppression_are_found()
+    {
+        var rows = Review();
+        var members = MemberRows();
+        var gone = members.First();
+        var stillPublic = new HashSet<string>(PublicMembers()) { gone };
+
+        var public_ = Check(rows, PublicTypes(), Suppressions(), members, MemberSuppressions(), stillPublic);
+        var noSuppression = Check(rows, PublicTypes(), Suppressions(), members, new HashSet<string>(MemberSuppressions().Where(suppression => suppression != gone)), PublicMembers());
+        var noRow = Check(rows, PublicTypes(), Suppressions(), members, new HashSet<string>(MemberSuppressions()) { "MPCore.Domain.Rules.BusinessRule.IsValidCode" }, PublicMembers());
+
+        Assert.Contains(public_, problem => problem.Contains(gone, StringComparison.Ordinal) && problem.Contains("still public", StringComparison.Ordinal));
+        Assert.Contains(noSuppression, problem => problem.Contains(gone, StringComparison.Ordinal) && problem.Contains("no suppression", StringComparison.Ordinal));
+        Assert.Contains(noRow, static problem => problem.Contains("BusinessRule.IsValidCode", StringComparison.Ordinal) && problem.Contains("no row", StringComparison.Ordinal));
     }
 
     private sealed record Row(string Package, string Type, string Decision);
+
+    /// <summary>The members the review made internal: <c>Namespace.Type.Member</c>, from the second table.</summary>
+    private static HashSet<string> MemberRows()
+    {
+        var text = File.ReadAllText(Path.Combine(RepositoryRoot, "docs/api/1.0-review.md"));
+        var start = text.IndexOf("## The members made internal", StringComparison.Ordinal);
+        Assert.True(start >= 0, "The review has no table of the members made internal.");
+        return [.. Regex.Matches(text[start..], @"^\| `MPCore\.[^`]+` \| `(?<member>[^`]+)` \|", RegexOptions.Multiline).Select(static match => match.Groups["member"].Value)];
+    }
+
+    /// <summary>The members of the Shipped inventories, as <c>Namespace.Type.Member</c>, without modifiers or parameters.</summary>
+    private static HashSet<string> PublicMembers()
+    {
+        var members = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var file in Directory.GetFiles(Path.Combine(RepositoryRoot, "src"), "PublicAPI.Shipped.txt", SearchOption.AllDirectories))
+        {
+            foreach (var line in File.ReadAllLines(file).Skip(1))
+            {
+                if (line.Contains(" -> ", StringComparison.Ordinal) || line.Contains('('))
+                {
+                    var body = Regex.Replace(line, @"^(?:(?:static|virtual|override|abstract|const|readonly|sealed|new|extern)\s+)+", string.Empty);
+                    members.Add(Regex.Match(body, @"^[A-Za-z0-9_.<>,]+?(?=\(| -> | = |\.get|\.set|\.init)").Value);
+                }
+            }
+        }
+
+        return members;
+    }
+
+    private static HashSet<string> MemberSuppressions()
+    {
+        var targets = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var file in Directory.GetFiles(Path.Combine(RepositoryRoot, "src"), "CompatibilitySuppressions.xml", SearchOption.AllDirectories))
+        {
+            foreach (Match match in Regex.Matches(File.ReadAllText(file), @"<DiagnosticId>CP0002</DiagnosticId>\s*<Target>M:(?<target>[^<(]+)"))
+            {
+                targets.Add(match.Groups["target"].Value);
+            }
+        }
+
+        return targets;
+    }
 
     private static List<Row> Review()
     {
@@ -133,9 +201,27 @@ public sealed partial class ApiReviewTests
 
     private static string Normal(string type) => Regex.Replace(Regex.Replace(type, "<.*$", string.Empty), "`\\d+$", string.Empty);
 
-    private static List<string> Check(List<Row> rows, HashSet<string> publicTypes, HashSet<string> suppressions)
+    private static List<string> Check(List<Row> rows, HashSet<string> publicTypes, HashSet<string> suppressions, HashSet<string> memberRows, HashSet<string> memberSuppressions, HashSet<string> publicMembers)
     {
         var problems = new List<string>();
+        foreach (var member in memberRows)
+        {
+            if (publicMembers.Contains(member))
+            {
+                problems.Add($"{member} is decided to become internal and is still public.");
+            }
+
+            if (!memberSuppressions.Contains(member))
+            {
+                problems.Add($"{member} is decided to become internal and has no suppression of the break.");
+            }
+        }
+
+        foreach (var suppression in memberSuppressions.Where(suppression => !memberRows.Contains(suppression)))
+        {
+            problems.Add($"{suppression} has a member suppression and the table of members has no row for it.");
+        }
+
         var kept = rows.Where(static row => row.Decision == "keep").Select(static row => row.Type).ToHashSet(StringComparer.Ordinal);
         var gone = rows.Where(static row => row.Decision != "keep").Select(static row => Normal(row.Type)).ToHashSet(StringComparer.Ordinal);
 

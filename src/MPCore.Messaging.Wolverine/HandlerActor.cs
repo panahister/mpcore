@@ -14,7 +14,7 @@ public sealed class HandlerActorScope : IDisposable
     private HandlerActorScope(IDisposable? scope) => _scope = scope;
 
     /// <summary>The name used for a handler's system actor: the message type's short name.</summary>
-    public static string ActorName(Envelope envelope)
+    internal static string ActorName(Envelope envelope)
     {
         ArgumentNullException.ThrowIfNull(envelope);
         return envelope.Message?.GetType().Name ?? envelope.MessageType ?? "message";
