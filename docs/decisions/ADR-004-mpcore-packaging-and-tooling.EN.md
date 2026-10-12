@@ -64,3 +64,37 @@ ability to publish, and so does an attacker who does not have it.
 
 **What stays.** A published version is never built again (ADR-010). Without the choice to publish, a run
 of the workflow is a rehearsal, and consumes nothing.
+
+## Addendum 2026-10-12: the command line tool and the template have a recorded contract (proposed; pending owner acceptance)
+
+The runtime packages have their API checked against the last published version at every pack (ADR-010). The
+command line tool and the template are consumed too, and nothing recorded what a consumer may rely on in them: an
+option could be renamed, a default changed or a generated file dropped in a patch version and no test would say.
+
+**Decision.** `docs/contracts/cli.json` and `docs/contracts/template.json` record, for the tool, every command,
+option, default and probed exit code and the members of the manifest it writes, and, for the template, every
+parameter and the files generated for each shape and transport. Tests generate both by running the built tool and
+the template, and fail when the code and the file differ; they also fail when a fact the file at the tag of the
+baseline version stated is gone, unless the declared version may break it (a new minor version while the major
+version is `0`). The rule and the way to update the files are in `docs/contracts/README.md`.
+
+| Rule | Held by |
+|---|---|
+| The file is what the code declares; an addition updates the file in the same commit | `GeneratedBackendTests.The_checked_in_cli_contract_is_what_the_tool_declares`, `The_checked_in_template_contract_is_what_the_template_declares_and_generates` |
+| A fact of the published contract is not dropped or changed without a version that may break it | `ContractCompatibilityTests` |
+| The usage of the tool and its refusals name the same values for each option | the same generation: it fails when they differ |
+
+**Sources.** Michael Feathers, *Working Effectively with Legacy Code* (2004): a characterization test records what
+code does by running it, so that a change to it is seen. Llewellyn Falco, *Approval Tests*: the recorded result is a
+file in the repository that a person reads in the diff. *Semantic Versioning 2.0.0*, items 1, 4 and 8: software
+that uses it declares a public API; anything may change in a version 0.y.z; from 1.0 on, an incompatible change
+increments the major version.
+
+**Not recorded.** The words of messages, and exit codes of situations the tests cannot set up. The files say so.
+
+**Alternatives that were not taken.**
+
+| Alternative | Why not |
+|---|---|
+| Describe the options in a table that the tool's parser also reads, and print the contract from it | The right end state, and a rewrite of two imperative commands in a patch version; the probes find a disagreement between usage and validation already |
+| Write the files by hand | A file that is not generated drifts from the code, which is the failure it exists to catch |

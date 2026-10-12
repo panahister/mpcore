@@ -1,0 +1,231 @@
+{
+  "template": "mpcore-backend",
+  "parameters": {
+    "aiTooling": {
+      "datatype": "choice",
+      "required": false,
+      "default": "both",
+      "choices": [
+        "both",
+        "claude",
+        "codex",
+        "none"
+      ]
+    },
+    "businessAudit": {
+      "datatype": "choice",
+      "required": false,
+      "default": "none",
+      "choices": [
+        "none",
+        "postgresql"
+      ]
+    },
+    "cache": {
+      "datatype": "choice",
+      "required": false,
+      "default": "memory",
+      "choices": [
+        "hybrid",
+        "memory",
+        "none",
+        "redis"
+      ]
+    },
+    "component": {
+      "datatype": "text",
+      "required": false,
+      "default": "Backend"
+    },
+    "messaging": {
+      "datatype": "choice",
+      "required": false,
+      "default": "kafka",
+      "choices": [
+        "kafka",
+        "none",
+        "rabbitmq"
+      ]
+    },
+    "mpcoreVersion": {
+      "datatype": "text",
+      "required": false,
+      "default": "\u003Ccohort version\u003E"
+    },
+    "organization": {
+      "datatype": "text",
+      "required": false,
+      "default": "MPCore"
+    },
+    "securityAudience": {
+      "datatype": "text",
+      "required": false,
+      "default": "replace-me"
+    },
+    "securityAuthority": {
+      "datatype": "text",
+      "required": false,
+      "default": "https://identity.invalid/realms/replace-me"
+    },
+    "shape": {
+      "datatype": "choice",
+      "required": false,
+      "default": "service",
+      "choices": [
+        "modular-monolith",
+        "service"
+      ]
+    },
+    "templateVersion": {
+      "datatype": "text",
+      "required": false,
+      "default": "\u003Ccohort version\u003E"
+    },
+    "timeseries": {
+      "datatype": "choice",
+      "required": false,
+      "default": "none",
+      "choices": [
+        "none",
+        "timescale"
+      ]
+    },
+    "transport": {
+      "datatype": "choice",
+      "required": true,
+      "choices": [
+        "both",
+        "grpc",
+        "rest"
+      ]
+    }
+  },
+  "files": {
+    "common": [
+      ".agents/skills/mpcore-apply-business-audit/SKILL.md",
+      ".agents/skills/mpcore-apply-observability/SKILL.md",
+      ".agents/skills/mpcore-apply-security/SKILL.md",
+      ".agents/skills/mpcore-configure-messaging/SKILL.md",
+      ".agents/skills/mpcore-design-transport-contract/SKILL.md",
+      ".agents/skills/mpcore-implement-ddd-module/SKILL.md",
+      ".agents/skills/mpcore-implement-vertical-slice/SKILL.md",
+      ".agents/skills/mpcore-integrate-contexts/SKILL.md",
+      ".agents/skills/mpcore-plan-bounded-context/SKILL.md",
+      ".agents/skills/mpcore-verify-business-behavior/SKILL.md",
+      ".claude/skills/mpcore-apply-business-audit/SKILL.md",
+      ".claude/skills/mpcore-apply-observability/SKILL.md",
+      ".claude/skills/mpcore-apply-security/SKILL.md",
+      ".claude/skills/mpcore-configure-messaging/SKILL.md",
+      ".claude/skills/mpcore-design-transport-contract/SKILL.md",
+      ".claude/skills/mpcore-implement-ddd-module/SKILL.md",
+      ".claude/skills/mpcore-implement-vertical-slice/SKILL.md",
+      ".claude/skills/mpcore-integrate-contexts/SKILL.md",
+      ".claude/skills/mpcore-plan-bounded-context/SKILL.md",
+      ".claude/skills/mpcore-verify-business-behavior/SKILL.md",
+      ".mpcore-template-version",
+      ".mpcore/skills/BUNDLE.json",
+      ".mpcore/skills/INVENTORY.md",
+      ".mpcore/skills/mpcore-apply-business-audit/SKILL.md",
+      ".mpcore/skills/mpcore-apply-observability/SKILL.md",
+      ".mpcore/skills/mpcore-apply-security/SKILL.md",
+      ".mpcore/skills/mpcore-configure-messaging/SKILL.md",
+      ".mpcore/skills/mpcore-design-transport-contract/SKILL.md",
+      ".mpcore/skills/mpcore-implement-ddd-module/SKILL.md",
+      ".mpcore/skills/mpcore-implement-vertical-slice/SKILL.md",
+      ".mpcore/skills/mpcore-integrate-contexts/SKILL.md",
+      ".mpcore/skills/mpcore-plan-bounded-context/SKILL.md",
+      ".mpcore/skills/mpcore-verify-business-behavior/SKILL.md",
+      "\u003CProduct\u003E.slnx",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "Directory.Build.props",
+      "docs/ai-skills.md",
+      "docs/architecture.md",
+      "docs/capabilities.md",
+      "docs/development-workflow.md",
+      "docs/examples/README.md",
+      "docs/examples/reservation-cancellation.md",
+      "docs/getting-started.md",
+      "README.md",
+      "src/\u003CProduct\u003E.Api/\u003CProduct\u003E.Api.csproj",
+      "src/\u003CProduct\u003E.Api/appsettings.Development.json",
+      "src/\u003CProduct\u003E.Api/appsettings.json",
+      "src/\u003CProduct\u003E.Api/Hosting/AppDbContextDesignTimeFactory.cs",
+      "src/\u003CProduct\u003E.Api/Hosting/DeveloperEndpoints.cs",
+      "src/\u003CProduct\u003E.Api/Hosting/HandlerAssemblies.cs",
+      "src/\u003CProduct\u003E.Api/Hosting/HostHealthChecks.cs",
+      "src/\u003CProduct\u003E.Api/Hosting/TransportEndpointGuard.cs",
+      "src/\u003CProduct\u003E.Api/Program.cs",
+      "src/\u003CProduct\u003E.Infrastructure/\u003CProduct\u003E.Infrastructure.csproj",
+      "src/\u003CProduct\u003E.Infrastructure/DependencyInjection.cs",
+      "src/\u003CProduct\u003E.Infrastructure/Persistence/AppDbContext.cs",
+      "tests/\u003CProduct\u003E.Tests/\u003CProduct\u003E.Tests.csproj",
+      "tests/\u003CProduct\u003E.Tests/HostHealthChecksTests.cs",
+      "tests/\u003CProduct\u003E.Tests/QueryRules.cs"
+    ],
+    "by shape and transport": {
+      "modular-monolith/both": {
+        "also": [
+          "src/\u003CProduct\u003E.Api/Grpc/Services/PlatformProbeService.cs",
+          "src/\u003CProduct\u003E.Api/Hosting/TransportPortSeparation.cs",
+          "src/\u003CProduct\u003E.Api/Protos/platform_probe.proto",
+          "src/\u003CProduct\u003E.Api/Rest/Endpoints/PlatformProbeEndpoints.cs",
+          "src/Modules/README.md",
+          "tests/\u003CProduct\u003E.Tests/ModuleRulesTests.cs"
+        ]
+      },
+      "modular-monolith/grpc": {
+        "also": [
+          "src/\u003CProduct\u003E.Api/Grpc/Services/PlatformProbeService.cs",
+          "src/\u003CProduct\u003E.Api/Protos/platform_probe.proto",
+          "src/Modules/README.md",
+          "tests/\u003CProduct\u003E.Tests/ModuleRulesTests.cs"
+        ]
+      },
+      "modular-monolith/rest": {
+        "also": [
+          "src/\u003CProduct\u003E.Api/Rest/Endpoints/PlatformProbeEndpoints.cs",
+          "src/Modules/README.md",
+          "tests/\u003CProduct\u003E.Tests/ModuleRulesTests.cs"
+        ]
+      },
+      "service/both": {
+        "also": [
+          "src/\u003CProduct\u003E.Api/Grpc/Services/PlatformProbeService.cs",
+          "src/\u003CProduct\u003E.Api/Hosting/TransportPortSeparation.cs",
+          "src/\u003CProduct\u003E.Api/Protos/platform_probe.proto",
+          "src/\u003CProduct\u003E.Api/Rest/Endpoints/PlatformProbeEndpoints.cs",
+          "src/\u003CProduct\u003E.Application/\u003CProduct\u003E.Application.csproj",
+          "src/\u003CProduct\u003E.Application/AssemblyReference.cs",
+          "src/\u003CProduct\u003E.Application/DependencyInjection.cs",
+          "src/\u003CProduct\u003E.Domain/\u003CProduct\u003E.Domain.csproj",
+          "src/\u003CProduct\u003E.Domain/AssemblyReference.cs",
+          "tests/\u003CProduct\u003E.Tests/ArchitectureTests.cs"
+        ]
+      },
+      "service/grpc": {
+        "also": [
+          "src/\u003CProduct\u003E.Api/Grpc/Services/PlatformProbeService.cs",
+          "src/\u003CProduct\u003E.Api/Protos/platform_probe.proto",
+          "src/\u003CProduct\u003E.Application/\u003CProduct\u003E.Application.csproj",
+          "src/\u003CProduct\u003E.Application/AssemblyReference.cs",
+          "src/\u003CProduct\u003E.Application/DependencyInjection.cs",
+          "src/\u003CProduct\u003E.Domain/\u003CProduct\u003E.Domain.csproj",
+          "src/\u003CProduct\u003E.Domain/AssemblyReference.cs",
+          "tests/\u003CProduct\u003E.Tests/ArchitectureTests.cs"
+        ]
+      },
+      "service/rest": {
+        "also": [
+          "src/\u003CProduct\u003E.Api/Rest/Endpoints/PlatformProbeEndpoints.cs",
+          "src/\u003CProduct\u003E.Application/\u003CProduct\u003E.Application.csproj",
+          "src/\u003CProduct\u003E.Application/AssemblyReference.cs",
+          "src/\u003CProduct\u003E.Application/DependencyInjection.cs",
+          "src/\u003CProduct\u003E.Domain/\u003CProduct\u003E.Domain.csproj",
+          "src/\u003CProduct\u003E.Domain/AssemblyReference.cs",
+          "tests/\u003CProduct\u003E.Tests/ArchitectureTests.cs"
+        ]
+      }
+    }
+  }
+}

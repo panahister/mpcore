@@ -1,0 +1,311 @@
+{
+  "tool": "mpcore",
+  "commands": {
+    "configure": {
+      "options": {
+        "ai-tooling": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "both",
+            "claude",
+            "codex",
+            "none"
+          ]
+        },
+        "apply": {
+          "kind": "flag",
+          "required": false
+        },
+        "business-audit": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "none",
+            "postgresql"
+          ]
+        },
+        "cache": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "hybrid",
+            "memory",
+            "none",
+            "redis"
+          ]
+        },
+        "mpcore-version": {
+          "kind": "value",
+          "required": false
+        },
+        "project": {
+          "kind": "value",
+          "required": true
+        },
+        "security-audience": {
+          "kind": "value",
+          "required": false
+        },
+        "security-authority": {
+          "kind": "value",
+          "required": false
+        },
+        "timeseries": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "none",
+            "timescale"
+          ]
+        }
+      }
+    },
+    "new backend": {
+      "options": {
+        "ai-tooling": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "both",
+            "claude",
+            "codex",
+            "none"
+          ],
+          "default": "both"
+        },
+        "business-audit": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "none",
+            "postgresql"
+          ],
+          "default": "none"
+        },
+        "cache": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "hybrid",
+            "memory",
+            "none",
+            "redis"
+          ],
+          "default": "memory"
+        },
+        "component": {
+          "kind": "value",
+          "required": true
+        },
+        "interactive": {
+          "kind": "flag",
+          "required": false
+        },
+        "list-presets": {
+          "kind": "flag",
+          "required": false
+        },
+        "messaging": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "kafka",
+            "none",
+            "rabbitmq"
+          ],
+          "default": "kafka"
+        },
+        "mpcore-version": {
+          "kind": "value",
+          "required": false,
+          "default": "\u003Ccohort version\u003E"
+        },
+        "non-interactive": {
+          "kind": "flag",
+          "required": false
+        },
+        "organization": {
+          "kind": "value",
+          "required": true
+        },
+        "output": {
+          "kind": "value",
+          "required": true
+        },
+        "preset": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "api",
+            "modular-monolith",
+            "service"
+          ]
+        },
+        "security-audience": {
+          "kind": "value",
+          "required": false
+        },
+        "security-authority": {
+          "kind": "value",
+          "required": false
+        },
+        "shape": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "modular-monolith",
+            "service"
+          ],
+          "default": "service"
+        },
+        "skip-verify": {
+          "kind": "flag",
+          "required": false
+        },
+        "timeseries": {
+          "kind": "choice",
+          "required": false,
+          "choices": [
+            "none",
+            "timescale"
+          ],
+          "default": "none"
+        },
+        "transport": {
+          "kind": "choice",
+          "required": true,
+          "choices": [
+            "both",
+            "grpc",
+            "rest"
+          ]
+        }
+      }
+    }
+  },
+  "manifest": {
+    "path": ".mpcore/template-manifest.json",
+    "schemaVersion": 4,
+    "members": {
+      "aiTooling": "string",
+      "businessAudit": "string",
+      "cache": "string",
+      "cliVersion": "string",
+      "component": "string",
+      "generatedAtUtc": "string",
+      "messaging": "string",
+      "mpcoreVersion": "string",
+      "organization": "string",
+      "productName": "string",
+      "schemaVersion": "number",
+      "shape": "string",
+      "templateVersion": "string",
+      "timeseries": "string",
+      "transport": "string"
+    }
+  },
+  "presets": {
+    "api": {
+      "business-audit": "none",
+      "cache": "memory",
+      "messaging": "none",
+      "shape": "service",
+      "transport": "rest"
+    },
+    "modular-monolith": {
+      "business-audit": "postgresql",
+      "cache": "hybrid",
+      "messaging": "rabbitmq",
+      "shape": "modular-monolith",
+      "transport": "rest"
+    },
+    "service": {
+      "business-audit": "postgresql",
+      "cache": "redis",
+      "messaging": "kafka",
+      "shape": "service",
+      "transport": "both"
+    }
+  },
+  "probes": {
+    "configure: --project is missing": {
+      "exitCode": 2
+    },
+    "configure: a value --ai-tooling does not accept": {
+      "exitCode": 2
+    },
+    "configure: a value --business-audit does not accept": {
+      "exitCode": 2
+    },
+    "configure: a value --cache does not accept": {
+      "exitCode": 2
+    },
+    "configure: a value --timeseries does not accept": {
+      "exitCode": 2
+    },
+    "configure: the directory is not a repository of MP Core": {
+      "exitCode": 3
+    },
+    "configure: the manifest has another schema version": {
+      "exitCode": 3
+    },
+    "configure: the plan changes nothing": {
+      "exitCode": 0
+    },
+    "configure: the plan switches the cache": {
+      "exitCode": 0
+    },
+    "configure: the transport cannot be changed": {
+      "exitCode": 5
+    },
+    "new backend: a name that is not PascalCase": {
+      "exitCode": 2
+    },
+    "new backend: a preset that does not exist": {
+      "exitCode": 2
+    },
+    "new backend: a repository is generated": {
+      "exitCode": 0
+    },
+    "new backend: a required option is missing": {
+      "exitCode": 2
+    },
+    "new backend: a value --ai-tooling does not accept": {
+      "exitCode": 2
+    },
+    "new backend: a value --business-audit does not accept": {
+      "exitCode": 2
+    },
+    "new backend: a value --cache does not accept": {
+      "exitCode": 2
+    },
+    "new backend: a value --messaging does not accept": {
+      "exitCode": 2
+    },
+    "new backend: a value --shape does not accept": {
+      "exitCode": 2
+    },
+    "new backend: a value --timeseries does not accept": {
+      "exitCode": 2
+    },
+    "new backend: a value --transport does not accept": {
+      "exitCode": 2
+    },
+    "new backend: a version range for MP Core": {
+      "exitCode": 2
+    },
+    "new backend: an authority that looks like a credential": {
+      "exitCode": 2
+    },
+    "new backend: list the presets": {
+      "exitCode": 0
+    },
+    "new backend: the output directory is not empty": {
+      "exitCode": 3
+    },
+    "no arguments": {
+      "exitCode": 2
+    }
+  }
+}
