@@ -53,7 +53,7 @@ public sealed partial class ApiBaselineGateTests : IDisposable
     }
 
     [Fact]
-    public async Task A_changed_public_member_fails_the_pack_against_the_baseline()
+    public async Task A_changed_public_member_fails_the_build_and_the_pack_against_the_baseline()
     {
         // A public property of the baseline made internal: the break the validation exists to catch.
         var file = Path.Combine(_mirror, "src", Project, "Rules/BusinessRules.cs");
@@ -62,11 +62,16 @@ public sealed partial class ApiBaselineGateTests : IDisposable
         Assert.Contains(declaration, source, StringComparison.Ordinal);
         File.WriteAllText(file, source.Replace(declaration, "internal static IReadOnlyDictionary<string, string> NoArguments", StringComparison.Ordinal));
 
-        var (exitCode, log) = await PackAsync();
+        // Two guards, each alone: the analyzer fails the build because the inventory lists a member that is gone
+        // (RS0017), and package validation fails the pack because the baseline had it (CP0002).
+        var (analyzerExit, analyzerLog) = await PackAsync();
+        var (validationExit, validationLog) = await PackAsync(onCi: false, "-p:RunAnalyzers=false");
 
-        Assert.NotEqual(0, exitCode);
-        Assert.Contains("CP0002", log, StringComparison.Ordinal);
-        Assert.Contains("NoArguments", log, StringComparison.Ordinal);
+        Assert.NotEqual(0, analyzerExit);
+        Assert.Contains("RS0017", analyzerLog, StringComparison.Ordinal);
+        Assert.NotEqual(0, validationExit);
+        Assert.Contains("CP0002", validationLog, StringComparison.Ordinal);
+        Assert.Contains("NoArguments", validationLog, StringComparison.Ordinal);
     }
 
     [Fact]
