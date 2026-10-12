@@ -109,6 +109,6 @@ public sealed partial record FailureMessageDescriptor
         RegexOptions.CultureInvariant)]
     private static partial Regex MessageKeyPattern();
 
-    [GeneratedRegex("^[a-z][a-z0-9_]*$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("^[a-z][a-z0-9_]*\\z", RegexOptions.CultureInvariant)]
     private static partial Regex ArgumentKeyPattern();
 }

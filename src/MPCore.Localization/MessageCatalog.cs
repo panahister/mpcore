@@ -42,7 +42,7 @@ public interface IMessageCatalog : IFailureMessageLocalizer
     /// <param name="arguments">The named arguments substituted as they are.</param>
     /// <param name="typedArguments">The named typed arguments; no name may repeat one of <paramref name="arguments"/>.</param>
     /// <param name="culture">The culture the caller negotiated.</param>
-    /// <exception cref="ArgumentException">A typed argument repeats the name of a string argument, or is null.</exception>
+    /// <exception cref="ArgumentException">A typed argument is null, repeats the name of a string argument, or has a name that is not a lower-case letter followed by lower-case letters, digits or underscores.</exception>
     string? Render(
         string key,
         IReadOnlyDictionary<string, string>? arguments,

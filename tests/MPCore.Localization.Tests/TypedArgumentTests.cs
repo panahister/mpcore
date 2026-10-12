@@ -194,6 +194,58 @@ public sealed class TypedArgumentTests
             Key, new Dictionary<string, string> { ["count"] = "3" }, Typed, CultureInfo.GetCultureInfo("en-GB")));
     }
 
+    /// <summary>Names that are argument names, and names that are not: the last reaches a log and a metric tag.</summary>
+    public static TheoryData<string, bool> ArgumentNames() => new()
+    {
+        { "deadline", true },
+        { "ship_by", true },
+        { "a1", true },
+        { "Deadline", false },
+        { "1st", false },
+        { "_hidden", false },
+        { "ship-by", false },
+        { "ship by", false },
+        { "a.b", false },
+        { string.Empty, false },
+        { "x\n", false },
+        { "x\ny", false },
+        { "d\u00e9lai", false },
+    };
+
+    [Theory]
+    [MemberData(nameof(ArgumentNames))]
+    public void A_direct_render_refuses_a_typed_argument_name_that_is_not_an_argument_name_as_the_descriptor_does(string name, bool valid)
+    {
+        var (catalog, logs) = Build(new CultureNameFormatter());
+        var typed = new Dictionary<string, MessageArgument> { [name] = MessageArgument.Integer(7) };
+
+        if (valid)
+        {
+            Assert.Null(Record.Exception(() => new FailureMessageDescriptor(Key, null, typed)));
+            Assert.Null(Record.Exception(() => catalog.Render(Key, null, typed, CultureInfo.GetCultureInfo("en"))));
+            return;
+        }
+
+        var refused = Assert.Throws<ArgumentException>("typedArguments", () => catalog.Render(Key, null, typed, CultureInfo.GetCultureInfo("en")));
+        Assert.Throws<ArgumentException>("typedArguments", () => new FailureMessageDescriptor(Key, null, typed));
+        // The refusal does not repeat the name, and nothing was logged for it.
+        Assert.DoesNotContain(name.Length == 0 ? "\0" : name, refused.Message, StringComparison.Ordinal);
+        Assert.Empty(logs.Entries);
+    }
+
+    [Fact]
+    public void A_name_that_is_not_an_argument_name_never_reaches_the_formatter_or_the_metric()
+    {
+        var (catalog, _) = Build(new CultureNameFormatter());
+        var counted = new ConcurrentBag<(string? Argument, string? Reason)>();
+        using var listener = Listen(counted);
+
+        Assert.Throws<ArgumentException>("typedArguments", () => catalog.Render(
+            Key, null, new Dictionary<string, MessageArgument> { ["Bad Name"] = MessageArgument.Integer(1) }, CultureInfo.GetCultureInfo("en-GB")));
+
+        Assert.Empty(counted);
+    }
+
     private static string Formatted(string culture) =>
         $"Order A-17 ships by {culture}:2026-10-12, before {culture}:2026-10-12T09:30:00+04:00: {culture}:1234567 items for {culture}:1234.50.";
 

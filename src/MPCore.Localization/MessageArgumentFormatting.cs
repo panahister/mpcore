@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using MPCore.Application.Results;
 
 namespace MPCore.Localization;
@@ -29,11 +30,13 @@ public interface IMessageArgumentFormatter
 }
 
 /// <summary>Puts typed arguments beside the string arguments, each as the text it renders as.</summary>
-internal static class MessageArgumentSubstitution
+internal static partial class MessageArgumentSubstitution
 {
     /// <summary>
-    /// Refuses a typed argument that has no value or repeats the name of a string argument, before anything
-    /// is rendered.
+    /// Refuses a typed argument whose name is not an argument name, that has no value, or that repeats the name of
+    /// a string argument, before anything is rendered. A name reaches the warning log and the metric tag
+    /// <c>argument</c> when a formatter fails, so a name that is not one is refused here, as the descriptor refuses
+    /// it, and the refusal does not repeat it.
     /// </summary>
     internal static void Validate(
         IReadOnlyDictionary<string, string>? arguments,
@@ -46,6 +49,13 @@ internal static class MessageArgumentSubstitution
 
         foreach (var (name, value) in typedArguments)
         {
+            if (!ArgumentName().IsMatch(name))
+            {
+                throw new ArgumentException(
+                    "A typed argument has a name that is not a lower-case letter followed by lower-case letters, digits or underscores.",
+                    nameof(typedArguments));
+            }
+
             if (value is null)
             {
                 throw new ArgumentException($"The typed argument '{name}' has no value.", nameof(typedArguments));
@@ -84,4 +94,8 @@ internal static class MessageArgumentSubstitution
 
         return merged;
     }
+
+    // The rule of FailureMessageDescriptor and of a placeholder in a template; TypedArgumentTests holds the two together.
+    [GeneratedRegex("^[a-z][a-z0-9_]*\\z", RegexOptions.CultureInvariant)]
+    private static partial Regex ArgumentName();
 }
