@@ -89,6 +89,17 @@ MPCore.Security.AspNetCore.MutualTlsOptions.MutualTlsOptions() -> void
 MPCore.Security.AspNetCore.MutualTlsOptions.RevocationMode.get -> System.Security.Cryptography.X509Certificates.X509RevocationMode
 MPCore.Security.AspNetCore.MutualTlsOptions.RevocationMode.set -> void
 MPCore.Security.AspNetCore.MutualTlsOptions.TrustedProxies.get -> System.Collections.Generic.IList<string!>!
+MPCore.Security.AspNetCore.ResourceKeyAttribute
+MPCore.Security.AspNetCore.ResourceKeyAttribute.AuthenticationSchemes.get -> string?
+MPCore.Security.AspNetCore.ResourceKeyAttribute.AuthenticationSchemes.set -> void
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Key.get -> string!
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Policy.get -> string?
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Policy.set -> void
+MPCore.Security.AspNetCore.ResourceKeyAttribute.ResourceKeyAttribute(string! key) -> void
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Roles.get -> string?
+MPCore.Security.AspNetCore.ResourceKeyAttribute.Roles.set -> void
+MPCore.Security.AspNetCore.ResourceKeyExemptAttribute
+MPCore.Security.AspNetCore.ResourceKeyExemptAttribute.ResourceKeyExemptAttribute() -> void
 MPCore.Security.AspNetCore.ResourceKeyExtensions
 MPCore.Security.AspNetCore.ResourceKeyOptions
 MPCore.Security.AspNetCore.ResourceKeyOptions.ResourceKeyOptions() -> void

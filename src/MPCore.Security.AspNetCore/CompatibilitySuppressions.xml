@@ -9,22 +9,6 @@
     <Right>lib/net10.0/MPCore.Security.AspNetCore.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
-  <!-- 1.0 review: ResourceKeyAttribute is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
-  <Suppression>
-    <DiagnosticId>CP0001</DiagnosticId>
-    <Target>T:MPCore.Security.AspNetCore.ResourceKeyAttribute</Target>
-    <Left>lib/net10.0/MPCore.Security.AspNetCore.dll</Left>
-    <Right>lib/net10.0/MPCore.Security.AspNetCore.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <!-- 1.0 review: ResourceKeyExemptAttribute is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
-  <Suppression>
-    <DiagnosticId>CP0001</DiagnosticId>
-    <Target>T:MPCore.Security.AspNetCore.ResourceKeyExemptAttribute</Target>
-    <Left>lib/net10.0/MPCore.Security.AspNetCore.dll</Left>
-    <Right>lib/net10.0/MPCore.Security.AspNetCore.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
   <!-- 1.0 review: ResourceKeyRequirement is made internal; no guide, template, skill or reference sample uses it, and no kept signature names it. -->
   <Suppression>
     <DiagnosticId>CP0001</DiagnosticId>

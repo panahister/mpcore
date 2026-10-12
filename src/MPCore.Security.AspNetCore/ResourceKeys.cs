@@ -16,7 +16,7 @@ namespace MPCore.Security.AspNetCore;
 /// the current actor and the key; a method's key wins over its service's.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-internal sealed class ResourceKeyAttribute : Attribute, IAuthorizeData
+public sealed class ResourceKeyAttribute : Attribute, IAuthorizeData
 {
     /// <summary>Declares the key.</summary>
     /// <param name="key">The resource key: non-empty, at most 128 characters.</param>
@@ -50,7 +50,7 @@ internal sealed class ResourceKeyAttribute : Attribute, IAuthorizeData
 
 /// <summary>An endpoint that deliberately acts on no resource key; the token and its policies still apply.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-internal sealed class ResourceKeyExemptAttribute : Attribute;
+public sealed class ResourceKeyExemptAttribute : Attribute;
 
 /// <summary>How long the product's decision component may take.</summary>
 public sealed class ResourceKeyOptions
