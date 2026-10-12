@@ -402,6 +402,13 @@ A generated backend carries its own guides (`docs/architecture.md`, `docs/capabi
 
 ## Build and test this repository
 
+The API of every runtime package is compared with the last published version, and a build fails without that
+package. Once per checkout, and again when `MPCoreBaselineVersion` moves, download it from nuget.org and check it:
+
+```bash
+./eng/restore-api-baseline.sh
+```
+
 ```bash
 dotnet restore MPCore.sln --locked-mode
 ```

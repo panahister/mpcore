@@ -23,8 +23,11 @@ That is why the bar is a test and a reason, not a preference.
 4. Documentation in English. A convention you introduce or explain names its source: the pattern, who
    described it, and why it was chosen over the alternatives.
 5. For a change to the public API of a package: say so, and say how a consumer moves.
+6. For a change to the command line tool or the template: the files in `docs/contracts` are generated, and a test fails
+   until they say what the code does. Read their diff before you commit it (`docs/contracts/README.md`).
 
 ```bash
+./eng/restore-api-baseline.sh
 dotnet restore MPCore.sln --locked-mode
 dotnet build MPCore.sln --configuration Release --no-restore
 docker compose -f eng/compose.test.yaml up -d
@@ -38,8 +41,9 @@ dotnet test MPCore.sln --configuration Release --no-build
 
 The credentials above belong to throwaway containers on your own machine and to nothing else.
 
-`dotnet test` as written runs every test. Four of them generate a backend from the template and build it, or pack
-a package: they take minutes and use the network, and carry the trait `Category=Generated` or `Category=Packaging`.
+`dotnet test` as written runs every test. Those that generate a backend from the template and build it, run the
+command line tool, or pack a package take minutes and use the network, and carry the trait `Category=Generated` or
+`Category=Packaging`.
 For a fast run while you work, leave them out:
 
 ```bash
