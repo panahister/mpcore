@@ -284,26 +284,17 @@ internal static partial class MPCoreCli
             Path.Combine(manifestDirectory, "template-manifest.json"),
             JsonSerializer.Serialize(manifest, new JsonSerializerOptions { WriteIndented = true }));
 
-        var solutionName = $"{productName}.Backend";
-        var solutionExitCode = await RunProcessAsync(
-            "dotnet",
-            ["new", "sln", "--name", solutionName, "--format", "sln"],
-            target);
-        if (solutionExitCode != 0)
+        // The template writes the one solution file, <product>.slnx, listing exactly the projects it generated for
+        // these options. This command used to create a second one, <product>.Backend.sln, and a root with two
+        // solution files cannot be built with `dotnet build` (MSB1011).
+        var solutions = Directory.GetFiles(target, "*.sln*", SearchOption.TopDirectoryOnly);
+        if (solutions is not [var solutionPath] || !solutionPath.EndsWith(".slnx", StringComparison.Ordinal))
         {
-            return solutionExitCode;
-        }
-
-        var solutionPath = Path.Combine(target, $"{solutionName}.sln");
-        var projects = Directory.GetFiles(target, "*.csproj", SearchOption.AllDirectories)
-            .Order(StringComparer.Ordinal)
-            .ToArray();
-        var addArguments = new List<string> { "sln", solutionPath, "add" };
-        addArguments.AddRange(projects);
-        var addExitCode = await RunProcessAsync("dotnet", addArguments, target);
-        if (addExitCode != 0)
-        {
-            return addExitCode;
+            DiscardGeneratedOutput(target, preExistingEntries);
+            Console.Error.WriteLine(
+                "The installed mpcore-backend template did not generate exactly one solution file (<product>.slnx) at " +
+                $"the root of the repository, so it cannot be built from there. Reinstall the matching template: {reinstall}");
+            return 4;
         }
 
         if (!options.ContainsKey("skip-verify"))
