@@ -32,8 +32,8 @@ exclude" from logs. Masking by name protects only the names someone thought of.
 | The value leaves only through `Reveal()` | one method to search for in a review; there is no conversion to `string` |
 | Equality, `==` and `FixedTimeEquals(string)` compare in constant time | `CryptographicOperations.FixedTimeEquals`: comparing a submitted code with a stored one does not disclose how much of it matched. Values of different lengths are unequal without comparing content |
 
-It lives in `MPCore.Application`, the package every product Application project references, and needs no
-dependency beyond the base class library.
+It lives in `MPCore.Application`, the package every product Application project references. The type needs
+no dependency beyond the base class library.
 
 ### 2. The name processors mask nested attributes
 
@@ -55,21 +55,16 @@ from every call, whether a handler or a startup check logs it, and no call is ne
 Not covered: a request object of a named service that is logged before the registry is filled. The fill runs
 when the web host starts, in the web host's own hosted service; a hosted service added with `AddHostedService`
 starts before it, and code between `Build` and `Run` runs before any of them. Such a log prints the object
-whole, on the console and in the log export. This was seen in one host with all three logs of the same request:
-the hosted service's and the one between `Build` and `StartAsync` printed `{ "phone": ..., "code": ... }`, and
-the application-started callback printed `***`. The mechanism is unchanged. A type that must be masked in that
+whole, on the console and in the log export. The mechanism is unchanged. A type that must be masked in that
 window is registered in the service collection, with `services.AddMPCoreSensitiveMessageTypes(typeof(...))`,
 because the registry holds such a type from the moment the container creates it; with the request type
 registered that way, the same two logs printed `***`. A host can add any other type the same way, for example
 the messages of a client.
 
 The registry is a service of the host's container, one per host, and the processors take it from there. The
-first version of this decision kept it in a static, filled by an interceptor at the first call of a method. That
-had three faults: a message logged before the first call printed whole; what one host named reached every host
-of the process, so a test passed or failed by the order of its neighbours; and nothing could be removed or
-replaced. The startup filter is the moment the resource-key check of ADR-007 already uses to see every
-endpoint. The host fails to start when a name is that of no mapped service, because a mistyped name would
-leave the service unmasked without a sign of it.
+startup filter is the moment the resource-key check of ADR-007 already uses to see every endpoint. The host
+fails to start when a name is that of no mapped service, because a mistyped name would leave the service
+unmasked without a sign of it.
 
 `MPCore.Observability` references `MPCore.Application` for this, the registry both packages share. A
 transport package may not reference a security package (ADR-007), so the registry is not in
@@ -101,29 +96,25 @@ A product generated before this change keeps the providers it has; it moves by a
 
 | Test | What it shows |
 |---|---|
-| `SensitiveValueTests`, 10 (two are theories of four cases) | every rendering shows the mask; JSON writes it and reads a value, and `null` as no value; a token that is not a string is a `JsonException`, through the serializer and through the converter read directly; text that is not valid UTF-8 is a `JsonException` with the fixed message `A sensitive value must be a valid JSON string.`, which does not carry the text (seen failing when the branch let the bytes through as a value: no exception; and when it put the text into the message: `Actual: ... must be a valid JSON string: 418-205-OTP`); the debugger shows the mask; the value leaves only through `Reveal()`; equality by value in constant time; null is refused |
+| `SensitiveValueTests`, 10 (two are theories of four cases) | every rendering shows the mask; JSON writes it and reads a value, and `null` as no value; a token that is not a string is a `JsonException`, through the serializer and through the converter read directly; text that is not valid UTF-8 is a `JsonException` with the fixed message `A sensitive value must be a valid JSON string.`, which does not carry the text; the debugger shows the mask; the value leaves only through `Reveal()`; equality by value in constant time; null is refused |
 | `SensitiveDataTests.A_sensitive_value_reaches_no_sink` | a known value, logged as a structured attribute, inside a record, in an interpolated message and in an exception's message, and set as a trace tag, appears in none of: the OpenTelemetry log and trace export, the JSON console provider, a plain provider |
 | `SensitiveDataTests.The_name_processors_also_mask_nested_attributes` | `http.request.header.authorization` and a password inside a nested collection are masked in logs and traces; a neighbouring order id is kept |
 | `SensitiveDataTests.The_name_list_is_unchanged` | the 22 names |
 | `SensitiveDataTests.An_object_of_a_sensitive_message_type_is_masked_whole` | an object of an added type is masked, and its text is scrubbed from the message |
-| `SensitiveMessageTests`, 5 | a gRPC handler of a named service logs its request and its response: both are masked, and neither the code (a `debug_redact` field), the phone nor the session appears in the message; the handler of a service that is not named is logged as it is. A message logged after the host started and before any call is masked (run alone against the static registry it printed `{ "phone": "+1-555-0100", "code": "552-118" }`; in the suite it passed only because another test had filled the static first). A message logged from the application-started callback is masked (seen failing when the filling adds the wrong type: `Expected: ***`, `Actual: { "phone": "+1-555-0100", "code": "552-118" }`). What one host names does not reach a second host of the process (seen failing when one registry is shared). A name that no mapped service has fails the start (seen failing: no exception) |
-| `ConsoleLogTests`, 4 | the console sink is off unless a host turns it on; an entry is written after masking (a sensitive value, a sensitive name and a message type are `***`); scopes are not printed, an exception is; moving the sink before the redaction processor makes two of them fail |
-| `TemplateContractTests.The_host_clears_the_default_logging_providers_before_the_foundation_registers_its_pipeline` | `ClearProviders` is in `Program.cs` and before `AddMPCoreFoundation`; no template file adds a logging provider: a named one (console, debug, event source, event log, trace source), any provider by `AddProvider`, Serilog or NLog (`UseSerilog`, `AddSerilog`, `UseNLog`, `AddNLog`), or an `ILoggerProvider` registered in the container; seen failing when `ClearProviders` is removed, when it comes after the foundation, and when `AddConsole()` returns |
-| `TemplateContractTests.The_logging_provider_guard_finds_a_provider_brought_back_by_a_planted_line`, 9 | each of those ways, planted as one line in a file of its own, is found by the guard, and the lines that clear or filter the logs are not. With the guard's earlier pattern, which named only the default providers, 8 of the 9 failed (the ninth, `AddConsole()`, was already found). A line planted in the template's `Program.cs` fails the guard itself |
-| `GeneratedBackendTests.A_generated_host_prints_no_sensitive_request_to_its_console_and_the_default_providers_would` | a host generated from the template, with a gRPC service that logs its request, is built and run, and called once over HTTP/2: its console shows `Verify ***`, its other logs, and neither the phone, the code nor the field names. With `ClearProviders` removed the same call prints `Verify { "phone": "+1-555-0100", "code": "552-118" }`, and the test, run against the template as it was before this change, fails with that line |
-
-Nine of the first eleven (the six of `SensitiveValueTests`, the four of `SensitiveDataTests` and the one of
-`SensitiveMessageTests`, as they were first written) were seen failing against stubs of the API; the two that
-passed, the members of the type and the unchanged name list, are guards that a stub cannot fail. The rows list
-more tests than those eleven, added by later changes; a row says what was seen failing where something was.
+| `SensitiveMessageTests`, 5 | a gRPC handler of a named service logs its request and its response: both are masked, and neither the code (a `debug_redact` field), the phone nor the session appears in the message; the handler of a service that is not named is logged as it is. A message logged after the host started and before any call is masked. A message logged from the application-started callback is masked. What one host names does not reach a second host of the process. A name that no mapped service has fails the start |
+| `ConsoleLogTests`, 4 | the console sink is off unless a host turns it on; an entry is written after masking (a sensitive value, a sensitive name and a message type are `***`); scopes are not printed, an exception is |
+| `TemplateContractTests.The_host_clears_the_default_logging_providers_before_the_foundation_registers_its_pipeline` | `ClearProviders` is in `Program.cs` and before `AddMPCoreFoundation`; no template file adds a logging provider: a named one (console, debug, event source, event log, trace source), any provider by `AddProvider`, Serilog or NLog (`UseSerilog`, `AddSerilog`, `UseNLog`, `AddNLog`), or an `ILoggerProvider` registered in the container |
+| `TemplateContractTests.The_logging_provider_guard_finds_a_provider_brought_back_by_a_planted_line`, 9 | each of those ways, planted as one line in a file of its own, is found by the guard, and the lines that clear or filter the logs are not. A line planted in the template's `Program.cs` fails the guard itself |
+| `GeneratedBackendTests.A_generated_host_prints_no_sensitive_request_to_its_console_and_the_default_providers_would` | a host generated from the template, with a gRPC service that logs its request, is built and run, and called once over HTTP/2: its console shows `Verify ***`, its other logs, and neither the phone, the code nor the field names. With `ClearProviders` removed the same call prints `Verify { "phone": "+1-555-0100", "code": "552-118" }` |
 
 ## Alternatives that were not taken
 
 | Alternative | Why not |
 |---|---|
 | Data classification with `Microsoft.Extensions.Compliance.Redaction` | a new dependency and a classification scheme for every product. It stays open: an adapter from `SensitiveValue` to a data classification can be added later without changing the type |
-| A Roslyn analyzer that refuses a logging call with a message of a named service | it sees only direct calls, and adds a tool to build and ship. The interceptor works at run time on whatever path the object takes into a log |
+| A Roslyn analyzer that refuses a logging call with a message of a named service | it sees only direct calls, and adds a tool to build and ship. The processors work at run time on whatever path the object takes into a log |
 | More names in the list | it would mask more fields named innocently, and still miss a value named otherwise |
+| A static registry, filled by an interceptor at the first call of a method | a message logged before the first call printed whole; what one host named reached every host of the process, so a test passed or failed by the order of its neighbours; and nothing could be removed or replaced |
 
 ## Consequences
 

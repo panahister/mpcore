@@ -65,9 +65,7 @@ it is false by default, so a generated host behaves as before. `UseMPCoreCertifi
 ## What was proved
 
 `MutualTlsTests` in `MPCore.Security.Tests`, against real TLS listeners on the loopback interface, with
-certificate authorities and certificates created by the test. 19 of the first 22 were seen failing against
-stubs of the API; the three that passed are the admitted call, the call without a token, and the log check,
-which a stub cannot fail.
+certificate authorities and certificates created by the test.
 
 | Test | What it shows |
 |---|---|
@@ -77,15 +75,14 @@ which a stub cannot fail.
 | the client extension | presents its certificate from PEM files and is admitted; configured with another server authority, it refuses the server |
 | a client without its certificate or its server authority | fails when the client is built |
 | a forwarded certificate | admitted from a listed proxy; refused with `401` from another address, of another authority, expired, with a name not listed, unreadable, absent, or sent twice with a listed certificate in each. The header never reaches an endpoint |
-| revocation (`MutualTlsRevocationTests`, 2) | a locally generated authority issues two client certificates for one listed name and publishes a revocation list that names one; the revocation mode is bound from configuration. With `Online`, on Linux (run in a container) the revoked certificate is refused at the handshake (`Chain:Revoked`), the other is admitted, and the host asked for the list; not run on Windows. On macOS .NET does not download the list of a private authority: the status of every certificate is unknown and the host refuses them all (`Chain:RevocationStatusUnknown`), so it fails closed. With revocation off, the default, the revoked certificate is admitted. Seen failing, on macOS and on Linux (in a container): a validator that ignores the mode admits the revoked certificate |
-| a forwarded certificate, once the request ends (`A_certificate_a_trusted_proxy_forwards_is_disposed_at_the_end_of_the_request_and_a_connections_own_is_not`) | the certificate created from the header for a request is disposed with the response; the certificate of a connection, which the server owns, is not. Seen failing: it was never disposed before, and a middleware that disposed the connection's own failed the second half |
-| the proxy's own connection certificate (`A_forwarded_certificate_is_read_only_from_a_listed_proxy_and_held_to_the_same_rules`, 15 cases) | from a listed proxy that forwards none, refused with `401` even when its own certificate is a listed workload; replaced by the forwarded one when there is one; from an address that is not a listed proxy, kept as it is. The case of a listed proxy that forwards none, with its own listed certificate, was seen failing (`OK` for `Unauthorized`) before the correction. The case of a listed proxy that sends the header twice, a listed certificate in each, was seen failing (`OK` for `Unauthorized`) when the line that refuses a repeated header was made to read its first value |
+| revocation (`MutualTlsRevocationTests`, 2) | with the revocation mode bound from configuration and set to `Online`, on Linux, a certificate that the authority's revocation list names is refused at the handshake (`Chain:Revoked`) and another certificate of the same name is admitted; with revocation off, the default, the revoked certificate is admitted |
+| a forwarded certificate, once the request ends (`A_certificate_a_trusted_proxy_forwards_is_disposed_at_the_end_of_the_request_and_a_connections_own_is_not`) | the certificate created from the header for a request is disposed with the response; the certificate of a connection, which the server owns, is not |
+| the proxy's own connection certificate (`A_forwarded_certificate_is_read_only_from_a_listed_proxy_and_held_to_the_same_rules`, 15 cases) | from a listed proxy that forwards none, refused with `401` even when its own certificate is a listed workload; replaced by the forwarded one when there is one; from an address that is not a listed proxy, kept as it is |
 | a host without an authority or a workload name, or with an authority file that does not exist | startup fails |
 | the options | bind from the configuration a generated host ships |
 | the log | no certificate and no private key |
 
-`TemplateContractTests` holds the template's wiring; it was seen failing against the template before the
-change.
+`TemplateContractTests` holds the template's wiring.
 
 ## Alternatives that were not taken
 
@@ -106,3 +103,5 @@ change.
 - `AddMPCoreMutualTls` sets Kestrel's HTTPS defaults; a host that sets its own replaces one or the other.
 - Nothing about who the caller is changes: tokens, policies, the current actor and the audit trail are as
   before.
+- On macOS, .NET does not download the revocation list of a private authority, so with revocation on a host
+  refuses every client certificate (`Chain:RevocationStatusUnknown`): it fails closed.

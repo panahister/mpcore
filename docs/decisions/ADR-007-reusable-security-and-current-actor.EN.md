@@ -264,7 +264,7 @@ freshness check (`max_age`, section 3.1.2.1) needs the first.
 | `AuthenticatedAt` | from `auth_time` only; null without it. A behaviour change, so it ships in a new minor version (`0.10.0`) with a migration note |
 | `IssuedAt` | new: from `iat` |
 | `IsAuthenticationFresh(maximumAge, now)` | new: true only when `AuthenticatedAt` is known, no older than `maximumAge`, and not more than thirty seconds after `now`. Null is never fresh |
-| `AdditionalClaims` | new: a read-only map of the claims the host allowlists in `ActorClaimMappingOptions.AdditionalClaims`, for a claim MP Core does not map, such as `acr`. At most 16 entries of at most 256 characters, the bounds of section 3. A claim is exposed only when the token carries it exactly once, with a value within the bound; anything else is left out, never truncated. Startup fails on more than 16 |
+| `AdditionalClaims` | new: a read-only map of the claims the host allowlists in `ActorClaimMappingOptions.AdditionalClaims`, for a claim MP Core does not map, such as `acr`. At most 16 entries, each of at most 256 characters (the member bound of section 3). A claim is exposed only when the token carries it exactly once, with a value within the bound; anything else is left out, never truncated. Startup fails on more than 16 |
 
 Section 3's sentence "Product code that needs an unmapped claim configures an additional mapping" now has
 that configuration. The model still exposes no raw token and no claim bag: only the claims a host names.

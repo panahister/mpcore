@@ -67,8 +67,9 @@ the `account` audience, asymmetric algorithms only. In addition, two schemes tha
 startup: a token names its issuer, and its issuer must name exactly one key set. Two schemes with one name,
 or a scheme named like the selector, are refused when they are added.
 
-`AddMPCoreBearerAuthentication` stays the API of a host with one issuer, unchanged. A second call now
-throws and names `AddMPCoreBearerIssuers`, instead of registering a scheme that has no authority.
+`AddMPCoreBearerAuthentication` stays the API of a host with one issuer, unchanged. A second call that
+names another scheme now throws and names `AddMPCoreBearerIssuers`; a second call with the same scheme name
+reconfigures that one scheme, and its audiences add to the first call's.
 
 ### 3. A second token, validated with its issuer's own parameters
 
@@ -88,9 +89,8 @@ or `Missing`) and nothing else.
 
 ## What was proved
 
-`MultipleIssuerTests` in `MPCore.Security.Tests`, 38 tests, all seen failing against stubs of the new API
-before it was implemented. One of them is a regression of the defect above: a second call of
-`AddMPCoreBearerAuthentication` with another scheme threw nothing.
+`MultipleIssuerTests` in `MPCore.Security.Tests`; one of them holds that a second call of
+`AddMPCoreBearerAuthentication` that names another scheme throws.
 
 | Test | What it shows |
 |---|---|
@@ -104,8 +104,6 @@ before it was implemented. One of them is a regression of the defect above: a se
 | a key rotation | after the issuer's metadata changes its key, the validator accepts a token signed with the new key; the metadata was refreshed once |
 | the log | no token signature appears in any record |
 | a host with one issuer | its validator validates a second token of that issuer |
-
-The 95 tests that existed before pass unchanged.
 
 ## Alternatives that were not taken
 

@@ -235,8 +235,7 @@ failed the three that prove application code cannot read it, the gRPC test among
 | Logs, spans, exception texts | hold no token |
 
 The probe that suggested this design also refused a call without a client certificate when mutual TLS is
-on. That rule belongs to mutual TLS between services, which MP Core does not have yet; it is not part of this
-addendum.
+on. That rule belongs to mutual TLS between services (ADR-017); it is not part of this addendum.
 
 ### Consequences
 

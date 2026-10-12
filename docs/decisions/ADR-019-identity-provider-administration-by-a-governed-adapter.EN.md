@@ -79,10 +79,12 @@ supplies; it is never in the repository.
 
 ### 4. Every caller is authorized for every command
 
-The adapter is a bearer-only resource server under ADR-007, unchanged: deny by default, identity only from
-the validated token. Each command declares who may send it: a service listed among the adapter's callers
-and, where a person asked for the change, that person's evidence (`RequireSubjectEvidence`, ADR-014
-addendum of 2026-10-08) and a resource key the product's port decides (`RequireResourceKey`, ADR-007
+The adapter is a bearer-only resource server under ADR-007, unchanged: deny by default, identity only from the
+validated token. Each command declares who may send it: a service whose client id the adapter lists, checked
+by a policy the adapter registers through `IMPCoreAuthorizationPolicyContributor` on `CurrentActor.ClientId`
+with `ActorKind.Service` (ADR-007, sections 3 and 9), or a scope the provider grants to those services alone
+(`RequireScope`), and, where a person asked for the change, that person's evidence (`RequireSubjectEvidence`,
+ADR-014 addendum of 2026-10-08) and a resource key the product's port decides (`RequireResourceKey`, ADR-007
 addendum of 2026-10-08). The user a command acts on is a parameter of the command; it is never taken as the
 identity of the caller.
 
@@ -97,11 +99,15 @@ holds identifiers and the command's name, never a credential and never the provi
 
 ### 6. No administration token in any log
 
-The administration token, the client's secret and any credential the provider's answer could carry never
-reach a log, a trace, an audit record, a message, a problem document or a response. The adapter holds the
-token as a `SensitiveValue` (ADR-018); its HTTP client to the provider logs no header and no body; it maps
-the provider's errors to its own failure codes and never returns or logs the provider's body. OWASP's
-*Logging Cheat Sheet* lists access tokens, passwords and secrets among the data never to log.
+The administration token, the client's secret and any credential the provider's answer could carry never reach
+a log, a trace, an audit record, a message, a problem document or a response. The administration token is
+obtained and presented by `AddMPCoreServiceIdentity` (ADR-014), which never gives it to application code; any
+credential the adapter itself holds, such as the client's secret read from configuration or a token obtained
+by any other path, is a `SensitiveValue` (ADR-018). The adapter's client to the provider is registered with
+`RedactLoggedHeaders` for `Authorization`, or with its loggers removed, and a test captures the log of one
+call and asserts that it holds no token; the adapter maps the provider's errors to its own failure codes and
+never returns or logs the provider's body. OWASP's *Logging Cheat Sheet* lists access tokens, passwords and
+secrets among the data never to log.
 
 ### 7. Every write is idempotent
 
@@ -158,9 +164,3 @@ itself; "ADR-019") and 12 for the six rules, at least one for each: a closed cat
 identity, 3; every caller authorized for every command, 1; every write audited, 3; no administration token,
 2; every write idempotent, 1. The vertical-slice skill states the same boundary and points to the security
 skill. This record exists and says what changes in ADR-007.
-
-It was seen failing on the text before this decision, and with a rule dropped from the skill. Until a later
-repair the test named four of the six rules; the stems for callers and for idempotent writes are that repair's.
-With the sentence on callers removed from the skill the test fails with `Not found: "every caller authorized
-for every command"`, and with the sentence on idempotent writes removed, with `Not found: "every write
-idempotent"`.
