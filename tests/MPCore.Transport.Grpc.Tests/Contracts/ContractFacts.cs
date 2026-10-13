@@ -18,7 +18,7 @@ internal static class ContractFacts
     public static readonly string RepositoryRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
 
     /// <summary>The first version that published a contract file. Before it, no earlier contract exists to compare with.</summary>
-    public static readonly Version FirstContractVersion = new(0, 10, 2);
+    public static readonly Version FirstContractVersion = new(1, 0, 0);
 
     public static string PathOf(string name) => Path.Combine(RepositoryRoot, "docs", "contracts", name);
 

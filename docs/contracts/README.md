@@ -25,7 +25,7 @@ A later contract is **compatible** with an earlier one when it states every fact
   fails when facts are gone, unless the declared version may break the contract. Until the compatibility policy of
   1.0 replaces it, that is a new minor version while the major version is `0`, and a new major version after.
 
-The first contract is published with 0.10.2; a baseline older than that has no contract to compare with, and the
+The first contract is published with 1.0.0; a baseline older than that has no contract to compare with, and the
 test says so and checks nothing else.
 
 ## Updating a file
