@@ -21,11 +21,12 @@
   </PropertyGroup>
   <!--
     The API of every runtime package is validated, on pack, against its package of MPCoreBaselineVersion, the last
-    version published to nuget.org (ADR-010, addendum of 2026-10-12). Validation is never skipped: a build of a
-    runtime project fails unless eng/restore-api-baseline.sh has downloaded that package from nuget.org and proved
-    that nuget.org signed it and that it records the commit of the tag v<baseline>. The proof is the stamp
-    <package>.verified beside it, whose first line is the package's SHA-256; it is compared here with the file, so a
-    package replaced after the check fails the build as well.
+    version published to nuget.org (ADR-010, addendum of 2026-10-12). Validation is never skipped in silence, and
+    never in CI or the release: a build of a runtime project fails unless eng/restore-api-baseline.sh has downloaded
+    that package from nuget.org and proved that nuget.org signed it and that it records the commit of the tag
+    v<baseline>, and the one switch for work offline, below, warns for every package and is refused on CI. The proof
+    is the stamp <package>.verified beside it, whose first line is the package's SHA-256; it is compared here with
+    the file, so a package replaced after the check fails the build as well.
 
     The package is read from artifacts/packages by its path, never restored through a package source: a NuGet cache
     shared with other builds can hold a package of the same identity built elsewhere. On 2026-10-12 the user-level

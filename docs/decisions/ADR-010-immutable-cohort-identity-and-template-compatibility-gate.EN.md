@@ -241,7 +241,7 @@ artifact per commit stops being something a consumer can restore. A prerelease f
 automatically on every push: publication stays the owner's act (ADR-004, addendum on publication). The
 commit as build metadata (`0.10.0+48045c7`): ignored by NuGet for identity, as §1 already says.
 
-## Addendum 2026-10-12: package validation is never skipped (accepted by the repository owner, 2026-10-12)
+## Addendum 2026-10-12: package validation is never skipped in silence, and never in CI or the release (accepted by the repository owner, 2026-10-12)
 
 **What went wrong.** API validation of a package ran only when its baseline package happened to be in a git-ignored
 folder. Otherwise the build printed "validation is SKIPPED" and passed, so a clean checkout validated nothing and
@@ -276,7 +276,9 @@ ran. The script is bash and was run on macOS and Linux; Windows was not run.
 baseline package at pack. *Repository signatures* and *dotnet nuget verify* (Microsoft Learn, NuGet): nuget.org signs
 every package it hosts and lists its signing certificates in the `RepositorySignatures` resource of its service
 index; `--certificate-fingerprint` accepts a package only when its signer is one of those. That a
-check that can switch itself off proves nothing is why validation has no skip, and it is a condition of MP Core 1.0.
+check that can switch itself off proves nothing is why validation is never skipped in silence, and never in CI or
+the release: the one switch for work offline warns for every package and is refused there. It is a condition of
+MP Core 1.0.
 
 **Alternatives that were not taken.**
 
