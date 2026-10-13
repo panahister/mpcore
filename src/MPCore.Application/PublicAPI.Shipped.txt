@@ -3,15 +3,6 @@ MPCore.Application.Idempotency.IIdempotentExecutor
 MPCore.Application.Idempotency.IIdempotentExecutor.ExecuteAsync(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result!>!
 MPCore.Application.Idempotency.IIdempotentExecutor.ExecuteAsync<TValue>(object! message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!>! invoke, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<MPCore.Application.Results.Result<TValue>!>!
 MPCore.Application.Idempotency.IdempotencyFailures
-MPCore.Application.Idempotency.IdempotencyKeyReading
-MPCore.Application.Idempotency.IdempotencyKeyReading.Deconstruct(out string? Key, out bool Required) -> void
-MPCore.Application.Idempotency.IdempotencyKeyReading.Equals(MPCore.Application.Idempotency.IdempotencyKeyReading other) -> bool
-MPCore.Application.Idempotency.IdempotencyKeyReading.IdempotencyKeyReading() -> void
-MPCore.Application.Idempotency.IdempotencyKeyReading.IdempotencyKeyReading(string? Key, bool Required) -> void
-MPCore.Application.Idempotency.IdempotencyKeyReading.Key.get -> string?
-MPCore.Application.Idempotency.IdempotencyKeyReading.Key.init -> void
-MPCore.Application.Idempotency.IdempotencyKeyReading.Required.get -> bool
-MPCore.Application.Idempotency.IdempotencyKeyReading.Required.init -> void
 MPCore.Application.Idempotency.IdempotencyOptions
 MPCore.Application.Idempotency.IdempotencyOptions.HeaderName.get -> string!
 MPCore.Application.Idempotency.IdempotencyOptions.HeaderName.set -> void
@@ -216,7 +207,6 @@ const MPCore.Application.Results.FailureMessageDescriptor.MaximumArgumentCount =
 const MPCore.Application.Results.FailureMessageDescriptor.MaximumArgumentValueLength = 256 -> int
 const MPCore.Application.Results.FailureMessageDescriptor.MaximumKeyLength = 160 -> int
 const MPCore.Application.Sensitive.SensitiveValue.Mask = "***" -> string!
-override MPCore.Application.Idempotency.IdempotencyKeyReading.GetHashCode() -> int
 override MPCore.Application.Querying.Page<TItem>.Equals(object? obj) -> bool
 override MPCore.Application.Querying.Page<TItem>.GetHashCode() -> int
 override MPCore.Application.Querying.Page<TItem>.ToString() -> string!
@@ -282,8 +272,6 @@ override sealed MPCore.Application.Results.ValidationFailureDetail.Equals(MPCore
 static MPCore.Application.Idempotency.IdempotencyFailures.KeyInvalid() -> MPCore.Application.Results.FailureDescriptor!
 static MPCore.Application.Idempotency.IdempotencyFailures.KeyRequired() -> MPCore.Application.Results.FailureDescriptor!
 static MPCore.Application.Idempotency.IdempotencyFailures.KeyReused() -> MPCore.Application.Results.FailureDescriptor!
-static MPCore.Application.Idempotency.IdempotencyKeyReading.operator !=(MPCore.Application.Idempotency.IdempotencyKeyReading left, MPCore.Application.Idempotency.IdempotencyKeyReading right) -> bool
-static MPCore.Application.Idempotency.IdempotencyKeyReading.operator ==(MPCore.Application.Idempotency.IdempotencyKeyReading left, MPCore.Application.Idempotency.IdempotencyKeyReading right) -> bool
 static MPCore.Application.Querying.Page<TItem>.Empty(MPCore.Application.Querying.PageRequest! request) -> MPCore.Application.Querying.Page<TItem>!
 static MPCore.Application.Querying.Page<TItem>.operator !=(MPCore.Application.Querying.Page<TItem>? left, MPCore.Application.Querying.Page<TItem>? right) -> bool
 static MPCore.Application.Querying.Page<TItem>.operator ==(MPCore.Application.Querying.Page<TItem>? left, MPCore.Application.Querying.Page<TItem>? right) -> bool
@@ -346,5 +334,3 @@ static readonly MPCore.Application.Results.Error.None -> MPCore.Application.Resu
 virtual MPCore.Application.Results.FailureDetail.EqualityContract.get -> System.Type!
 virtual MPCore.Application.Results.FailureDetail.Equals(MPCore.Application.Results.FailureDetail? other) -> bool
 virtual MPCore.Application.Results.FailureDetail.PrintMembers(System.Text.StringBuilder! builder) -> bool
-~override MPCore.Application.Idempotency.IdempotencyKeyReading.Equals(object obj) -> bool
-~override MPCore.Application.Idempotency.IdempotencyKeyReading.ToString() -> string

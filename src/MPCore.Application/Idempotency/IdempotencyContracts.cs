@@ -24,7 +24,7 @@ public sealed class IdempotencyOptions
 /// <summary>What the transport found on the current request.</summary>
 /// <param name="Key">The key the caller sent, or null.</param>
 /// <param name="Required">Whether the endpoint requires a key.</param>
-public readonly record struct IdempotencyKeyReading(string? Key, bool Required);
+internal readonly record struct IdempotencyKeyReading(string? Key, bool Required);
 
 /// <summary>The transport's side of idempotency: where the key comes from, and how a replay is announced.</summary>
 internal interface IIdempotencyKeySource

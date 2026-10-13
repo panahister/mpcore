@@ -197,7 +197,7 @@ public static class FundsArrivedTwiceHandler
 }
 
 /// <summary>The key of the "request" in progress, per async flow, so concurrent attempts each carry their own.</summary>
-public sealed class TestKeys : IIdempotencyKeySource
+internal sealed class TestKeys : IIdempotencyKeySource
 {
     private static readonly AsyncLocal<(string? Key, bool Required)> Current = new();
     private static readonly AsyncLocal<StrongBox?> Replay = new();
