@@ -52,8 +52,10 @@ found. Ask about them. Proceeding on a guess produces work that has to be delete
 
 Concurrency control when two actors can change the same aggregate. Idempotency when a caller can
 retry a state change — key it on a caller-supplied identifier, not on payload equality: send the command
-through `IIdempotentExecutor` and mark the endpoint `RequireIdempotencyKey()`; a consumer of integration
-events relies on `UseMPCoreInbox()`; an internal message relies on a business key. A handler that runs
+through `IIdempotentExecutor` and mark the endpoint `RequireIdempotencyKey()`. The endpoint, or the gRPC
+service method, takes `IIdempotentExecutor`, never a Wolverine handler: its implementation is internal, and
+what Wolverine's generated code builds for a handler must be public (MP Core ADR-011, section 7). A consumer
+of integration events relies on `UseMPCoreInbox()`; an internal message relies on a business key. A handler that runs
 under a key never calls an external system (a payment, an e-mail, another service) inside its
 transaction: two attempts with one key both run, and the one that loses has already made the call. It
 publishes a message, which the outbox sends after the commit. No check catches this; refuse it in review. Audit masking
