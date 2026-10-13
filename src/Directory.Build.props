@@ -97,7 +97,7 @@
     version promised) and PublicAPI.Unshipped.txt (what changed since), and the build fails on an undeclared
     change: RS0016 for a public symbol the files do not list, RS0017 for a listed symbol that is gone. A removal is
     recorded as *REMOVED* in PublicAPI.Unshipped.txt, and the break against the baseline in
-    CompatibilitySuppressions.xml, with its reason (docs/api/README.md).
+    CompatibilitySuppressions.xml, with its reason (docs/api/1.0-review.md).
   -->
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
