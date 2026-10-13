@@ -6,8 +6,10 @@ namespace MPCore.Transport.Grpc.Tests;
 /// <summary>
 /// A product that moves from 0.9.3 to 1.0 reads one page: the table at the top of docs/releases/1.0.0.md lists every
 /// behaviour change of every version since, with what to do and where it is explained. These tests read every release
-/// note after 0.9.3 and fail when a change listed under its "Moving from", "Changed" or "Fixed" sections is missing
-/// from that table, when a row says nothing to do, or when its link goes nowhere.
+/// note after 0.9.3 and fail when a change listed under its "Moving from", "Changed" or "Fixed" sections, or an entry
+/// of its "New" section, is missing from that table, when a row says nothing to do, or when its link goes nowhere.
+/// An entry of "New" is read by its bold title. The template's entries change generated output, which a product meets
+/// without calling anything new, so an entry of the template without a title is read by its first code span.
 /// </summary>
 public sealed partial class ReleaseNotesTests
 {
@@ -61,6 +63,32 @@ public sealed partial class ReleaseNotesTests
         Assert.Contains(Check(invented, table), static problem => problem.Contains("A behaviour nobody listed", StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void A_titled_entry_of_new_the_table_leaves_out_is_found()
+    {
+        var notes = ReadAllNotes();
+        var table = Table(File.ReadAllText(Path.Combine(Releases, Final + ".md")));
+        const string Title = "The identity provider administered by a governed adapter";
+        var left = table.Single(row => row.Version == "0.10.0" && row.Change.Contains(Title, StringComparison.Ordinal));
+
+        var problems = Check(notes, [.. table.Where(row => row != left)]);
+
+        Assert.Contains(problems, static problem => problem.Contains(Title, StringComparison.Ordinal) && problem.Contains("0.10.0", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void An_untitled_entry_of_the_template_the_table_leaves_out_is_found()
+    {
+        var notes = ReadAllNotes();
+        var table = Table(File.ReadAllText(Path.Combine(Releases, Final + ".md")));
+        const string Setting = "`Security:MutualTls`";
+        var left = table.Single(row => row.Version == "0.10.0" && row.Change.Contains(Setting, StringComparison.Ordinal));
+
+        var problems = Check(notes, [.. table.Where(row => row != left)]);
+
+        Assert.Contains(problems, static problem => problem.Contains(Setting, StringComparison.Ordinal) && problem.Contains("0.10.0", StringComparison.Ordinal));
+    }
+
     private sealed record Change(string Version, string Key);
 
     private sealed record Notes(IReadOnlyList<Change> Changes, IReadOnlyDictionary<string, IReadOnlySet<string>> Anchors);
@@ -92,6 +120,24 @@ public sealed partial class ReleaseNotesTests
                         if (first is not ("What" or "Area" or "Where"))
                         {
                             changes.Add(new Change(version, first));
+                        }
+                    }
+                }
+                else if (heading == "## New")
+                {
+                    foreach (Match row in Regex.Matches(section, @"^\| (?<package>`[^`|]+`) \| (?<text>.+) \|$", RegexOptions.Multiline))
+                    {
+                        var entry = row.Groups["text"].Value;
+                        var title = Regex.Match(entry, @"^\*\*(?<title>[^*]+)\*\*");
+                        if (title.Success)
+                        {
+                            changes.Add(new Change(version, title.Groups["title"].Value.Trim().TrimEnd('.')));
+                        }
+                        else if (row.Groups["package"].Value == "`MPCore.Templates`")
+                        {
+                            // Without a code span, the whole entry is the key: never an empty key, which every row contains.
+                            var span = Regex.Match(entry, "`[^`]+`");
+                            changes.Add(new Change(version, span.Success ? span.Value : entry));
                         }
                     }
                 }
