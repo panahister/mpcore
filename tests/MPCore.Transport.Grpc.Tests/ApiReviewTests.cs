@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using MPCore.Transport.Grpc.Tests.Contracts;
 
 namespace MPCore.Transport.Grpc.Tests;
 
@@ -7,15 +8,20 @@ namespace MPCore.Transport.Grpc.Tests;
 /// Three files must say the same thing: the table, each package's PublicAPI.Shipped.txt (the promise) and each
 /// package's CompatibilitySuppressions.xml (the breaks against the last published version, each with its reason).
 /// These tests hold them together, and the controls show the comparison sees each way they can come apart.
+/// The breaks were made against 0.10.1. Once 1.0.0, which carries the reviewed API, is the baseline, they are in the
+/// baseline itself: no suppression of them remains, and package validation fails on a suppression it does not need.
 /// </summary>
 public sealed partial class ApiReviewTests
 {
     private static readonly string RepositoryRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
 
+    /// <summary>Whether the breaks of the review are in the baseline, which is so from 1.0.0 on.</summary>
+    private static bool BreaksAreInTheBaseline => ContractFacts.BaselineVersion() >= new Version(1, 0, 0);
+
     [Fact]
     public void The_review_the_inventories_and_the_suppressions_say_the_same_thing()
     {
-        var problems = Check(Review(), PublicTypes(), Suppressions(), MemberRows(), MemberSuppressions(), PublicMembers());
+        var problems = Check(Review(), PublicTypes(), Suppressions(), MemberRows(), MemberSuppressions(), PublicMembers(), suppressionsRequired: !BreaksAreInTheBaseline);
 
         Assert.True(problems.Count == 0, "docs/api/1.0-review.md, the PublicAPI.Shipped.txt files and the CompatibilitySuppressions.xml files disagree:\n" + string.Join('\n', problems));
     }
@@ -88,7 +94,7 @@ public sealed partial class ApiReviewTests
     [Fact]
     public void A_member_made_internal_is_gone_from_the_inventory_and_has_a_suppression_and_the_other_way_round()
     {
-        var problems = Check(Review(), PublicTypes(), Suppressions(), MemberRows(), MemberSuppressions(), PublicMembers());
+        var problems = Check(Review(), PublicTypes(), Suppressions(), MemberRows(), MemberSuppressions(), PublicMembers(), suppressionsRequired: !BreaksAreInTheBaseline);
 
         Assert.True(problems.Count == 0, string.Join('\n', problems));
         Assert.NotEmpty(MemberRows());
@@ -109,6 +115,20 @@ public sealed partial class ApiReviewTests
         Assert.Contains(public_, problem => problem.Contains(gone, StringComparison.Ordinal) && problem.Contains("still public", StringComparison.Ordinal));
         Assert.Contains(noSuppression, problem => problem.Contains(gone, StringComparison.Ordinal) && problem.Contains("no suppression", StringComparison.Ordinal));
         Assert.Contains(noRow, static problem => problem.Contains("BusinessRule.IsValidCode", StringComparison.Ordinal) && problem.Contains("no row", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void With_the_reviewed_api_as_the_baseline_a_suppression_left_behind_is_found()
+    {
+        var rows = Review();
+        var internalRow = rows.First(static row => row.Decision == "make internal");
+        var member = MemberRows().First();
+
+        var problems = Check(rows, PublicTypes(), [Normal(internalRow.Type)], MemberRows(), [member], PublicMembers(), suppressionsRequired: false);
+
+        Assert.Contains(problems, problem => problem.Contains(Normal(internalRow.Type), StringComparison.Ordinal) && problem.Contains("baseline", StringComparison.Ordinal));
+        Assert.Contains(problems, problem => problem.Contains(member, StringComparison.Ordinal) && problem.Contains("baseline", StringComparison.Ordinal));
+        Assert.DoesNotContain(problems, static problem => problem.Contains("no suppression", StringComparison.Ordinal));
     }
 
     private sealed record Row(string Package, string Type, string Decision);
@@ -201,7 +221,9 @@ public sealed partial class ApiReviewTests
 
     private static string Normal(string type) => Regex.Replace(Regex.Replace(type, "<.*$", string.Empty), "`\\d+$", string.Empty);
 
-    private static List<string> Check(List<Row> rows, HashSet<string> publicTypes, HashSet<string> suppressions, HashSet<string> memberRows, HashSet<string> memberSuppressions, HashSet<string> publicMembers)
+    /// <param name="suppressionsRequired">True while the baseline is older than the review: every break needs a suppression.
+    /// False once the baseline carries the reviewed API: no suppression of the review may remain.</param>
+    private static List<string> Check(List<Row> rows, HashSet<string> publicTypes, HashSet<string> suppressions, HashSet<string> memberRows, HashSet<string> memberSuppressions, HashSet<string> publicMembers, bool suppressionsRequired = true)
     {
         var problems = new List<string>();
         foreach (var member in memberRows)
@@ -211,15 +233,17 @@ public sealed partial class ApiReviewTests
                 problems.Add($"{member} is decided to become internal and is still public.");
             }
 
-            if (!memberSuppressions.Contains(member))
+            if (suppressionsRequired && !memberSuppressions.Contains(member))
             {
                 problems.Add($"{member} is decided to become internal and has no suppression of the break.");
             }
         }
 
-        foreach (var suppression in memberSuppressions.Where(suppression => !memberRows.Contains(suppression)))
+        foreach (var suppression in memberSuppressions.Where(suppression => !suppressionsRequired || !memberRows.Contains(suppression)))
         {
-            problems.Add($"{suppression} has a member suppression and the table of members has no row for it.");
+            problems.Add(suppressionsRequired
+                ? $"{suppression} has a member suppression and the table of members has no row for it."
+                : $"{suppression} has a member suppression, and the baseline already carries the reviewed API: remove it.");
         }
 
         var kept = rows.Where(static row => row.Decision == "keep").Select(static row => row.Type).ToHashSet(StringComparer.Ordinal);
@@ -242,15 +266,17 @@ public sealed partial class ApiReviewTests
                 problems.Add($"{row.Type} is decided '{row.Decision}' and is still public.");
             }
 
-            if (!suppressions.Contains(Normal(row.Type)))
+            if (suppressionsRequired && !suppressions.Contains(Normal(row.Type)))
             {
                 problems.Add($"{row.Type} is decided '{row.Decision}' and has no suppression of the break.");
             }
         }
 
-        foreach (var suppression in suppressions.Where(suppression => !gone.Contains(suppression)))
+        foreach (var suppression in suppressions.Where(suppression => !suppressionsRequired || !gone.Contains(suppression)))
         {
-            problems.Add($"{suppression} has a suppression and the table has no row that makes it internal or removes it.");
+            problems.Add(suppressionsRequired
+                ? $"{suppression} has a suppression and the table has no row that makes it internal or removes it."
+                : $"{suppression} has a suppression, and the baseline already carries the reviewed API: remove it.");
         }
 
         return problems;

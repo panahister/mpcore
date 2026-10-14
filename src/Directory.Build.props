@@ -4,7 +4,7 @@
     <IsPackable>true</IsPackable>
     <!-- Authored XML documentation must actually ship inside every package. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionPrefix>1.0.1</VersionPrefix>
     <Authors>Mehdi Panahi</Authors>
     <Copyright>Copyright (c) The MP Core contributors</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -43,7 +43,7 @@
     nor the release workflow can build with it.
   -->
   <PropertyGroup>
-    <MPCoreBaselineVersion>0.10.1</MPCoreBaselineVersion>
+    <MPCoreBaselineVersion>1.0.0</MPCoreBaselineVersion>
     <MPCoreNewInCohort></MPCoreNewInCohort>
     <MPCoreBaselineStore>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', 'artifacts', 'packages'))</MPCoreBaselineStore>
     <MPCoreBaselinePackagePath>$(MPCoreBaselineStore)$(MSBuildProjectName).$(MPCoreBaselineVersion).nupkg</MPCoreBaselinePackagePath>
