@@ -22,7 +22,7 @@ once, in the open, with a test for each and the name of the person who first des
 [Tiffin](https://github.com/panahister/mpcore-tiffin-sample) ·
 [MP Frontend](https://github.com/panahister/mpfrontend) ·
 [Decisions](docs/decisions) ·
-[Release notes](docs/releases/0.10.1.md)
+[Release notes](docs/releases/1.0.0.md)
 
 </div>
 
@@ -83,11 +83,11 @@ framework that says yes to everything guarantees nothing.
 ## Start in two minutes
 
 ```bash
-dotnet tool install --global MPCore.Cli --version 0.10.1
+dotnet tool install --global MPCore.Cli --version 1.0.0
 ```
 
 ```bash
-dotnet new install MPCore.Templates::0.10.1
+dotnet new install MPCore.Templates::1.0.0
 ```
 
 ```bash
@@ -395,7 +395,7 @@ All packages share one version and ship together.
 | [Packages](docs/guide/packages.md) | Choose what to reference |
 | [Languages](docs/guide/languages.md) | Serve your own languages beside English, or one in its place, from your repository |
 | [Decisions](docs/decisions) | Learn why: every convention, with its sources and its cost |
-| [Release notes](docs/releases/0.10.1.md) | See what changed, [0.10.0](docs/releases/0.10.0.md), [0.9.3](docs/releases/0.9.3.md), [0.9.2](docs/releases/0.9.2.md), [0.9.1](docs/releases/0.9.1.md) and [0.9.0](docs/releases/0.9.0.md) included |
+| [Release notes](docs/releases/1.0.0.md) | See what changed, [0.10.1](docs/releases/0.10.1.md), [0.10.0](docs/releases/0.10.0.md), [0.9.3](docs/releases/0.9.3.md), [0.9.2](docs/releases/0.9.2.md), [0.9.1](docs/releases/0.9.1.md) and [0.9.0](docs/releases/0.9.0.md) included |
 
 A generated backend carries its own guides (`docs/architecture.md`, `docs/capabilities.md`,
 `src/Modules/README.md`), written for the options you chose.
