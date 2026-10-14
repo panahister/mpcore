@@ -16,8 +16,8 @@ The [Storefront sample](https://github.com/panahister/mpcore-storefront-sample) 
 ## 1. Install the generator and the template
 
 ```bash
-dotnet tool install --global MPCore.Cli --version 0.9.0
-dotnet new install MPCore.Templates::0.9.0
+dotnet tool install --global MPCore.Cli --version 1.0.0
+dotnet new install MPCore.Templates::1.0.0
 ```
 
 The two are one cohort and must be of one version; the generator checks.

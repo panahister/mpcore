@@ -275,7 +275,7 @@ document proves nothing.
 | A refused attempt is still audited, although its transaction was rolled back | An integration test: the audit record survives the rollback |
 | No endpoint is reachable without a token unless it says so | A test reads the composition of a generated backend and names the only endpoints that may be anonymous; the scenarios of both samples ask each backend without a token |
 | A tenant travels with a message and with a call between services, and is believed from a listed service only | Tests seen failing: the handler saw no tenant, and each of six guards broken on purpose failed its test. In Tiffin, Payments' audit trail names the city of all 20 payments the scenarios open; with Ordering taken off Payments' list, the next one names none |
-| A published version is never built again | The release gate verifies the packed files by their hashes, and proves that it rejects twelve kinds of bad file |
+| A published version is never built again | The release gate verifies the packed files by their hashes, and proves that it rejects fifteen kinds of bad file |
 
 Storefront's [lessons](https://github.com/panahister/mpcore-storefront-sample/blob/main/docs/lessons.md) and
 Tiffin's [findings](https://github.com/panahister/mpcore-tiffin-sample/blob/main/docs/findings.md) tell what
@@ -429,9 +429,11 @@ these variables name them:
 | `MPCORE_TEST_POSTGRESQL` | a disposable PostgreSQL database (connection string) |
 | `MPCORE_TEST_TIMESCALE` | a disposable TimescaleDB database (connection string) |
 | `MPCORE_TEST_REDIS` | Redis (`host:port`) |
+| `MPCORE_TEST_RABBITMQ` | RabbitMQ (an `amqp://` address) |
+| `MPCORE_TEST_KAFKA` | Kafka (`host:port`) |
 
-`docker compose -f eng/compose.test.yaml up -d` starts all three with the values
-[the CI workflow](.github/workflows/ci.yml) uses.
+`docker compose -f eng/compose.test.yaml up -d` starts all five on your machine;
+[CONTRIBUTING.md](CONTRIBUTING.md) gives the value of each variable for them.
 
 ## Versioning
 
