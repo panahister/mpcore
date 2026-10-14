@@ -27,13 +27,13 @@
 <text x="182" y="284" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#111827" text-anchor="start">55</text>
 <line x1="50" y1="314" x2="454" y2="314" stroke="#65e2c1" stroke-width="0.6" stroke-linecap="round" stroke-dasharray="2 4"/>
 <text x="50" y="307" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#64748b" text-anchor="start">Tests</text>
-<text x="182" y="307" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#0f766e" text-anchor="start">262</text>
+<text x="182" y="307" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#0f766e" text-anchor="start">290</text>
 <line x1="50" y1="337" x2="454" y2="337" stroke="#65e2c1" stroke-width="0.6" stroke-linecap="round" stroke-dasharray="2 4"/>
 <text x="50" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#64748b" text-anchor="start">Scenarios</text>
-<text x="182" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#0f766e" text-anchor="start">22: 146 and 160 checks</text>
+<text x="182" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#0f766e" text-anchor="start">22: 146 and 159 checks</text>
 <line x1="50" y1="360" x2="454" y2="360" stroke="#65e2c1" stroke-width="0.6" stroke-linecap="round" stroke-dasharray="2 4"/>
 <text x="50" y="353" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#64748b" text-anchor="start">MP Core</text>
-<text x="182" y="353" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#111827" text-anchor="start">0.9.1</text>
+<text x="182" y="353" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#111827" text-anchor="start">1.0.0</text>
 <text x="50" y="384" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#14b8a6" text-anchor="start" letter-spacing="0.8">WHAT IT PROVES FIRST</text>
 <circle cx="56" cy="396" r="5" fill="#14b8a6"/>
 <path d="M 53.6 396.2 L 55.4 398 L 58.6 394.2" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -77,13 +77,13 @@
 <text x="638" y="284" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#111827" text-anchor="start">33</text>
 <line x1="506" y1="314" x2="910" y2="314" stroke="#67e8f9" stroke-width="0.6" stroke-linecap="round" stroke-dasharray="2 4"/>
 <text x="506" y="307" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#64748b" text-anchor="start">Tests</text>
-<text x="638" y="307" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#0e7490" text-anchor="start">216</text>
+<text x="638" y="307" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#0e7490" text-anchor="start">313</text>
 <line x1="506" y1="337" x2="910" y2="337" stroke="#67e8f9" stroke-width="0.6" stroke-linecap="round" stroke-dasharray="2 4"/>
 <text x="506" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#64748b" text-anchor="start">Scenarios</text>
 <text x="638" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#0e7490" text-anchor="start">16: 286 checks, each store</text>
 <line x1="506" y1="360" x2="910" y2="360" stroke="#67e8f9" stroke-width="0.6" stroke-linecap="round" stroke-dasharray="2 4"/>
 <text x="506" y="353" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#64748b" text-anchor="start">MP Core</text>
-<text x="638" y="353" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#111827" text-anchor="start">0.9.2</text>
+<text x="638" y="353" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#111827" text-anchor="start">1.0.0</text>
 <text x="506" y="384" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#06b6d4" text-anchor="start" letter-spacing="0.8">WHAT IT PROVES FIRST</text>
 <circle cx="512" cy="396" r="5" fill="#14b8a6"/>
 <path d="M 509.6 396.2 L 511.4 398 L 514.6 394.2" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>

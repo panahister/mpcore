@@ -321,7 +321,7 @@ its execution model stands.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/samples-dark.svg">
-  <img alt="Two samples: Storefront, an online store built as a modular monolith and two services, with 262 tests and 22 scenarios; and Tiffin, food delivery in nine services and two cities, with 216 tests and 16 scenarios of 286 checks. What each is built of and what it proves first" src="docs/images/samples-light.svg" width="100%">
+  <img alt="Two samples: Storefront, an online store built as a modular monolith and two services, with 290 tests and 22 scenarios; and Tiffin, food delivery in nine services and two cities, with 313 tests and 16 scenarios of 286 checks. What each is built of and what it proves first" src="docs/images/samples-light.svg" width="100%">
 </picture>
 
 Two samples run on MP Core, and on GitHub on every change. Each is where a part of MP Core is proved, and
@@ -334,8 +334,8 @@ each found what MP Core then fixed.
 | Behind | Apache APISIX, Keycloak | Apache APISIX, Keycloak, and Access in front of Keycloak's administration |
 | Between them | Kafka and RabbitMQ | Kafka, and RabbitMQ for a saga's requests and answers |
 | Data | PostgreSQL, TimescaleDB, Redis | PostgreSQL, TimescaleDB, Redis, and RustFS or SeaweedFS behind the S3 API |
-| Proved by | 262 tests; 22 scenarios, 146 and 160 checks | 216 tests; 16 scenarios, 286 checks with each file store |
-| Built with | MP Core `0.9.1` | MP Core `0.9.2` |
+| Proved by | 290 tests; 22 scenarios, 146 and 159 checks | 313 tests; 16 scenarios, 286 checks with each file store |
+| Built with | MP Core `1.0.0` | MP Core `1.0.0` |
 | Start with | the [learning path](https://github.com/panahister/mpcore-storefront-sample/blob/main/docs/learning-path.md): thirteen steps through the code, one idea at a time | [the journey of one order](https://github.com/panahister/mpcore-tiffin-sample#one-order-through-six-services), and [what building it found](https://github.com/panahister/mpcore-tiffin-sample/blob/main/docs/findings.md) |
 | What MP Core gained from it | the fixes of `0.9.0`: [lessons](https://github.com/panahister/mpcore-storefront-sample/blob/main/docs/lessons.md) | the tenant of a message and a service's own token (`0.9.1`), the tenant of a call (`0.9.2`) |
 
