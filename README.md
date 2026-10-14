@@ -7,6 +7,10 @@
 A framework for .NET 10 that makes the decisions every backend makes again,<br>
 once, in the open, with a test for each and the name of the person who first described it.
 
+**1.0.0 is a promise.** Its public API, its command line tool and its template change only by the rules of
+[Versioning](#versioning): a patch fixes, a minor version adds, and a break waits for 2.0.
+[What changed since 0.9.3](docs/releases/1.0.0.md).
+
 [![NuGet](https://img.shields.io/nuget/v/MPCore.Domain?label=nuget&color=004880)](https://www.nuget.org/profiles/panahister)
 [![ci](https://github.com/panahister/mpcore/actions/workflows/ci.yml/badge.svg)](https://github.com/panahister/mpcore/actions/workflows/ci.yml)
 [![license](https://img.shields.io/badge/license-Apache--2.0-6267e8)](LICENSE)
