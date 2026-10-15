@@ -26,6 +26,8 @@ public sealed class ResourceKeyTests
 {
     private const string Refund = "orders.refund";
 
+    private static readonly TimeSpan HangFor = TimeSpan.FromSeconds(30);
+
     public static TheoryData<string, HttpStatusCode> Decisions() => new()
     {
         { "granted", HttpStatusCode.OK },
@@ -47,7 +49,10 @@ public sealed class ResourceKeyTests
         var response = await host.SendAsync("/refund", withToken: true);
 
         Assert.Equal(expected, response.StatusCode);
-        Assert.True(DateTime.UtcNow - started < TimeSpan.FromSeconds(5), "a port that hangs is cut off by the timeout");
+        // The timeout is 300 ms, so a warm host answers in well under a second. The bound sits between that and the
+        // 30 s a port holds on (HangFor): a cold host's first request can take seconds and must not fail the test,
+        // while an answer that waited for the port would.
+        Assert.True(DateTime.UtcNow - started < HangFor - TimeSpan.FromSeconds(10), "a port that hangs is cut off by the timeout");
         if (behaviour != "no-port")
         {
             var (subject, key) = Assert.Single(port.Questions);
@@ -146,7 +151,7 @@ public sealed class ResourceKeyTests
                     throw new InvalidOperationException("the permission service is down");
                 case "hangs":
                     // A port that ignores cancellation altogether.
-                    await Task.Delay(TimeSpan.FromSeconds(30), CancellationToken.None);
+                    await Task.Delay(HangFor, CancellationToken.None);
                     return ResourceDecision.Granted;
                 default:
                     return ResourceDecision.Denied;
